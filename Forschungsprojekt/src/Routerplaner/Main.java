@@ -44,7 +44,7 @@ public class Main {
 					System.out.println("target: ");
 					int target = scanner.nextInt();
 					Dijkstra dijk = new Dijkstra (graph, source, alpha);
-					System.out.println("shortest path between "+ source +" and "+ target + ": "+ dijk.getShortestPathTo(target));
+					System.out.println("shortest path between "+ source +" and "+ target + ": "+ dijk.getCostOfShortestPathTo(target));
 					
 				} 
 				else if (function.equals("2")) 
@@ -60,7 +60,7 @@ public class Main {
 						}else if (answer.equals("y")) {
 							System.out.println("target: ");
 							int target = scanner.nextInt();
-							System.out.println("shortest path between "+ start +" and "+ target + ": "+ dijk.getShortestPathTo(target));
+							System.out.println("the cost of the shortest path between "+ start +" and "+ target + ": "+ dijk.getCostOfShortestPathTo(target));
 						}
 					}
 					
@@ -87,8 +87,8 @@ public class Main {
 							if (acutalStart != start) {
 								dijk = new Dijkstra (graph, start, alpha);
 							}
-							printWriter.println(dijk.getShortestPathTo(target));
-							System.out.println(dijk.getShortestPathTo(target));
+							printWriter.println(dijk.getCostOfShortestPathTo(target));
+							System.out.println(dijk.getCostOfShortestPathTo(target));
 							acutalStart = start;
 						}
 						printWriter.close();

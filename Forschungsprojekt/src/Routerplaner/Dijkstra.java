@@ -55,8 +55,8 @@ public class Dijkstra {
 		
 	}
 	
-	int getShortestPathTo(int nodeID) {
-		return this.parent[nodeID];
+	double getCostOfShortestPathTo(int nodeID) {
+		return this.dis[nodeID];
 	}
 	double dotProduct(double a[], double b[]) {
 		double sum = 0;
