@@ -7,11 +7,13 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Scanner;
-import java.io.FileWriter;
 
 public class Main {
 	static Graph graph;
-
+    /**
+	 *  Interface to call up routeplanning
+	 * @param args
+	 */
 	public static void main(String[] args) {
 		Scanner scanner = new Scanner(System.in);
 		System.out.println("Enter path to File: ");
@@ -49,7 +51,7 @@ public class Main {
 				} 
 				else if (function.equals("2")) 
 				{
-					System.out.println("start:	");
+					System.out.println("start:\t");
 					int start = scanner.nextInt();
 					Dijkstra dijk = new Dijkstra (graph, start, alpha);
 					while(true) {

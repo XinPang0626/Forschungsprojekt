@@ -129,7 +129,7 @@ public class Graph {
 	 * @param nodeID
 	 * @return Array with number of outgoing edges * 3
 	 */
-	double[] getOutgingEdgesArray(int nodeID) {
+	double[] getOutgoingEdgesArray(int nodeID) {
 		if (nrOfOutgoingEdges[nodeID] >= 1) {
 			int startIndex = nodeArray[nodeID];
 			int endIndex = getNrOfOutgoingEdges(nodeID) * lengthOfEdgeElement + startIndex;
