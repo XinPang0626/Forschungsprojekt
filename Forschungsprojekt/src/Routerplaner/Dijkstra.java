@@ -7,7 +7,12 @@ public class Dijkstra {
 	private int[] parent;
 	private double[] alpha;
 	
-	
+	/**
+	 * computes the shortest path given the parameters
+	 * @param graph provided "city"
+	 * @param start startnode
+	 * @param alpha
+	 */
 	Dijkstra(Graph graph, int start, double[] alpha){
 		System.out.println("computing dijkstra...");
 		long sTime = System.currentTimeMillis();
@@ -29,7 +34,7 @@ public class Dijkstra {
 		
 		while(heap.getSize() > 0) {
 			double[] min = heap.remove();
-			double[] out = graph.getOutgingEdgesArray((int)min[0]);
+			double[] out = graph.getOutgoingEdgesArray((int)min[0]);
 			
 			if(out != null) {
 				for (int i = 0; i < out.length; i += (1+alpha.length)) {
