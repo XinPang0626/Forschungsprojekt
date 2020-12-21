@@ -23,14 +23,16 @@
 
 <body>
 
-
+	<input type="file" onchange="showFile()">
 
 	<div id="mapid" style="width: 600px; height: 400px;"></div>
 	<button type="button" onclick="f1()"> call Java</button>
 	<script>
 		var name = "not retrieved yet";
+		var defaultla=48.6674;
+		var defaultlng=9.2445;
 
-		var mymap = L.map('mapid').setView([49.505, 9.9], 13);
+		var mymap = L.map('mapid').setView([defaultla, defaultlng], 23);
 
 		L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4NXVycTA2emYycXBndHRqcmZ3N3gifQ.rJcFIG214AriISLbB6B5aw', {
 			maxZoom: 18,
@@ -41,7 +43,7 @@
 			zoomOffset: -1
 		}).addTo(mymap);
 
-		L.marker([49.5, 9.09]).addTo(mymap)
+		L.marker([defaultla, defaultlng]).addTo(mymap)
 			.bindPopup("<b>Hello world!</b><br />I am a popup.").openPopup();
 
 
@@ -51,15 +53,45 @@
 		function onMapClick(e) {
 			popup
 				.setLatLng(e.latlng)
-				.setContent("You clicked the map at " + e.latlng.toString()+ name)
+				.setContent("You clicked the map at " + e.latlng.toString() + name)
 				.openOn(mymap);
 		}
 
 		mymap.on('click', onMapClick);
 
+		function showFile() {
+			alert("boho");
+
+			var file = document.querySelector('input[type=file]').files[0];
+			var reader = new FileReader(file);
+
+			var BReader = java.io.BufferedReader;
+			var textFile = /graph.*/;
+
+			if (file.type.match(textFile)) {
+				reader.onload = function (event) {
+					preview.innerHTML = event.target.result;
+					const allLines = file.split(/\r\n|\n/);
+					// Reading line by line
+					allLines.forEach((line) => {
+							
+						//console.log(line);
+					});
+				}
+			} else {
+				preview.innerHTML = "<span class='error'>It doesn't seem to be a text file!</span>";
+			}
+			reader.readAsText(file);
+		}
+
+
+
+
+
+
 		function f1() {
-			var TestClass= Java.type("Routerplaner.testingjs");
-		    name+= TestClass.calculate(1,2);
+			var TestClass = Java.type("Routerplaner.testingjs");
+			name += TestClass.calculate(1, 2);
 		}
 
 	</script>
