@@ -5,7 +5,7 @@ Frontend:
 
 Project feature:
   --Backend only-- 
-  - Install file "
+  - Install file "Backend Dij"
   - Run file through preferable java compiler ( Eclipse, Visual Studio Code...)
   - Provide directory for graph file in terminal
   - Provide cost coefficient
