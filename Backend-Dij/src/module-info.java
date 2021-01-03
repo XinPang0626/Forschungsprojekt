@@ -1,2 +1,2 @@
-module BackendDij {
+module Backend_Dij {
 }
