@@ -1,0 +1,9 @@
+com\forschung\projektdij\NodeController.class
+com\forschung\projektdij\ProjektdijApplication.class
+com\forschung\projektdij\routeplanner\Graph.class
+com\forschung\projektdij\routeplanner\Testingjs.class
+com\forschung\projektdij\routeplanner\MinHeap.class
+com\forschung\projektdij\routeplanner\Main.class
+com\forschung\projektdij\routeplanner\Dijkstra.class
+com\forschung\projektdij\NodeRepository.class
+com\forschung\projektdij\Nodes.class
