@@ -2,5 +2,8 @@
 
 <app-map></app-map>
 
-
+<button (click)="getPosts()">click</button>
+<div *ngFor="let post of posts | async">
+    {{ post | json}}
+</div>
 <router-outlet></router-outlet>

@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import {HttpClient } from '@angular/common/http';
 
 @Component({
   selector: 'app-root',
@@ -7,4 +8,17 @@ import { Component } from '@angular/core';
 })
 export class AppComponent {
   title = 'angularclient';
+
+  readonly SpringURL= 'http://localhost:8080/';
+
+  posts: any;
+  constructor(private http: HttpClient){}
+
+  getPosts(){
+    this.http.get(this.SpringURL). subscribe((res: Response) => {
+      console.log(res);
+    })
+
+ }
+  
 }
