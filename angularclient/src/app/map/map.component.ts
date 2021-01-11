@@ -10,9 +10,9 @@ export class MapComponent implements AfterViewInit {
   private map;
   defaultla: number = 48.6674;
   defaultlng: number = 9.2445;
-  @Input() nothinguploaded: boolean;
-  @Input() test: string='unchanged'; //this variable receives information from appcomponent
+  @Input() nothinguploaded: boolean;//this variable receives information from appcomponent
 
+ 
   constructor() { }
 
   ngAfterViewInit(): void {
