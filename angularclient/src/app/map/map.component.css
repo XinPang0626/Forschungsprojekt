@@ -8,6 +8,10 @@
     bottom: 0;
     margin: 30px;
   }
+  .testing{
+    position: relative;
+
+  }
   
   .map-frame {
     border: 2px solid black;

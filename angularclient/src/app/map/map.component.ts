@@ -1,4 +1,4 @@
-import { AfterViewInit, Component } from '@angular/core';
+import { AfterViewInit, Component, Input } from '@angular/core';
 import * as L from 'leaflet';
 
 @Component({
@@ -10,13 +10,14 @@ export class MapComponent implements AfterViewInit {
   private map;
   defaultla: number = 48.6674;
   defaultlng: number = 9.2445;
-  nothinguploaded: boolean=false;
+  @Input() nothinguploaded: boolean;
+  @Input() test: string='unchanged'; //this variable receives information from appcomponent
 
   constructor() { }
 
   ngAfterViewInit(): void {
     this.initMap();
-    this.readGeoJson();
+    
   }
 
    readGeoJson(): void {

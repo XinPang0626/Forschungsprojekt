@@ -1,13 +1,10 @@
 
 <mat-toolbar>
     <span>My Application</span>
-    <button (click)="readGeoJson()">load Mapping</button>
+    <button (click)="appMap.readGeoJson()">load Mapping</button>
     <button (click)="uploadFile()">upload File</button>
 </mat-toolbar>
-<app-map></app-map>
+<app-map [nothinguploaded]="nothinguploaded" #appMap></app-map>
 
-<button (click)="getPosts()">click</button>
-<div *ngFor="let post of posts | async">
-    {{ post | json}}
-</div>
+
 <router-outlet></router-outlet>
