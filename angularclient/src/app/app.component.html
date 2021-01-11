@@ -1,12 +1,10 @@
-<div id="toolbar">
-    <mat-toolbar>
-        <span>Map</span>
-       
-        <button (click)="appMap.readGeoJson()">load Mapping</button>
-    </mat-toolbar>
+<div class="toolbar">
+       <span>My App</span>
+    <span class="example-spacer"></span>
+ <button (click)="appMap.readGeoJson()">load Mapping</button>
+ <input #input id="input-box" (input)="sendpath(input.value)" />
 </div>
-
-
+ 
 <div id="box">
     <app-map [nothinguploaded]="nothinguploaded" #appMap></app-map>
 </div>
