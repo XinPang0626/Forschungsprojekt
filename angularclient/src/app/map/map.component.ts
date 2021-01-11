@@ -24,6 +24,8 @@ export class MapComponent implements AfterViewInit {
    readGeoJson(): void {
     if(!(this.nothinguploaded)){
       alert('you have to upload a file first');
+    }else{
+      console.log('Mapping loaded');
     }
   }
 

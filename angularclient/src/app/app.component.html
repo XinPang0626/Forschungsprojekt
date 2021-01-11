@@ -2,7 +2,9 @@
        <span>My App</span>
     <span class="example-spacer"></span>
  <button (click)="appMap.readGeoJson()">load Mapping</button>
- <input #input id="input-box" (input)="sendpath(input.value)" />
+ <input #input id="input-box"  /> 
+ <button (click)="sendpath(input.value)">send Path</button>
+
 </div>
  
 <div id="box">

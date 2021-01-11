@@ -20,7 +20,14 @@ export class AppComponent {
 
 
   sendpath(input:string){
+    if(input.endsWith('.graph')){
+      console.log(input);
     this.url=input;
+    this.nothinguploaded=true;
+    }else{
+      alert('this is not a valid path');
+    }
+    
   }
 
   getPosts() {
