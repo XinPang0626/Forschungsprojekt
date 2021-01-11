@@ -9,14 +9,19 @@ import { HttpClient } from '@angular/common/http';
 export class AppComponent {
   title = 'angularclient';
   nothinguploaded: boolean = false;
-  test:string='changed';
+  test: string = 'changed';
+  fileToUpload: File = null;
+  url:string;
 
   readonly SpringURL = 'http://localhost:8080/';
 
   posts: any;
   constructor(private http: HttpClient) { }
 
-  
+
+  sendpath(input:string){
+    this.url=input;
+  }
 
   getPosts() {
     this.http.get(this.SpringURL).subscribe((res: Response) => {

@@ -1,10 +1,14 @@
+<div id="toolbar">
+    <mat-toolbar>
+        <span>Map</span>
+       
+        <button (click)="appMap.readGeoJson()">load Mapping</button>
+    </mat-toolbar>
+</div>
 
-<mat-toolbar>
-    <span>My Application</span>
-    <button (click)="appMap.readGeoJson()">load Mapping</button>
-    <button (click)="uploadFile()">upload File</button>
-</mat-toolbar>
-<app-map [nothinguploaded]="nothinguploaded" #appMap></app-map>
 
+<div id="box">
+    <app-map [nothinguploaded]="nothinguploaded" #appMap></app-map>
+</div>
 
 <router-outlet></router-outlet>

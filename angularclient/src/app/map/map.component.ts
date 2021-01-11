@@ -19,6 +19,7 @@ export class MapComponent implements AfterViewInit {
     this.initMap();
     
   }
+  
 
    readGeoJson(): void {
     if(!(this.nothinguploaded)){

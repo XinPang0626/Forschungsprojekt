@@ -6,6 +6,8 @@ import { AppComponent } from './app.component';
 import { MapComponent } from './map/map.component';
 import { HttpClientModule } from '@angular/common/http';
 import { MatToolbarModule} from '@angular/material/toolbar';
+import {MatInputModule} from '@angular/material/input';
+
 
 
 @NgModule({
@@ -17,7 +19,8 @@ import { MatToolbarModule} from '@angular/material/toolbar';
     BrowserModule,
     AppRoutingModule,
     HttpClientModule,
-    MatToolbarModule
+    MatToolbarModule,
+    MatInputModule
   ],
   providers: [],
   bootstrap: [AppComponent]

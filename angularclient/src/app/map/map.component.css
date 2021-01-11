@@ -2,11 +2,12 @@
 
 .map-container {
     position: absolute;
-    top: 0;
+    top: 150px;
     left: 0;
     right: 0;
     bottom: 0;
-    margin: 30px;
+    margin: 10px;
+   
   }
   .testing{
     position: relative;
@@ -14,10 +15,15 @@
   }
   
   .map-frame {
+    padding: 10px;
     border: 2px solid black;
-    height: 100%;
+    display: flex;  
+    flex-wrap: wrap;
+    width: 710px;
+    background-color: rgb(121, 200, 206);
   }
   
   #map {
-    height: 100%;
+    height: 350px;
+    width: 100%;
   }
