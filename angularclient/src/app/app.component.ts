@@ -20,5 +20,8 @@ export class AppComponent {
     })
 
  }
+    uploadFile(){
+      
+    }
   
 }

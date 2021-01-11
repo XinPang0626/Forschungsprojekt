@@ -10,11 +10,19 @@ export class MapComponent implements AfterViewInit {
   private map;
   defaultla: number = 48.6674;
   defaultlng: number = 9.2445;
+  nothinguploaded: boolean=false;
 
   constructor() { }
 
   ngAfterViewInit(): void {
     this.initMap();
+    this.readGeoJson();
+  }
+
+   readGeoJson(): void {
+    if(!(this.nothinguploaded)){
+      alert('you have to upload a file first');
+    }
   }
 
   private initMap(): void {
