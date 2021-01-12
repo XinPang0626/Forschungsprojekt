@@ -1,6 +1,14 @@
+<div class="toolbar">
+       <span>{{ test }}</span>
+    <span class="example-spacer"></span>
+ <button (click)="appMap.readGeoJson()">load Mapping</button>
+ <input #input id="input-box"  /> 
+ <button (click)="sendpath(input.value)">send Path</button>
 
-
-<app-map></app-map>
-
+</div>
+ 
+<div id="box">
+    <app-map [nothinguploaded]="nothinguploaded" #appMap></app-map>
+</div>
 
 <router-outlet></router-outlet>

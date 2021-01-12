@@ -1,5 +1,7 @@
-import { AfterViewInit, Component } from '@angular/core';
+import { AfterViewInit, Component, Input } from '@angular/core';
 import * as L from 'leaflet';
+import { MapService } from '../map.service';
+
 
 @Component({
   selector: 'app-map',
@@ -10,11 +12,28 @@ export class MapComponent implements AfterViewInit {
   private map;
   defaultla: number = 48.6674;
   defaultlng: number = 9.2445;
+  cordinates: string;
+  @Input() nothinguploaded: boolean;//this variable receives information from appcomponent
 
-  constructor() { }
+ 
+  constructor( private mapservice:MapService ) { }
 
   ngAfterViewInit(): void {
     this.initMap();
+    
+  }
+  
+   //empty method which be adding geoJson to map later
+   readGeoJson(): void {
+    if(!(this.nothinguploaded)){
+     alert('you have to upload a file first'); 
+      
+      console.log(this.cordinates);
+    }else{
+      console.log('Mapping loaded');
+    
+
+    }
   }
 
   private initMap(): void {
