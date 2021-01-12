@@ -23,10 +23,10 @@ export class MapComponent implements AfterViewInit {
     
   }
   
-
+   //empty method which be adding geoJson to map later
    readGeoJson(): void {
     if(!(this.nothinguploaded)){
-     // alert('you have to upload a file first'); 
+     alert('you have to upload a file first'); 
       
       console.log(this.cordinates);
     }else{

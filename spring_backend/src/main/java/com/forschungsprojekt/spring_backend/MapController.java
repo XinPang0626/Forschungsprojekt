@@ -8,11 +8,12 @@ import org.springframework.web.bind.annotation.RestController;
 public class MapController {
 
     String cordinates="(12,13),(23,34)";
+
     @CrossOrigin(origins = "http://localhost:4200")
     @RequestMapping("/api")
     public String sendCordinates(@RequestParam(name="path") String path) {
         System.out.println(path);
         return cordinates;
-    }  
+    }  //here to revoke algorithm and turn the result into json to be returned
     
 }
