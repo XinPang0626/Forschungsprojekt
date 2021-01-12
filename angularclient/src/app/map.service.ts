@@ -7,17 +7,15 @@ import { Observable } from 'rxjs';
   providedIn: 'root'
 })
 export class MapService {
-  private cordinatesURL:string;
+  private cordinatesURL: string;
 
   constructor(private http: HttpClient) {
-    this.cordinatesURL = 'http://localhost:8080/api';
-   }
+    this.cordinatesURL = 'http://localhost:8080/api?path=';
+  }
+
+  public findAll(path:string): Observable<string> {
+    return this.http.get<string>(this.cordinatesURL+path);
+  }
   
-  public findAll(): Observable<string> {
-    return this.http.get<string>(this.cordinatesURL);
-  }
-  public send(pathofFile: string) {
-    return this.http.post<string>(this.cordinatesURL, pathofFile);
-  }
 
 }

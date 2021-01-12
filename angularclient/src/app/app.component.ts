@@ -1,5 +1,7 @@
 import { ChangeDetectorRef, Component } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { MapService } from './map.service';
+
 
 @Component({
   selector: 'app-root',
@@ -9,39 +11,30 @@ import { HttpClient } from '@angular/common/http';
 export class AppComponent {
   title = 'angularclient';
   nothinguploaded: boolean = false;
-  test: string = 'changed';
+  test: string = 'unchanged';
   fileToUpload: File = null;
   url:string;
+  geoJson:JSON;
 
   readonly SpringURL = 'http://localhost:8080/';
 
   posts: any;
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient, private mapservice:MapService ) { }
 
 
   sendpath(input:string){
     if(input.endsWith('.graph')){
       console.log(input);
     this.url=input;
+    this.mapservice.findAll(input).subscribe(data =>{
+      this.test=data;
+    })
     this.nothinguploaded=true;
+
     }else{
       alert('this is not a valid path');
     }
     
-  }
-
-  getPosts() {
-    this.http.get(this.SpringURL).subscribe((res: Response) => {
-      console.log(res);
-    })
-
-  }
-  uploadFile() {
-    if (!(this.nothinguploaded)) {
-      alert('you have to upload a file first');
-    }
-
-
   }
 
 }
