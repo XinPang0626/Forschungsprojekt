@@ -27,7 +27,8 @@ export class MapComponent implements AfterViewInit {
   defaultlng: number = -104.99404;
   cordinates: string;
   json;
-  testarray = [[-100, 40], [-105, 45], [-110, 55]];//array can be formed first
+  testarray = [[-100, 40], [-105, 45],
+  [-110, 55]];//array can be formed first
   myStyle = {
     "color": "#ff7800",
     "weight": 5,
@@ -86,28 +87,46 @@ export class MapComponent implements AfterViewInit {
   ngAfterViewInit(): void {
     this.initMap();
   }
-  //string be returned in the form of (1,2),(1,3)
-  parseNodeString(nodeString: string):number[][] {
-    nodeString="(2,2),(3,3)"    
-    var nodeArray: number[][];
-    var split= nodeString.split(",");
-    for (let i = 0; i < split.length; i++) {
-      console.log(i+" "+split[i]);
-      console.log(split[i+1]);
-     if(split[i].startsWith("(")){
-       var lang= split[i].substring(1, split[i].length);
-       //var longt= split[i+1].substring(0, split[i+1].length-2);
-       //console.log(""+lang);
-     }
+  //string be parsed into
+  parseNodeString(nodeString: string): number[][] {
+    var nodeArray: number[][] = new Array();
+    var split = nodeString.split(",");
+    for (let i = 0; i < split.length; i += 2) {
+
+      var lat: number = Number(split[i].substring(1, split[i].length));
+      var longt: number = Number(split[i + 1].substring(0, split[i + 1].length - 1));
+      nodeArray.push([lat, longt]);
+
     }
     return nodeArray;
   }
 
-  computeDij(path:string, start:number, end:number, alpha?){
+  computeDij(path: string, start: number, end: number, alpha?) {
     //insert http method later
-
   }
-  
+
+  makeaLINE() {
+    var array = this.parseNodeString("(-104.98809814453125, 39.76632525654491),(-104.9359130859375, 39.751017451967144),(-104.974365234375, 39.720919782725545)");
+    console.log(array[0][0]);
+    var myLines = {
+      "type": "FeatureCollection",
+      "features": [
+       
+        {
+          "type": "Feature",
+          "properties": {},
+          "geometry": {
+            "type": "LineString",
+            "coordinates": array
+          }
+        }
+      ]
+    }
+    L.geoJSON(myLines, {
+      style: this.myStyle
+  }).addTo(this.map);
+  }
+
 
   changeMapp(la: number, lng: number) {
     this.map.panTo(new L.LatLng(la, lng));
