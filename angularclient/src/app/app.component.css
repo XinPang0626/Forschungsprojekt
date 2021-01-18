@@ -1,16 +1,4 @@
-.toolbar{
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 60px;
-    display: flex;
-    align-items: center;
- 
-    color: white;
-    font-weight: 600;
-background-color: darkseagreen;
-}
+
 :host {
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
     font-size: 14px;
@@ -22,22 +10,58 @@ background-color: darkseagreen;
 example-spacer {
     flex: 1 1 auto;
   }
-  .example-form {
-    min-width: 150px;
-    max-width: 500px;
-    width: 100%;
-  }
   
-  .example-full-width {
-    width: 100%;
+  .sidenav {
+    height: 100%;
+    width: 200px;
+    position: fixed;
+    z-index: 1;
+    top: 0;
+    left: 0;
+    align-items: center;
+    background-color: rgb(94, 187, 164);
+    overflow-x: hidden;
+    padding-top: 20px;
   }
-  
+  .button {
+    background-color: #df428b; 
+    border: none;
+    color: white;
+    padding: 15px 32px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    width: 200px;
+    transition-duration: 0.4s;
+  }
 
-#box{
-    display: flex;  
-    flex-wrap: wrap;
-    background-color: darkseagreen;
+  .button:hover {
+    background-color: #d6eef0; /* Green */
+    color: black;
+  }
+
+
+/* Main content */
+.main {
+  margin-left: 200px; /* Same as the width of the sidenav */
+  font-size: 20px; /* Increased text to enable scrolling */
+  padding: 0px 10px;
 }
+
+/* Add an active class to the active dropdown button */
+.active {
+  background-color: green;
+  color: white;
+}
+
+
+
+#space{
+  height: 20px;
+}
+
+  
 
 #input-box {
   
