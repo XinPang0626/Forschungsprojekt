@@ -10,31 +10,29 @@ import { MapService } from './map.service';
 })
 export class AppComponent {
   title = 'angularclient';
-  nothinguploaded: boolean = false;
-  test: string = 'unchanged';
+  uploaded: boolean = false;
+  test;
   fileToUpload: File = null;
-  url:string;
-  geoJson:JSON;
-
-  readonly SpringURL = 'http://localhost:8080/';
-
+  url: string;
   posts: any;
-  constructor(private http: HttpClient, private mapservice:MapService ) { }
+  constructor(private http: HttpClient, private mapservice: MapService) { }
 
-
-  sendpath(input:string){
-    if(input.endsWith('.graph')){
+ 
+  sendpath(input: string) {
+    if (input.endsWith('.graph')) {
       console.log(input);
-    this.url=input;
-    this.mapservice.findAll(input).subscribe(data =>{
-      this.test=data;
-    })
-    this.nothinguploaded=true;
+      this.url = encodeURI(input);
+      console.log(this.url);
+      this.mapservice.getNodes(this.url).subscribe(data => {
+        this.test = data;
+        console.log(this.test);
+      })
+      this.uploaded = true;
 
-    }else{
+    } else {
       alert('this is not a valid path');
     }
-    
+
   }
 
 }
