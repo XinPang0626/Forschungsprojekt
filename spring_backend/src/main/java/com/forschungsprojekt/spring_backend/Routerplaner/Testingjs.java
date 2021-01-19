@@ -1,4 +1,4 @@
-package com.forschungsprojekt.spring_backend.Routerplaner;
+package com.forschungsprojekt.spring_backend.routerplaner;
 
 public class Testingjs {
     protected static String TestName = "success";

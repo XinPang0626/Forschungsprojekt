@@ -1,4 +1,4 @@
-package com.forschungsprojekt.spring_backend.Routerplaner;
+package com.forschungsprojekt.spring_backend.routerplaner;
 
 import java.util.Arrays;
 

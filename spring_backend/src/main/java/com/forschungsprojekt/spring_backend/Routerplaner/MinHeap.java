@@ -1,4 +1,4 @@
-package com.forschungsprojekt.spring_backend.Routerplaner;
+package com.forschungsprojekt.spring_backend.routerplaner;
 
 public class MinHeap {
 	private int size;

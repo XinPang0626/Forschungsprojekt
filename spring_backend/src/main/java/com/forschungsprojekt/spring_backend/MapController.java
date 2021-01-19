@@ -3,6 +3,8 @@ package com.forschungsprojekt.spring_backend;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 
+import com.forschungsprojekt.spring_backend.routerplaner.Graph;
+
 import org.json.JSONObject;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -23,6 +25,7 @@ public class MapController {
     public String sendCordinates(@RequestParam(name = "path") String path) {
         decodedpath = URLDecoder.decode(path, StandardCharsets.UTF_8);
         System.out.println(decodedpath);
+        Graph graph= new Graph(decodedpath);
 
         return cordinates;
     } // here to revoke algorithm and turn the result into string to be returned
