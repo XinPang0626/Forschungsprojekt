@@ -27,21 +27,13 @@ export class MapComponent implements AfterViewInit {
   defaultlng: number = -104.99404;
   cordinates: string;
   json;
-  testarray = [[-100, 40], [-105, 45],
-  [-110, 55]];//array can be formed first
+ 
   myStyle = {
     "color": "#ff7800",
     "weight": 5,
     "opacity": 0.65
   };
 
-  myLines = [{
-    "type": "LineString",
-    "coordinates": this.testarray// and added to geoJSON
-  }, {
-    "type": "LineString",
-    "coordinates": [[-105, 40], [-110, 45], [-115, 55]]
-  }];
 
   geojsonFeature = {
     "type": "FeatureCollection",
@@ -80,6 +72,8 @@ export class MapComponent implements AfterViewInit {
     ]
   }
   @Input() uploaded: boolean;//this variable receives information from appcomponent
+  url: string;
+  nodeString;
 
 
   constructor(private mapservice: MapService) { }
@@ -107,7 +101,8 @@ export class MapComponent implements AfterViewInit {
 
   makeaLINE() {
     var array = this.parseNodeString("(-104.98809814453125, 39.76632525654491),(-104.9359130859375, 39.751017451967144),(-104.974365234375, 39.720919782725545)");
-    console.log(array[0][0]);
+    console.log("(-104.98809814453125, 39.76632525654491),(-104.9359130859375, 39.751017451967144),(-104.974365234375, 39.720919782725545)");
+    //console.log(array[0][0]);
     var myLines = {
       "type": "FeatureCollection",
       "features": [
@@ -132,6 +127,23 @@ export class MapComponent implements AfterViewInit {
     this.map.panTo(new L.LatLng(la, lng));
   }
 
+  sendpath(input: string) {
+    if (input.endsWith('.graph')) {
+      console.log(input);
+      this.url = encodeURI(input);
+      console.log(this.url);
+      this.mapservice.getNodes(this.url).subscribe(data => {
+        this.nodeString = data;
+        console.log(this.nodeString);
+      })
+      this.uploaded = true;
+
+    } else {
+      alert('this is not a valid path');
+    }
+
+  }
+
 
 
   //empty method which be adding geoJson to map later
@@ -139,12 +151,17 @@ export class MapComponent implements AfterViewInit {
     if (!(this.uploaded)) {
       alert('you have to upload a file first');
       //L.marker([this.defaultla, this.defaultlng]).addTo(this.map);
-
-
-
       console.log(this.cordinates);
     } else {
       console.log('Mapping loaded');
+      var array= this.parseNodeString(this.nodeString);
+
+
+
+
+
+
+      
       L.geoJSON(this.geojsonFeature).addTo(this.map);
 
     }
