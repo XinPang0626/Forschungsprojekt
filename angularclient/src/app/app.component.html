@@ -1,19 +1,19 @@
 <div class="sidenav">
   <button class="button" (click)="appMap.makeaLINE()">test method button</button>
-  <button class="button" (click)="appMap.readGeoJson()">load Mapping</button>
   <input #input class="input-box" placeholder="enter path to file" />
-  <button class="button" (click)="sendpath(input.value)">send Path</button>
+  <button class="button" (click)="appMap.sendpath(input.value)">send Path</button>
   <div id="space"></div>
-  <button class="button" > compute Dijkstra </button>
+  <button class="button" (click)="appMap.computeDij(start.value,end.value,alpha.value)"> compute Dijkstra </button>
   <button class="button" >compute A* </button>
-  <input #start class="input-box" placeholder="start" inputmode="numeric" />
-  <input #end class="input-box" placeholder="goal" inputmode="numeric" />
-  <input #alpha class="input-box" placeholder="alpha" />
+  <input #start class="input-box" placeholder="start" type="number" />
+  <input #end class="input-box" placeholder="goal"type="number"  />
+  <div id="space">alpha</div>
+  <input #alpha class="input-box" placeholder="write in form of 0.1,0.2... " />
 </div>
 
 
 <div class="main">
-  <app-map [uploaded]="uploaded" #appMap></app-map>
+  <app-map  #appMap></app-map>
 </div>
 
 

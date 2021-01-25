@@ -27,59 +27,20 @@ export class MapComponent implements AfterViewInit {
   defaultlng: number = -104.99404;
   cordinates: string;
   json;
-  testarray = [[-100, 40], [-105, 45],
-  [-110, 55]];//array can be formed first
+  loaded: boolean = false;
   myStyle = {
     "color": "#ff7800",
     "weight": 5,
     "opacity": 0.65
   };
+  mypointStyle = {
+    "color": "#000080",
+    "weight": 5,
+    "opacity": 0.9
+  };
 
-  myLines = [{
-    "type": "LineString",
-    "coordinates": this.testarray// and added to geoJSON
-  }, {
-    "type": "LineString",
-    "coordinates": [[-105, 40], [-110, 45], [-115, 55]]
-  }];
-
-  geojsonFeature = {
-    "type": "FeatureCollection",
-    "features": [
-      {
-        "type": "Feature",
-        "properties": {},
-        "geometry": {
-          "type": "Polygon",
-          "coordinates": [
-            [
-              [
-                -105.00457763671874,
-                39.753129075575174
-              ],
-              [
-                -104.99290466308594,
-                39.720919782725545
-              ],
-              [
-                -104.95513916015625,
-                39.72303232864369
-              ],
-              [
-                -104.94621276855469,
-                39.74626606218367
-              ],
-              [
-                -105.00457763671874,
-                39.753129075575174
-              ]
-            ]
-          ]
-        }
-      }
-    ]
-  }
-  @Input() uploaded: boolean;//this variable receives information from appcomponent
+  url: string;
+  nodeString;
 
 
   constructor(private mapservice: MapService) { }
@@ -87,44 +48,86 @@ export class MapComponent implements AfterViewInit {
   ngAfterViewInit(): void {
     this.initMap();
   }
-  //string be parsed into
+  //string be parsed into nodearray
   parseNodeString(nodeString: string): number[][] {
+    nodeString=nodeString.substring(1, nodeString.length-1);
     var nodeArray: number[][] = new Array();
     var split = nodeString.split(",");
     for (let i = 0; i < split.length; i += 2) {
-
-      var lat: number = Number(split[i].substring(1, split[i].length));
-      var longt: number = Number(split[i + 1].substring(0, split[i + 1].length - 1));
-      nodeArray.push([lat, longt]);
-
+      var long: number = Number(split[i].substring(1, split[i].length));
+      var lat: number = Number(split[i + 1].substring(0, split[i + 1].length - 1));
+      nodeArray.push([long, lat]);
     }
     return nodeArray;
   }
 
-  computeDij(path: string, start: number, end: number, alpha?) {
-    //insert http method later
+  computeDij(start: number, end: number, alpha?) {
+    if (this.loaded) {
+      this.mapservice.getDijpath(this.url, start, end, alpha).subscribe(data => {
+        var dijpath = data;
+        console.log(dijpath);
+        var array = this.parseNodeString(dijpath);
+        this.makeaLINE(array);
+        console.log("dijpath loaded");
+      })
+    }else {
+      alert('load a path first')
+    }
+
+  }
+  computAstar(start: number, end: number) {
+
+    this.mapservice.getAstarpath(this.url, start, end).subscribe(data => {
+      var astar = data;
+      console.log(astar);
+      var array = this.parseNodeString(astar);
+      this.makeaLINE(array);
+      console.log("astarpath loaded");
+    })
   }
 
-  makeaLINE() {
-    var array = this.parseNodeString("(-104.98809814453125, 39.76632525654491),(-104.9359130859375, 39.751017451967144),(-104.974365234375, 39.720919782725545)");
-    console.log(array[0][0]);
+  makeDOTS(nodearray: number[][]) {
+    var long = nodearray[0][0];
+    var lat = nodearray[0][1];
+    this.changeMapp(lat, long);
+    var Points = {
+      "type": "FeatureCollection",
+      "features": [
+        {
+          "type": "Feature",
+          "properties": {},
+          "geometry": {
+            "type": "MultiPoint",
+            "coordinates": nodearray
+          }
+        }
+      ]
+    }
+    L.geoJSON(Points, {
+      style: this.mypointStyle
+    }).addTo(this.map);
+  }
+
+  makeaLINE(nodearray: number[][]) {
+    var long = nodearray[0][0];
+    var lat = nodearray[0][1];
+    this.changeMapp(lat, long);
     var myLines = {
       "type": "FeatureCollection",
       "features": [
-       
         {
           "type": "Feature",
           "properties": {},
           "geometry": {
             "type": "LineString",
-            "coordinates": array
+            "coordinates": nodearray
           }
         }
       ]
     }
     L.geoJSON(myLines, {
       style: this.myStyle
-  }).addTo(this.map);
+    }).addTo(this.map);
   }
 
 
@@ -132,21 +135,21 @@ export class MapComponent implements AfterViewInit {
     this.map.panTo(new L.LatLng(la, lng));
   }
 
-
-
-  //empty method which be adding geoJson to map later
-  readGeoJson(): void {
-    if (!(this.uploaded)) {
-      alert('you have to upload a file first');
-      //L.marker([this.defaultla, this.defaultlng]).addTo(this.map);
-
-
-
-      console.log(this.cordinates);
+  sendpath(input: string) {
+    if (input.endsWith('.graph')) {
+      console.log(input);
+      this.url = encodeURI(input);
+      console.log(this.url);
+      this.mapservice.getNodes(this.url).subscribe(data => {
+        this.nodeString = data;
+        console.log(this.nodeString);
+        var array = this.parseNodeString(this.nodeString);
+        this.makeDOTS(array);
+        console.log("markers loaded");
+        this.loaded = true;
+      })
     } else {
-      console.log('Mapping loaded');
-      L.geoJSON(this.geojsonFeature).addTo(this.map);
-
+      alert('this is not a valid path');
     }
   }
 
@@ -155,12 +158,10 @@ export class MapComponent implements AfterViewInit {
       center: [this.defaultla, this.defaultlng],
       zoom: 20
     });
-
     const tiles = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
       maxZoom: 19,
       attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
     });
-
     tiles.addTo(this.map);
   }
 
