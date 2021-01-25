@@ -99,7 +99,7 @@ public class Dijkstra {
 			shortestPathInLonLat[i][0] = graph.getLongitude(path[i]);
 			shortestPathInLonLat[i][1] = graph.getLatitude(path[i]);
 		}
-		String pathInLonLat = Arrays.toString(shortestPathInLonLat);
+		String pathInLonLat = Arrays.deepToString(shortestPathInLonLat);
 		return pathInLonLat;
 	}
 

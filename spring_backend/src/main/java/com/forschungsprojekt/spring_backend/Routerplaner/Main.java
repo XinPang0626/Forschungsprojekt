@@ -8,6 +8,8 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Scanner;
 
+import javax.swing.plaf.synth.SynthSplitPaneUI;
+
 public class Main {
 	static Graph graph;
 
@@ -50,6 +52,12 @@ public class Main {
 					Dijkstra dijk = new Dijkstra(graph, source, alpha);
 					System.out.println("shortest path between " + source + " and " + target + ": "
 							+ dijk.getCostOfShortestPathTo(target));
+							System.out.println("do you want the path as a String?(y/n)");
+					String wantPath = scanner.next();
+					if(wantPath.equals("y")){
+						String stringPath = dijk.getShortestPathInLonLat(target);
+						System.out.println(stringPath);
+					}
 
 				} else if (function.equals("2")) {
 					System.out.println("start:\t");
@@ -65,6 +73,12 @@ public class Main {
 							int target = scanner.nextInt();
 							System.out.println("the cost of the shortest path between " + start + " and " + target
 									+ ": " + dijk.getCostOfShortestPathTo(target));
+							System.out.println("do you want the path as a String?(y/n)");
+							String wantPath = scanner.next();
+							if(wantPath.equals("y")){
+								String stringPath = dijk.getShortestPathInLonLat(target);
+								System.out.println(stringPath);
+							}
 						}
 					}
 
