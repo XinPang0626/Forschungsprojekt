@@ -3,7 +3,7 @@ package com.forschungsprojekt.spring_backend;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 
-import com.forschungsprojekt.spring_backend.Routerplaner.Graph;
+import com.forschungsprojekt.spring_backend.routerplaner.Graph;
 
 import org.json.JSONObject;
 import org.springframework.web.bind.annotation.CrossOrigin;
