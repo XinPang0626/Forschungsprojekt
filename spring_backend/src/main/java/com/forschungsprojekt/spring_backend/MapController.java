@@ -2,7 +2,9 @@ package com.forschungsprojekt.spring_backend;
 
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 
+import com.forschungsprojekt.spring_backend.routerplaner.Dijkstra;
 import com.forschungsprojekt.spring_backend.routerplaner.Graph;
 
 import org.json.JSONObject;
@@ -36,9 +38,13 @@ public class MapController {
     public String sendDipath(@RequestParam(name = "path") String path, @RequestParam(name = "start") Integer start,
             @RequestParam(name = "end") Integer end,@RequestParam(name = "alpha") String alpha) {
         decodedpath = URLDecoder.decode(path, StandardCharsets.UTF_8);
-
+                
         System.out.println(decodedpath+"----- "+start);
-
+        Graph graph = new Graph(path);
+        String[] alphaStringArray = alpha.split(" ");
+        double[] doubleAlpha = Arrays.stream(alphaStringArray).mapToDouble(Double::parseDouble).toArray();
+        Dijkstra dij = new Dijkstra(graph, start, doubleAlpha);
+        cordinates = dij.getShortestPathInLonLat(end);
         return cordinates;
     }
 

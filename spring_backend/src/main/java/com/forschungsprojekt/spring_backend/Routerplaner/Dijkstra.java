@@ -15,7 +15,7 @@ public class Dijkstra {
 	 * @param start startnode
 	 * @param alpha
 	 */
-	Dijkstra(Graph graph, int start, double[] alpha){
+	public Dijkstra(Graph graph, int start, double[] alpha){
 		System.out.println("computing dijkstra...");
 		long sTime = System.currentTimeMillis();
 		this.dis = new double[graph.getNodeNr()];
@@ -64,10 +64,10 @@ public class Dijkstra {
 		
 	}
 	
-	double getCostOfShortestPathTo(int nodeID) {
+	public double getCostOfShortestPathTo(int nodeID) {
 		return this.dis[nodeID];
 	}
-	double dotProduct(double a[], double b[]) {
+	public double dotProduct(double a[], double b[]) {
 		double sum = 0;
 		for(int i = 0; i < a.length; i++) {
 			sum += a[i] * b[i];
@@ -75,7 +75,7 @@ public class Dijkstra {
 		return sum;
 	}
 
-	int[] getShortestPathTo(int target) {
+	public int[] getShortestPathTo(int target) {
 		int[] backwardPath = new int[graph.getNodeNr()];
 		for(int i = 0; i < backwardPath.length; i++) {
 			backwardPath[i] = -1;
@@ -87,7 +87,7 @@ public class Dijkstra {
 		return backwardPath;
 	}
 	
-	String getShortestPathInLonLat(int target){
+	public String getShortestPathInLonLat(int target){
 		int[] path = getShortestPathTo(target);
 		int pathLength = 0;
 		for(int i = 0; i < path.length; i++) {
