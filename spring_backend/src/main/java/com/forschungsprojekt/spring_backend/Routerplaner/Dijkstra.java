@@ -6,6 +6,8 @@ public class Dijkstra {
 	private double[] dis;
 	private int[] parent;
 	private double[] alpha;
+	private Graph graph;
+	private int start;
 	
 	/**
 	 * computes the shortest path given the parameters
@@ -19,6 +21,8 @@ public class Dijkstra {
 		this.dis = new double[graph.getNodeNr()];
 		this.parent = new int[graph.getNodeNr()];
 		this.alpha = alpha;
+		this.graph = graph;
+		this.start = start;
 		
 		for (int i = 0; i < parent.length; i++) {
 			dis[i] = Double.MAX_VALUE;
@@ -69,6 +73,34 @@ public class Dijkstra {
 			sum += a[i] * b[i];
 		}
 		return sum;
+	}
+
+	int[] getShortestPathTo(int target) {
+		int[] backwardPath = new int[graph.getNodeNr()];
+		for(int i = 0; i < backwardPath.length; i++) {
+			backwardPath[i] = -1;
+		}
+		for(int i = 0; parent[target] != start; i++) {
+			backwardPath[i] = parent[target];
+			target = parent[target];
+		}
+		return backwardPath;
+	}
+	
+	String getShortestPathInLonLat(int target){
+		int[] path = getShortestPathTo(target);
+		int pathLength = 0;
+		for(int i = 0; i < path.length; i++) {
+			if(path[i] != -1)
+				pathLength++;
+		}
+		double[][] shortestPathInLonLat = new double[pathLength][2];
+		for(int i = 0; i < pathLength; i++) {
+			shortestPathInLonLat[i][0] = graph.getLongitude(path[i]);
+			shortestPathInLonLat[i][1] = graph.getLatitude(path[i]);
+		}
+		String pathInLonLat = Arrays.toString(shortestPathInLonLat);
+		return pathInLonLat;
 	}
 
 }
