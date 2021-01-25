@@ -9,6 +9,7 @@ import { Observable } from 'rxjs';
 export class MapService {
   private cordinatesURL: string;
   private dijURL:string;
+  private astarURL:string;
    HTTPOptions:Object = {
 
     headers: new HttpHeaders({
@@ -19,21 +20,18 @@ export class MapService {
 
   constructor(private http: HttpClient) {
     this.cordinatesURL = 'http://localhost:8080/api?path=';
-    this.dijURL='http://localhost:8080/dij?';
+    this.dijURL='http://localhost:8080/dij?path=';
+    this.astarURL='http://localhost:8080/astar?path=';
   }
 
   public getNodes(path:string){
-  
-
-
     return this.http.get(this.cordinatesURL+path, this.HTTPOptions );
   }
 
-  public getDijpath(path:string, start:number, end:number): Observable<string> {
-    return this.http.get<string>(this.dijURL+path, this.HTTPOptions);
+  public getDijpath(path:string, start:number, end:number, alpha:string): Observable<string> {
+    return this.http.get<string>(this.dijURL+path+"&start="+start+"&end="+end+"&alpha="+alpha, this.HTTPOptions);
   }
   public getAstarpath(path:string, start:number, end:number): Observable<string> {
-    return this.http.get<string>(this.cordinatesURL+path, this.HTTPOptions);
-  }
+    return this.http.get<string>(this.dijURL+path+"&start="+start+"&end="+end, this.HTTPOptions);}
 
 }
