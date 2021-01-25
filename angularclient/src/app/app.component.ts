@@ -15,7 +15,4 @@ export class AppComponent {
   url: string;
   posts: any;
   constructor(private http: HttpClient, private mapservice: MapService) { }
-
- 
-
 }

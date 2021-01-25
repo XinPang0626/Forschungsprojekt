@@ -27,6 +27,7 @@ export class MapComponent implements AfterViewInit {
   defaultlng: number = -104.99404;
   cordinates: string;
   json;
+  loaded: boolean = false;
   myStyle = {
     "color": "#ff7800",
     "weight": 5,
@@ -49,23 +50,45 @@ export class MapComponent implements AfterViewInit {
   }
   //string be parsed into nodearray
   parseNodeString(nodeString: string): number[][] {
+    nodeString=nodeString.substring(1, nodeString.length-1);
     var nodeArray: number[][] = new Array();
     var split = nodeString.split(",");
     for (let i = 0; i < split.length; i += 2) {
-      var lat: number = Number(split[i].substring(1, split[i].length));
-      var longt: number = Number(split[i + 1].substring(0, split[i + 1].length - 1));
-      nodeArray.push([lat, longt]);
+      var long: number = Number(split[i].substring(1, split[i].length));
+      var lat: number = Number(split[i + 1].substring(0, split[i + 1].length - 1));
+      nodeArray.push([long, lat]);
     }
     return nodeArray;
   }
 
-  computeDij(path: string, start: number, end: number, alpha?) {
-    //insert http method later
+  computeDij(start: number, end: number, alpha?) {
+    if (this.loaded) {
+      this.mapservice.getDijpath(this.url, start, end, alpha).subscribe(data => {
+        var dijpath = data;
+        console.log(dijpath);
+        var array = this.parseNodeString(dijpath);
+        this.makeaLINE(array);
+        console.log("dijpath loaded");
+      })
+    }else {
+      alert('load a path first')
+    }
+
+  }
+  computAstar(start: number, end: number) {
+
+    this.mapservice.getAstarpath(this.url, start, end).subscribe(data => {
+      var astar = data;
+      console.log(astar);
+      var array = this.parseNodeString(astar);
+      this.makeaLINE(array);
+      console.log("astarpath loaded");
+    })
   }
 
   makeDOTS(nodearray: number[][]) {
-    var lat = nodearray[0][0];
-    var long = nodearray[0][1];
+    var long = nodearray[0][0];
+    var lat = nodearray[0][1];
     this.changeMapp(lat, long);
     var Points = {
       "type": "FeatureCollection",
@@ -86,8 +109,8 @@ export class MapComponent implements AfterViewInit {
   }
 
   makeaLINE(nodearray: number[][]) {
-    var lat = nodearray[0][0];
-    var long = nodearray[0][1];
+    var long = nodearray[0][0];
+    var lat = nodearray[0][1];
     this.changeMapp(lat, long);
     var myLines = {
       "type": "FeatureCollection",
@@ -123,6 +146,7 @@ export class MapComponent implements AfterViewInit {
         var array = this.parseNodeString(this.nodeString);
         this.makeDOTS(array);
         console.log("markers loaded");
+        this.loaded = true;
       })
     } else {
       alert('this is not a valid path');
