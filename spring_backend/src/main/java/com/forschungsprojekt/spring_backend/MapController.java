@@ -15,8 +15,8 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class MapController {
     String decodedpath;
-    // dummy string
-    String cordinates = "(12,13),(23,34)";
+    // dummy string (lat, long),(lat,long)...
+    String cordinates = "(39.76632525654491,-104.98809814453125),(39.751017451967144,-104.9359130859375),(39.720919782725545,-104.974365234375)";
 
     // here to only revoke to get the nodes back at first
     @CrossOrigin(origins = "http://localhost:4200")
