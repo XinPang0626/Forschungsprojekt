@@ -69,7 +69,7 @@ public class AStar_Standard {
 		return sum;
 	}
 	
-	int[] getShortestPathTo(int target) {
+	public int[] getShortestPathTo(int target) {
 		int[] backwardPath = new int[graph.getNodeNr()];
 		for(int i = 0; i < backwardPath.length; i++) {
 			backwardPath[i] = -1;
@@ -81,7 +81,7 @@ public class AStar_Standard {
 		return backwardPath;
 	}
 	
-	String getShortestPathInLonLat(int target){
+	public String getShortestPathInLonLat(int target){
 		int[] path = getShortestPathTo(target);
 		int pathLength = 0;
 		for(int i = 0; i < path.length; i++) {
