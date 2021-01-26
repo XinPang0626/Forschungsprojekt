@@ -6,6 +6,8 @@ public class Dijkstra {
 	private double[] dis;
 	private int[] parent;
 	private double[] alpha;
+	private Graph graph;
+	private int start;
 	
 	/**
 	 * computes the shortest path given the parameters
@@ -13,12 +15,14 @@ public class Dijkstra {
 	 * @param start startnode
 	 * @param alpha
 	 */
-	Dijkstra(Graph graph, int start, double[] alpha){
+	public Dijkstra(Graph graph, int start, double[] alpha){
 		System.out.println("computing dijkstra...");
 		long sTime = System.currentTimeMillis();
 		this.dis = new double[graph.getNodeNr()];
 		this.parent = new int[graph.getNodeNr()];
 		this.alpha = alpha;
+		this.graph = graph;
+		this.start = start;
 		
 		for (int i = 0; i < parent.length; i++) {
 			dis[i] = Double.MAX_VALUE;
@@ -60,15 +64,43 @@ public class Dijkstra {
 		
 	}
 	
-	double getCostOfShortestPathTo(int nodeID) {
+	public double getCostOfShortestPathTo(int nodeID) {
 		return this.dis[nodeID];
 	}
-	double dotProduct(double a[], double b[]) {
+	public double dotProduct(double a[], double b[]) {
 		double sum = 0;
 		for(int i = 0; i < a.length; i++) {
 			sum += a[i] * b[i];
 		}
 		return sum;
+	}
+
+	public int[] getShortestPathTo(int target) {
+		int[] backwardPath = new int[graph.getNodeNr()];
+		for(int i = 0; i < backwardPath.length; i++) {
+			backwardPath[i] = -1;
+		}
+		for(int i = 0; parent[target] != start; i++) {
+			backwardPath[i] = parent[target];
+			target = parent[target];
+		}
+		return backwardPath;
+	}
+	
+	public String getShortestPathInLonLat(int target){
+		int[] path = getShortestPathTo(target);
+		int pathLength = 0;
+		for(int i = 0; i < path.length; i++) {
+			if(path[i] != -1)
+				pathLength++;
+		}
+		double[][] shortestPathInLonLat = new double[pathLength][2];
+		for(int i = 0; i < pathLength; i++) {
+			shortestPathInLonLat[i][0] = graph.getLongitude(path[i]);
+			shortestPathInLonLat[i][1] = graph.getLatitude(path[i]);
+		}
+		String pathInLonLat = Arrays.deepToString(shortestPathInLonLat);
+		return pathInLonLat;
 	}
 
 }
