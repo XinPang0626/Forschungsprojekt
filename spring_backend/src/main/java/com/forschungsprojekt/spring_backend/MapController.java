@@ -46,6 +46,7 @@ public class MapController {
         double[] doubleAlpha = Arrays.stream(alphaStringArray).mapToDouble(Double::parseDouble).toArray();
         Dijkstra dij = new Dijkstra(graph, start, doubleAlpha);
         cordinates = dij.getShortestPathInLonLat(end);
+        System.out.println(cordinates);
         return cordinates;
     }
 
