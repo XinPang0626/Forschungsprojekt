@@ -50,29 +50,32 @@ export class MapComponent implements AfterViewInit {
   }
   //string be parsed into nodearray
   parseNodeString(nodeString: string): number[][] {
+    nodeString=nodeString.replace(/\s/g, "");
     nodeString=nodeString.substring(1, nodeString.length-1);
+    console.log(nodeString);
     var nodeArray: number[][] = new Array();
     var split = nodeString.split(",");
     for (let i = 0; i < split.length; i += 2) {
       var long: number = Number(split[i].substring(1, split[i].length));
       var lat: number = Number(split[i + 1].substring(0, split[i + 1].length - 1));
+      console.log("lat:"+lat+" long:"+long);
       nodeArray.push([long, lat]);
     }
     return nodeArray;
   }
 
   computeDij(start: number, end: number, alpha?) {
-    if (this.loaded) {
+    
       this.mapservice.getDijpath(this.url, start, end, alpha).subscribe(data => {
         var dijpath = data;
         console.log(dijpath);
         var array = this.parseNodeString(dijpath);
-        this.makeaLINE(array);
+       this.makeaLINE(array);
         console.log("dijpath loaded");
       })
-    }else {
-      alert('load a path first')
-    }
+   
+      //alert('load a path first')
+    
 
   }
   computAstar(start: number, end: number) {
