@@ -4,6 +4,7 @@ import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 
+import com.forschungsprojekt.spring_backend.routerplaner.AStar_Standard;
 import com.forschungsprojekt.spring_backend.routerplaner.Dijkstra;
 import com.forschungsprojekt.spring_backend.routerplaner.Graph;
 
@@ -52,11 +53,15 @@ public class MapController {
     @CrossOrigin(origins = "http://localhost:4200")
     @RequestMapping("/astar")
     @ResponseBody
-    public String sendAstar(@RequestParam(name = "path") String path, @RequestParam(name = "start") String start,
-            @RequestParam(name = "end") String end) {
+    public String sendAstar(@RequestParam(name = "path") String path, @RequestParam(name = "start") int start,
+            @RequestParam(name = "end") int end, @RequestParam(name = "alpha") String alpha) {
         decodedpath = URLDecoder.decode(path, StandardCharsets.UTF_8);
         System.out.println(decodedpath);
-
+        Graph graph = new Graph(path);
+        String[] alphaStringArray = alpha.split(" ");
+        double[] doubleAlpha = Arrays.stream(alphaStringArray).mapToDouble(Double::parseDouble).toArray();
+        AStar_Standard aStar = new AStar_Standard(graph, start, end, doubleAlpha);
+        cordinates = aStar.getShortestPathInLonLat(end);
         return cordinates;
     }
 
