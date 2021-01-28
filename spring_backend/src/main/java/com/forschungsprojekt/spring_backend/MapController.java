@@ -60,7 +60,7 @@ public class MapController {
         Graph graph = new Graph(path);
         String[] alphaStringArray = alpha.split(" ");
         double[] doubleAlpha = Arrays.stream(alphaStringArray).mapToDouble(Double::parseDouble).toArray();
-        AStar_Standard aStar = new AStar_Standard(graph, start, end, doubleAlpha);
+        AStar_Standard aStar = new AStar_Standard(graph, start, end, doubleAlpha, "Standard", 0);
         cordinates = aStar.getShortestPathInLonLat(end);
         return cordinates;
     }
