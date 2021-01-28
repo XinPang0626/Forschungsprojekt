@@ -4,7 +4,7 @@ import java.util.Arrays;
 
 public class AStar_Standard {
 	private Graph graph;
-	private double[] f, g;//f=g+h
+	private double[] f, g;//g: cost of past, f = cost of past + cost of future
 //	private double[] alpha;
 	private int[] parent;
 	private int start;
@@ -13,6 +13,7 @@ public class AStar_Standard {
 		this.graph = graph;
 		this.f = new double[graph.getNodeNr()];
 		this.g = new double[graph.getNodeNr()];
+		this.parent = new int[graph.getNodeNr()];
 		this.start = start;
 		//this.alpha = alpha;
 		
@@ -47,9 +48,6 @@ public class AStar_Standard {
 					}
 				}
 			}
-			
-			
-			
 			min = heap.remove();
 		}
 		
@@ -96,6 +94,12 @@ public class AStar_Standard {
 		String pathInLonLat = Arrays.deepToString(shortestPathInLonLat);
 		return pathInLonLat;
 	}
-	
-	
+	//Test
+	// public static void main(String[] args) {
+	// Graph graph = new Graph("/Users/xinpang/Desktop/Studium/5. Semester/Forschungsprojekt/graph-files/map.txt");
+	// double[] alpha = {0.5, 0.5};
+	// AStar_Standard astar = new AStar_Standard(graph, 1, 3, alpha);
+	// System.out.println(astar.getShortestPathInLonLat(3));
+	// }
 }
+
