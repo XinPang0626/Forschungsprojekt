@@ -31,7 +31,7 @@ export class MapService {
   public getDijpath(path:string, start:number, end:number, alpha:string): Observable<string> {
     return this.http.get<string>(this.dijURL+path+"&start="+start+"&end="+end+"&alpha="+alpha, this.HTTPOptions);
   }
-  public getAstarpath(path:string, start:number, end:number): Observable<string> {
-    return this.http.get<string>(this.dijURL+path+"&start="+start+"&end="+end, this.HTTPOptions);}
+  public getAstarpath(path:string, start:number, end:number, alpha:string, type:string, landmark:number): Observable<string> {
+    return this.http.get<string>(this.astarURL+path+"&start="+start+"&end="+end+"&alpha="+alpha+"&type="+type+"&landmark="+landmark, this.HTTPOptions);}
 
 }

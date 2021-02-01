@@ -23,16 +23,32 @@ L.Marker.prototype.options.icon = iconDefault;
 })
 export class MapComponent implements AfterViewInit {
   private map;
-  defaultla: number = 39.75621;
-  defaultlng: number = -104.99404;
-  cordinates: string;
-  json;
+ astartype='Standard';
+ 
+
+  startla:number;
+  startlong:number;
+  endla:number;
+  endlong:number;
+  startbutton:string='change start';
+  endbutton:string='change end';
+
+
+  startchange=false;
+  endchange=false;
+
   loaded: boolean = false;
+  myStyleDij = {
+    "color": "#f321b4",
+    "weight": 7,
+    "opacity": 0.65
+  };
   myStyle = {
     "color": "#ff7800",
     "weight": 5,
     "opacity": 0.65
   };
+
   mypointStyle = {
     "color": "#000080",
     "weight": 5,
@@ -64,27 +80,51 @@ export class MapComponent implements AfterViewInit {
     return nodeArray;
   }
 
+  havestart(){
+    if(this.startchange){
+      this.startbutton='change start';
+      this.startchange=false;
+    }else{
+      this.startbutton='save start';
+      this.startchange=true;
+    }
+  }
+  haveend(){
+    if(this.endchange){
+      this.endchange=false;
+      this.endbutton='change end';
+    }else{
+      this.endchange=true;
+      this.endbutton='save end';
+    }
+  }
+
+  radiochangeEvent(event:any){
+    this.astartype=event.target.value;
+    console.log(this.astartype);
+  }
+
   computeDij(start: number, end: number, alpha?) {
     
       this.mapservice.getDijpath(this.url, start, end, alpha).subscribe(data => {
         var dijpath = data;
         console.log(dijpath);
         var array = this.parseNodeString(dijpath);
-       this.makeaLINE(array);
+       this.makeaLINE(array, this.myStyleDij);
         console.log("dijpath loaded");
       })
    
       //alert('load a path first')
     
 
-  }
-  computAstar(start: number, end: number) {
+  } 
+  computAstar(start: number, end: number, alpha:string, landmark:number) {
 
-    this.mapservice.getAstarpath(this.url, start, end).subscribe(data => {
+    this.mapservice.getAstarpath(this.url, start, end, alpha, this.astartype, landmark).subscribe(data => {
       var astar = data;
       console.log(astar);
       var array = this.parseNodeString(astar);
-      this.makeaLINE(array);
+      this.makeaLINE(array, this.myStyle);
       console.log("astarpath loaded");
     })
   }
@@ -111,7 +151,7 @@ export class MapComponent implements AfterViewInit {
     }).addTo(this.map);
   }
 
-  makeaLINE(nodearray: number[][]) {
+  makeaLINE(nodearray: number[][], myStyle) {
     var long = nodearray[0][0];
     var lat = nodearray[0][1];
     this.changeMapp(lat, long);
@@ -129,13 +169,20 @@ export class MapComponent implements AfterViewInit {
       ]
     }
     L.geoJSON(myLines, {
-      style: this.myStyle
+      style: myStyle
     }).addTo(this.map);
   }
 
-
   changeMapp(la: number, lng: number) {
     this.map.panTo(new L.LatLng(la, lng));
+  }
+
+  onEachFeature(feature, layer): void {
+    layer.on('click', function (e) {
+      //alert(feature.properties.popupContent);
+      //or
+      alert(feature.properties.id);
+    });
   }
 
   sendpath(input: string) {
@@ -158,7 +205,7 @@ export class MapComponent implements AfterViewInit {
 
   private initMap(): void {
     this.map = L.map('map', {
-      center: [this.defaultla, this.defaultlng],
+      center: [39.75621, -104.99404],
       zoom: 20
     });
     const tiles = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -166,7 +213,30 @@ export class MapComponent implements AfterViewInit {
       attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
     });
     tiles.addTo(this.map);
+    const Coordinates = L.Control.extend({
+      onAdd: map => {
+        const container = L.DomUtil.create("div");
+        map.addEventListener("click", e => {
+          if(this.startchange){
+            this.startla=e.latlng.lat.toFixed(4);
+            this.startlong=e.latlng.lng.toFixed(4);
+          }
+          if(this.endchange){
+            this.endla=e.latlng.lat.toFixed(4);
+            this.endlong=e.latlng.lng.toFixed(4);
+          }
+          container.innerHTML = `
+          <h2>Latitude is 
+            ${e.latlng.lat.toFixed(4)} <br> and Longitude is  ${e.latlng.lng.toFixed(4)}
+            </h2>
+          `;
+        });
+        return container;
+      }
+    });
+    this.map.addControl(new Coordinates({ position: "bottomleft" }));
   }
+  
 
 
 }
