@@ -42,7 +42,7 @@ public class MapController {
         decodedpath = URLDecoder.decode(path, StandardCharsets.UTF_8);
                 
         System.out.println(decodedpath+"----- "+start);
-        Graph graph = new Graph(path);
+        Graph graph = new Graph(decodedpath);
         String[] alphaStringArray = alpha.split(" ");
         double[] doubleAlpha = Arrays.stream(alphaStringArray).mapToDouble(Double::parseDouble).toArray();
         Dijkstra dij = new Dijkstra(graph, start, doubleAlpha);
@@ -80,7 +80,7 @@ public class MapController {
         decodedpath = URLDecoder.decode(path, StandardCharsets.UTF_8);
         System.out.println(decodedpath);
         Graph graph = new Graph(decodedpath);
-        Quadtree quadtree = new Quadtree(path);
+        Quadtree quadtree = new Quadtree(decodedpath);
         String[] alphaStringArray = alpha.split(" ");
         double[] doubleAlpha = Arrays.stream(alphaStringArray).mapToDouble(Double::parseDouble).toArray();
         String[] startLatLon = start.split(",");
@@ -111,7 +111,7 @@ public class MapController {
          decodedpath = URLDecoder.decode(path, StandardCharsets.UTF_8);
          System.out.println(decodedpath);
          Graph graph = new Graph(decodedpath);
-         Quadtree quadtree = new Quadtree(path);
+         Quadtree quadtree = new Quadtree(decodedpath);
          String[] alphaStringArray = alpha.split(" ");
          double[] doubleAlpha = Arrays.stream(alphaStringArray).mapToDouble(Double::parseDouble).toArray();
          String[] startLatLon = start.split(",");
