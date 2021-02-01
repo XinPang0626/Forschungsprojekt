@@ -23,6 +23,7 @@ L.Marker.prototype.options.icon = iconDefault;
 })
 export class MapComponent implements AfterViewInit {
   private map;
+ astartype='Standard';
  
 
   startla:number;
@@ -98,6 +99,11 @@ export class MapComponent implements AfterViewInit {
     }
   }
 
+  radiochangeEvent(event:any){
+    this.astartype=event.target.value;
+    console.log(this.astartype);
+  }
+
   computeDij(start: number, end: number, alpha?) {
     
       this.mapservice.getDijpath(this.url, start, end, alpha).subscribe(data => {
@@ -112,9 +118,9 @@ export class MapComponent implements AfterViewInit {
     
 
   } 
-  computAstar(start: number, end: number, alpha:string) {
+  computAstar(start: number, end: number, alpha:string, landmark:number) {
 
-    this.mapservice.getAstarpath(this.url, start, end, alpha).subscribe(data => {
+    this.mapservice.getAstarpath(this.url, start, end, alpha, this.astartype, landmark).subscribe(data => {
       var astar = data;
       console.log(astar);
       var array = this.parseNodeString(astar);

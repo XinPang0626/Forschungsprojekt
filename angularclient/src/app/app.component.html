@@ -3,31 +3,34 @@
   <button class="button" (click)="appMap.sendpath(input.value)">send Path</button>
   <div id="space"></div>
   <button class="button" (click)="appMap.computeDij(start.value,end.value,alpha.value)"> compute Dijkstra </button>
-  <button class="button" (click)="appMap.computAstar(start.value,end.value,alpha.value)">compute A* </button>
+  <button class="button" (click)="appMap.computAstar(start.value,end.value,alpha.value ,landmark.value)">compute A*
+  </button>
   <input #start class="input-box" placeholder="start id" type="number" />
-  <input #end class="input-box" placeholder="goal id"type="number"  />
+  <input #end class="input-box" placeholder="goal id" type="number" />
   <label class="container">alpha</label>
   <input #alpha class="input-box" placeholder="write in form of 0.1,0.2... " />
+
   <fieldset>
     <label class="container">ALT
-      <input type="radio" name="check">
+      <input type="radio" name="check" value="ALT" (change)='appMap.radiochangeEvent($event)'>
       <span class="checkmark"></span>
     </label>
     <label class="container">Standard
-      <input type="radio" name="check">
+      <input type="radio" name="check" value="Standard"(change)='appMap.radiochangeEvent($event)'>
       <span class="checkmark"></span>
     </label>
-  </fieldset> 
+  </fieldset>
+  <input #landmark class="input-box" placeholder="number of landmarks" type="number" />
   <label class="text"> start: lat: {{appMap.startla}} <br>long: {{appMap.startlong}} </label>
   <button class="button" (click)="appMap.havestart()">{{appMap.startbutton}} </button>
-  <label class="text"> start: lat: {{appMap.endla}} <br>long: {{appMap.endlong}} </label>
+  <label class="text"> end: lat: {{appMap.endla}} <br>long: {{appMap.endlong}} </label>
   <button class="button" (click)="appMap.haveend()">{{appMap.endbutton}} </button>
 
 </div>
 
 
 <div class="main">
-  <app-map  #appMap></app-map>
+  <app-map #appMap></app-map>
 </div>
 
 

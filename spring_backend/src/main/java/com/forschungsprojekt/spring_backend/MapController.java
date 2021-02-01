@@ -54,7 +54,9 @@ public class MapController {
     @RequestMapping("/astar")
     @ResponseBody
     public String sendAstar(@RequestParam(name = "path") String path, @RequestParam(name = "start") int start,
-            @RequestParam(name = "end") int end, @RequestParam(name = "alpha") String alpha) {
+            @RequestParam(name = "end") int end, @RequestParam(name = "alpha") String alpha, @RequestParam(name = "type") String type,
+            @RequestParam(name = "landmark") int landmark) {
+                //type is now Standard and ALT
         decodedpath = URLDecoder.decode(path, StandardCharsets.UTF_8);
         System.out.println(decodedpath);
         Graph graph = new Graph(decodedpath);
