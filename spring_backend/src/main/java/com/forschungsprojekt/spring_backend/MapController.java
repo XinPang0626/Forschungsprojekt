@@ -83,13 +83,13 @@ public class MapController {
         Quadtree quadtree = new Quadtree(decodedpath);
         String[] alphaStringArray = alpha.split(" ");
         double[] doubleAlpha = Arrays.stream(alphaStringArray).mapToDouble(Double::parseDouble).toArray();
-        String[] startLatLon = start.split(",");
+        String[] startLatLon = start.split(", ");
         double[] doubleLatLon = Arrays.stream(startLatLon).mapToDouble(Double::parseDouble).toArray();
         double startLat = doubleLatLon[0];
         double startLon = doubleLatLon[1];
         int startPoint = quadtree.nextNeighbor(startLat, startLon);
 
-        String[] endLatLon = start.split(",");
+        String[] endLatLon = start.split(", ");
         doubleLatLon = Arrays.stream(endLatLon).mapToDouble(Double::parseDouble).toArray();
         double endLat = doubleLatLon[0];
         double endLon = doubleLatLon[1];
@@ -114,13 +114,13 @@ public class MapController {
          Quadtree quadtree = new Quadtree(decodedpath);
          String[] alphaStringArray = alpha.split(" ");
          double[] doubleAlpha = Arrays.stream(alphaStringArray).mapToDouble(Double::parseDouble).toArray();
-         String[] startLatLon = start.split(",");
+         String[] startLatLon = start.split(", ");
          double[] doubleLatLon = Arrays.stream(startLatLon).mapToDouble(Double::parseDouble).toArray();
          double startLat = doubleLatLon[0];
          double startLon = doubleLatLon[1];
          int startPoint = quadtree.nextNeighbor(startLat, startLon);
 
-         String[] endLatLon = start.split(",");
+         String[] endLatLon = start.split(", ");
          doubleLatLon = Arrays.stream(endLatLon).mapToDouble(Double::parseDouble).toArray();
          double endLat = doubleLatLon[0];
          double endLon = doubleLatLon[1];
