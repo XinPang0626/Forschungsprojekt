@@ -67,4 +67,37 @@ public class MapController {
         return cordinates;
     }
 
+
+     //will receive a string of cordinates in form of 'lat,long' 
+    @CrossOrigin(origins = "http://localhost:4200")
+    @RequestMapping("/astarcor")
+    @ResponseBody
+    public String sendAstarcor(@RequestParam(name = "path") String path, @RequestParam(name = "start") String start,
+            @RequestParam(name = "end") String end, @RequestParam(name = "alpha") String alpha, @RequestParam(name = "type") String type,
+            @RequestParam(name = "landmark") int landmark) {
+                //type is now Standard and ALT
+        decodedpath = URLDecoder.decode(path, StandardCharsets.UTF_8);
+        System.out.println(decodedpath);
+        Graph graph = new Graph(decodedpath);
+   
+        return cordinates;
+    }
+
+     //will receive a string of cordinates in form of 'lat,long' 
+     @CrossOrigin(origins = "http://localhost:4200")
+     @RequestMapping("/dijcor")
+     @ResponseBody
+     public String sendDijcor(@RequestParam(name = "path") String path, @RequestParam(name = "start") String start,
+             @RequestParam(name = "end") String end, @RequestParam(name = "alpha") String alpha) {
+                 //type is now Standard and ALT
+         decodedpath = URLDecoder.decode(path, StandardCharsets.UTF_8);
+         System.out.println(decodedpath);
+         Graph graph = new Graph(decodedpath);
+    
+         return cordinates;
+     }
+
+
+
+
 }
