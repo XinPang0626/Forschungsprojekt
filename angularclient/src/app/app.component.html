@@ -1,14 +1,28 @@
 <div class="sidenav">
-  <button class="button" (click)="appMap.makeaLINE()">test method button</button>
   <input #input class="input-box" placeholder="enter path to file" />
   <button class="button" (click)="appMap.sendpath(input.value)">send Path</button>
   <div id="space"></div>
   <button class="button" (click)="appMap.computeDij(start.value,end.value,alpha.value)"> compute Dijkstra </button>
   <button class="button" (click)="appMap.computAstar(start.value,end.value,alpha.value)">compute A* </button>
-  <input #start class="input-box" placeholder="start" type="number" />
-  <input #end class="input-box" placeholder="goal"type="number"  />
-  <div id="space">alpha</div>
+  <input #start class="input-box" placeholder="start id" type="number" />
+  <input #end class="input-box" placeholder="goal id"type="number"  />
+  <label class="container">alpha</label>
   <input #alpha class="input-box" placeholder="write in form of 0.1,0.2... " />
+  <fieldset>
+    <label class="container">ALT
+      <input type="radio" name="check">
+      <span class="checkmark"></span>
+    </label>
+    <label class="container">Standard
+      <input type="radio" name="check">
+      <span class="checkmark"></span>
+    </label>
+  </fieldset> 
+  <label class="text"> start: lat: {{appMap.startla}} <br>long: {{appMap.startlong}} </label>
+  <button class="button" (click)="appMap.havestart()">{{appMap.startbutton}} </button>
+  <label class="text"> start: lat: {{appMap.endla}} <br>long: {{appMap.endlong}} </label>
+  <button class="button" (click)="appMap.haveend()">{{appMap.endbutton}} </button>
+
 </div>
 
 
