@@ -1,4 +1,5 @@
 package com.forschungsprojekt.spring_backend.localization;
+import com.forschungsprojekt.spring_backend.routerplaner.Dijkstra;
 import com.forschungsprojekt.spring_backend.routerplaner.Graph;
 public class Quadtree {
     public static int numberOfinsertedNode = 0;
@@ -176,4 +177,18 @@ public class Quadtree {
     	double diff = Math.sqrt(lat_diff_pow_2 + lon_diff_pow_2);
 		return diff;
 	}
+	public Graph getGraph(){
+		return graph;
+	}
+
+	// public static void main(String[] args) {
+	// 	Quadtree q = new Quadtree("/Users/xinpang/Desktop/Studium/5. Semester/FP/graph-files/map.txt");
+	// 	int start = q.nextNeighbor(42.1, 53.2);
+	// 	System.out.println("start: "+start);
+	// 	int end = q.nextNeighbor(58.8, 30.2);
+	// 	System.out.println("end: "+end);
+	// 	double[] alpha = {0.5, 0.5};
+	// 	Dijkstra dij = new Dijkstra(q.getGraph(), start, alpha);
+	// 	System.out.println(dij.getShortestPathInLonLat(end));
+	// }
 }
