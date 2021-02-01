@@ -62,7 +62,7 @@ public class MapController {
         Graph graph = new Graph(decodedpath);
         String[] alphaStringArray = alpha.split(" ");
         double[] doubleAlpha = Arrays.stream(alphaStringArray).mapToDouble(Double::parseDouble).toArray();
-        AStar_Standard aStar = new AStar_Standard(graph, start, end, doubleAlpha, "Standard", 0);
+        AStar_Standard aStar = new AStar_Standard(graph, start, end, doubleAlpha, type, landmark);
         cordinates = aStar.getShortestPathInLonLat(end);
         return cordinates;
     }
