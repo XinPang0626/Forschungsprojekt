@@ -4,7 +4,7 @@
   <button class="button" (click)="appMap.sendpath(input.value)">send Path</button>
   <div id="space"></div>
   <button class="button" (click)="appMap.computeDij(start.value,end.value,alpha.value)"> compute Dijkstra </button>
-  <button class="button" >compute A* </button>
+  <button class="button" (click)="appMap.computAstar(start.value,end.value,alpha.value)">compute A* </button>
   <input #start class="input-box" placeholder="start" type="number" />
   <input #end class="input-box" placeholder="goal"type="number"  />
   <div id="space">alpha</div>

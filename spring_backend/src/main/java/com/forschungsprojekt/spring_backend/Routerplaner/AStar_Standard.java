@@ -7,12 +7,13 @@ public class AStar_Standard {
 	private double[] f, g;//f=g+h
 //	private double[] alpha;
 	private int[] parent;
-	private int start;
+	private int start; 
 	
 	public AStar_Standard(Graph graph, int start, int target, double[] alpha) {
 		this.graph = graph;
 		this.f = new double[graph.getNodeNr()];
 		this.g = new double[graph.getNodeNr()];
+		this.parent= new int[graph.getNodeNr()];
 		this.start = start;
 		//this.alpha = alpha;
 		

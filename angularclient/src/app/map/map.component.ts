@@ -77,10 +77,10 @@ export class MapComponent implements AfterViewInit {
       //alert('load a path first')
     
 
-  }
-  computAstar(start: number, end: number) {
+  } 
+  computAstar(start: number, end: number, alpha:string) {
 
-    this.mapservice.getAstarpath(this.url, start, end).subscribe(data => {
+    this.mapservice.getAstarpath(this.url, start, end, alpha).subscribe(data => {
       var astar = data;
       console.log(astar);
       var array = this.parseNodeString(astar);

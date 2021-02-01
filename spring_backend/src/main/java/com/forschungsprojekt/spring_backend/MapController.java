@@ -57,7 +57,7 @@ public class MapController {
             @RequestParam(name = "end") int end, @RequestParam(name = "alpha") String alpha) {
         decodedpath = URLDecoder.decode(path, StandardCharsets.UTF_8);
         System.out.println(decodedpath);
-        Graph graph = new Graph(path);
+        Graph graph = new Graph(decodedpath);
         String[] alphaStringArray = alpha.split(" ");
         double[] doubleAlpha = Arrays.stream(alphaStringArray).mapToDouble(Double::parseDouble).toArray();
         AStar_Standard aStar = new AStar_Standard(graph, start, end, doubleAlpha);
