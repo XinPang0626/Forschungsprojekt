@@ -123,10 +123,25 @@ example-spacer {
   height: 20px;
 }
 
+.block{
+  width: 50px;
+}
+
   
 
 #input-box {
   
     width: 200px;
   height: 20px;
+  }
+
+  .input_number{
+
+    width: 100px;
+    height: 20px;
+
+  }
+  .flex{
+    display: flex;
+  flex-direction: row;
   }
