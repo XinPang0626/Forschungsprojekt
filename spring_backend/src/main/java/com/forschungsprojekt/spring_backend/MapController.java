@@ -4,6 +4,7 @@ import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 
+import com.forschungsprojekt.spring_backend.localization.Quadtree;
 import com.forschungsprojekt.spring_backend.routerplaner.AStar_Standard;
 import com.forschungsprojekt.spring_backend.routerplaner.Dijkstra;
 import com.forschungsprojekt.spring_backend.routerplaner.Graph;
@@ -79,7 +80,24 @@ public class MapController {
         decodedpath = URLDecoder.decode(path, StandardCharsets.UTF_8);
         System.out.println(decodedpath);
         Graph graph = new Graph(decodedpath);
-   
+        Quadtree quadtree = new Quadtree(path);
+        String[] alphaStringArray = alpha.split(" ");
+        double[] doubleAlpha = Arrays.stream(alphaStringArray).mapToDouble(Double::parseDouble).toArray();
+        String[] startLatLon = start.split(",");
+        double[] doubleLatLon = Arrays.stream(startLatLon).mapToDouble(Double::parseDouble).toArray();
+        double startLat = doubleLatLon[0];
+        double startLon = doubleLatLon[1];
+        int startPoint = quadtree.nextNeighbor(startLat, startLon);
+
+        String[] endLatLon = start.split(",");
+        doubleLatLon = Arrays.stream(endLatLon).mapToDouble(Double::parseDouble).toArray();
+        double endLat = doubleLatLon[0];
+        double endLon = doubleLatLon[1];
+        int endPoint = quadtree.nextNeighbor(endLat, endLon);
+
+        AStar_Standard aStar = new AStar_Standard(graph, startPoint, endPoint, doubleAlpha, type, landmark);
+        cordinates = aStar.getShortestPathInLonLat(endPoint);
+
         return cordinates;
     }
 
@@ -93,6 +111,23 @@ public class MapController {
          decodedpath = URLDecoder.decode(path, StandardCharsets.UTF_8);
          System.out.println(decodedpath);
          Graph graph = new Graph(decodedpath);
+         Quadtree quadtree = new Quadtree(path);
+         String[] alphaStringArray = alpha.split(" ");
+         double[] doubleAlpha = Arrays.stream(alphaStringArray).mapToDouble(Double::parseDouble).toArray();
+         String[] startLatLon = start.split(",");
+         double[] doubleLatLon = Arrays.stream(startLatLon).mapToDouble(Double::parseDouble).toArray();
+         double startLat = doubleLatLon[0];
+         double startLon = doubleLatLon[1];
+         int startPoint = quadtree.nextNeighbor(startLat, startLon);
+
+         String[] endLatLon = start.split(",");
+         doubleLatLon = Arrays.stream(endLatLon).mapToDouble(Double::parseDouble).toArray();
+         double endLat = doubleLatLon[0];
+         double endLon = doubleLatLon[1];
+         int endPoint = quadtree.nextNeighbor(endLat, endLon);
+ 
+         Dijkstra dij = new Dijkstra(graph, startPoint, doubleAlpha);
+         cordinates = dij.getShortestPathInLonLat(endPoint);
     
          return cordinates;
      }
