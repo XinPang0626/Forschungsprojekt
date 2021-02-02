@@ -46,7 +46,7 @@ export class MapComponent implements AfterViewInit {
     "opacity": 0.65
   };
   myStyle = {
-    "color": "#ff7800",
+    "color": "#000080",
     "weight": 5,
     "opacity": 0.65
   };
