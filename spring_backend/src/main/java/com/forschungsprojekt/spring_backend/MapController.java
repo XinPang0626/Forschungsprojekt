@@ -79,29 +79,28 @@ public class MapController {
                 //type is now Standard and ALT
         decodedpath = URLDecoder.decode(path, StandardCharsets.UTF_8);
         System.out.println(decodedpath);
-        Graph graph = new Graph(decodedpath);
         Quadtree quadtree = new Quadtree(decodedpath);
         String[] alphaStringArray = alpha.split(" ");
         double[] doubleAlpha = Arrays.stream(alphaStringArray).mapToDouble(Double::parseDouble).toArray();
-        String[] startLatLon = start.split(", ");
-        double[] doubleLatLon = Arrays.stream(startLatLon).mapToDouble(Double::parseDouble).toArray();
-        double startLat = doubleLatLon[0];
-        double startLon = doubleLatLon[1];
+        String[] startLatLon = start.split(", ");//split the coordinate of start point
+        double[] doubleStartLatLon = Arrays.stream(startLatLon).mapToDouble(Double::parseDouble).toArray();//convert coordinate to double value
+        double startLat = doubleStartLatLon[0];
+        double startLon = doubleStartLatLon[1];
         int startPoint = quadtree.nextNeighbor(startLat, startLon);
 
-        String[] endLatLon = start.split(", ");
-        doubleLatLon = Arrays.stream(endLatLon).mapToDouble(Double::parseDouble).toArray();
-        double endLat = doubleLatLon[0];
-        double endLon = doubleLatLon[1];
+        String[] endLatLon = end.split(", ");//split the coordinate of end point
+        double[] doubleEndLatLon = Arrays.stream(endLatLon).mapToDouble(Double::parseDouble).toArray();//convert coordinate to double value
+        double endLat = doubleEndLatLon[0];
+        double endLon = doubleEndLatLon[1];
         int endPoint = quadtree.nextNeighbor(endLat, endLon);
 
-        AStar_Standard aStar = new AStar_Standard(graph, startPoint, endPoint, doubleAlpha, type, landmark);
+        AStar_Standard aStar = new AStar_Standard(quadtree.getGraph(), startPoint, endPoint, doubleAlpha, type, landmark);
         cordinates = aStar.getShortestPathInLonLat(endPoint);
 
         return cordinates;
     }
 
-     //will receive a string of cordinates in form of 'lat,long' 
+     //will receive a string of cordinates in form of 'lat, long' 
      @CrossOrigin(origins = "http://localhost:4200")
      @RequestMapping("/dijcor")
      @ResponseBody
@@ -110,23 +109,22 @@ public class MapController {
                  //type is now Standard and ALT
          decodedpath = URLDecoder.decode(path, StandardCharsets.UTF_8);
          System.out.println(decodedpath);
-         Graph graph = new Graph(decodedpath);
          Quadtree quadtree = new Quadtree(decodedpath);
          String[] alphaStringArray = alpha.split(" ");
          double[] doubleAlpha = Arrays.stream(alphaStringArray).mapToDouble(Double::parseDouble).toArray();
          String[] startLatLon = start.split(", ");
-         double[] doubleLatLon = Arrays.stream(startLatLon).mapToDouble(Double::parseDouble).toArray();
-         double startLat = doubleLatLon[0];
-         double startLon = doubleLatLon[1];
+         double[] doubleStartLatLon = Arrays.stream(startLatLon).mapToDouble(Double::parseDouble).toArray();
+         double startLat = doubleStartLatLon[0];
+         double startLon = doubleStartLatLon[1];
          int startPoint = quadtree.nextNeighbor(startLat, startLon);
 
-         String[] endLatLon = start.split(", ");
-         doubleLatLon = Arrays.stream(endLatLon).mapToDouble(Double::parseDouble).toArray();
-         double endLat = doubleLatLon[0];
-         double endLon = doubleLatLon[1];
+         String[] endLatLon = end.split(", ");
+         double[] doubleEndLatLon = Arrays.stream(endLatLon).mapToDouble(Double::parseDouble).toArray();
+         double endLat = doubleEndLatLon[0];
+         double endLon = doubleEndLatLon[1];
          int endPoint = quadtree.nextNeighbor(endLat, endLon);
  
-         Dijkstra dij = new Dijkstra(graph, startPoint, doubleAlpha);
+         Dijkstra dij = new Dijkstra(quadtree.getGraph(), startPoint, doubleAlpha);
          cordinates = dij.getShortestPathInLonLat(endPoint);
     
          return cordinates;
