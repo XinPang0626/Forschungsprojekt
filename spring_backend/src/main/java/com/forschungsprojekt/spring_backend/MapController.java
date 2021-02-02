@@ -107,7 +107,7 @@ public class MapController {
                  //type is now Standard and ALT
          decodedpath = URLDecoder.decode(path, StandardCharsets.UTF_8);
          System.out.println(decodedpath);
-         Graph graph = new Graph(decodedpath);
+        Graph graph = new Graph(decodedpath);
          Quadtree quadtree = new Quadtree(decodedpath);
          String[] alphaStringArray = alpha.split(" ");
          double[] doubleAlpha = Arrays.stream(alphaStringArray).mapToDouble(Double::parseDouble).toArray();
@@ -115,16 +115,19 @@ public class MapController {
          double[] doubleLatLon = Arrays.stream(startLatLon).mapToDouble(Double::parseDouble).toArray();
          double startLat = doubleLatLon[0];
          double startLon = doubleLatLon[1];
-         int startPoint = quadtree.nextNeighbor(startLat, startLon);
+
+        int startPoint = quadtree.nextNeighbor(startLat, startLon);
+        System.out.println(startPoint+" lat;"+startLat+" long:"+startLon);
 
          String[] endLatLon = end.split(" ");
          doubleLatLon = Arrays.stream(endLatLon).mapToDouble(Double::parseDouble).toArray();
          double endLat = doubleLatLon[0];
          double endLon = doubleLatLon[1];
+       
          int endPoint = quadtree.nextNeighbor(endLat, endLon);
- 
+             System.out.println(endPoint+" lat;"+endLat+" long:"+endLon);
          Dijkstra dij = new Dijkstra(graph, startPoint, doubleAlpha);
-         cordinates = dij.getShortestPathInLonLat(endPoint);
+        cordinates = dij.getShortestPathInLonLat(endPoint);
     
          return cordinates;
      }
