@@ -125,7 +125,7 @@ public class Quadtree {
 	}
 	
 	
-	public int nextNeighbor(double x, double y) {
+	private int nextNeighbor(double x, double y) {
 		//Stack<QuadTree> stack = new Stack<>();
 		Quadtree[] stack = new Quadtree[4];
 		int nearestNeighbor = -1;
@@ -165,14 +165,13 @@ public class Quadtree {
 				c.setRadius(dis);
 			}
         }
-        dis = Double.MAX_VALUE;
 		return nearestNeighbor;
 	}
-	// public int nextNeighbor2(double x,double y) {
-	// 	int i = nextNeighbor(x,y);
-	// 	dis = Double.MAX_VALUE;
-	// 	return i;
-	// }
+	public int nextNeighborWithReset(double x,double y) {
+		int i = nextNeighbor(x,y);
+		dis = Double.MAX_VALUE;
+		return i;
+	}
 	
 	double distance(double x1,double y1,double x2,double y2) {
 		double lat_diff_pow_2 = Math.pow(x1  - x2,  2);
@@ -184,15 +183,15 @@ public class Quadtree {
 		return graph;
 	}
 
-	public static void main(String[] args) {
-		// Quadtree q = new Quadtree("/Users/xinpang/Desktop/Studium/5. Semester/FP/graph-files/map.txt");
-		// int start = q.nextNeighbor(42.1, 53.2);
-		// System.out.println("start: "+start);
-		// int end = q.nextNeighbor(58.8, 30.2);
-		// System.out.println("end: "+end);
-		// double[] alpha = {0.5, 0.5};
-		// Dijkstra dij = new Dijkstra(q.getGraph(), start, alpha);
-		// System.out.println(dij.getShortestPathInLonLat(end));
+	// public static void main(String[] args) {
+	// 	Quadtree q = new Quadtree("/Users/xinpang/Desktop/Studium/5. Semester/FP/graph-files/map.txt");
+	// 	int start = q.nextNeighborWithReset(42.1, 53.2);
+	// 	System.out.println("start: "+start);
+	// 	int end = q.nextNeighborWithReset(58.8, 30.2);
+	// 	System.out.println("end: "+end);
+	// 	double[] alpha = {0.5, 0.5};
+	// 	Dijkstra dij = new Dijkstra(q.getGraph(), start, alpha);
+	// 	System.out.println(dij.getShortestPathInLonLat(end));
 		
-	}
+	// }
 }
