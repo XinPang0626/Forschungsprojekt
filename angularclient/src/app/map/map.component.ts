@@ -46,7 +46,7 @@ export class MapComponent implements AfterViewInit {
     "opacity": 0.65
   };
   myStyle = {
-    "color": "#ff7800",
+    "color": "#000080",
     "weight": 5,
     "opacity": 0.65
   };
@@ -122,7 +122,7 @@ export class MapComponent implements AfterViewInit {
       if (this.startla == null || this.endla == null) {
         alert("Please enter a start id and end id or chose cordinates for start and end")
       } else {
-        console.log('using cordinates to get path')
+        console.log('using cordinates to get path '+this.startcor+ ' '+ this.endcor);
         this.mapservice.getDijcorpath(this.url, this.startcor, this.endcor, alpha).subscribe(data => {
           dijpath = data;
           console.log(dijpath);
@@ -148,7 +148,7 @@ export class MapComponent implements AfterViewInit {
       if (this.startla == null || this.endla == null) {
         alert("Please enter a start id and end id or chose cordinates for start and end")
       } else {
-        console.log('using cordinates to get path')
+        console.log('using cordinates to get path '+this.startcor+ ' '+ this.endcor);
         this.mapservice.getAstarcorpath(this.url, this.startcor, this.endcor, alpha, this.astartype, landmark).subscribe(data => {
            astar = data;
           console.log(astar);
@@ -253,13 +253,13 @@ export class MapComponent implements AfterViewInit {
           if (this.startchange) {
             this.startla = e.latlng.lat.toFixed(4);
             this.startlong = e.latlng.lng.toFixed(4);
-            this.startcor=this.startla+','+this.startlong;
+            this.startcor=this.startla+' '+this.startlong;
             
           }
           if (this.endchange) {
             this.endla = e.latlng.lat.toFixed(4);
             this.endlong = e.latlng.lng.toFixed(4);
-            this.endcor=this.endla+','+this.endlong;
+            this.endcor=this.endla+' '+this.endlong;
           }
           container.innerHTML = `
           <h2>Latitude is 
