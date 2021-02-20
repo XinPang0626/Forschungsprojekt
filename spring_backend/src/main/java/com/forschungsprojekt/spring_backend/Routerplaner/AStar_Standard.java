@@ -45,7 +45,7 @@ public class AStar_Standard {
 		
 		
 		parent[start] = start;
-		g[start] = 0;
+		g[start] = 0.0;
 		if(heuristic.equals("Standard")){
 			MinHeap heap = new MinHeap(graph.getNodeNr());
 			heap.add(start, g[start] + heuristicStandard(start, target));
@@ -53,20 +53,24 @@ public class AStar_Standard {
 			double[] min = heap.remove();
 			while(min[0] != target) {
 				double[] out = graph.getOutgoingEdgesArray((int)min[0]);
-				for (int i = 0; i < out.length; i += (1+alpha.length)) {
-					double[] costVector =  Arrays.copyOfRange(out, i+1, i + 1 + alpha.length);
-					if (g[(int)min[0]] + dotProduct(alpha, costVector) < g[(int)out[i]]) {
-						g[(int)out[i]] = g[(int)min[0]] + dotProduct(alpha, costVector);
-						f[(int)out[i]] = g[(int)out[i]] + heuristicStandard((int)min[0],target);
-						parent[(int)out[i]] = (int)min[0];
-						if (heap.posInHeap[(int)out[i]] != -1) {// in heap
-							heap.decreaseKey((int)out[i], f[(int)out[i]]);
-						}else {
-							heap.add((int)out[i], f[(int)out[i]]);
+				if(out != null){
+					for (int i = 0; i < out.length; i += (1+alpha.length)) {
+						double[] costVector =  Arrays.copyOfRange(out, i+1, i + 1 + alpha.length);
+						if (g[(int)min[0]] + dotProduct(alpha, costVector) < g[(int)out[i]]) {
+							g[(int)out[i]] = g[(int)min[0]] + dotProduct(alpha, costVector);
+							f[(int)out[i]] = g[(int)out[i]] + heuristicStandard((int)min[0],target);
+							parent[(int)out[i]] = (int)min[0];
+							if (heap.posInHeap[(int)out[i]] != -1) {// in heap
+								heap.decreaseKey((int)out[i], f[(int)out[i]]);
+							}else {
+								heap.add((int)out[i], f[(int)out[i]]);
+							}
 						}
 					}
+					min = heap.remove();
+				}else{
+					min = heap.remove();
 				}
-				min = heap.remove();
 			}
 		}else if(heuristic.equals("ALT")){
 			MinHeap heap = new MinHeap(graph.getNodeNr());
@@ -75,20 +79,24 @@ public class AStar_Standard {
 			double[] min = heap.remove();
 			while(min[0] != target) {
 				double[] out = graph.getOutgoingEdgesArray((int)min[0]);
-				for (int i = 0; i < out.length; i += (1+alpha.length)) {
-					double[] costVector =  Arrays.copyOfRange(out, i+1, i + 1 + alpha.length);
-					if (g[(int)min[0]] + dotProduct(alpha, costVector) < g[(int)out[i]]) {
-						g[(int)out[i]] = g[(int)min[0]] + dotProduct(alpha, costVector);
-						f[(int)out[i]] = g[(int)out[i]] + heuristicALT((int)min[0],target);
-						parent[(int)out[i]] = (int)min[0];
-						if (heap.posInHeap[(int)out[i]] != -1) {// in heap
-							heap.decreaseKey((int)out[i], f[(int)out[i]]);
-						}else {
-							heap.add((int)out[i], f[(int)out[i]]);
+				if(out != null){
+					for (int i = 0; i < out.length; i += (1+alpha.length)) {
+						double[] costVector =  Arrays.copyOfRange(out, i+1, i + 1 + alpha.length);
+						if (g[(int)min[0]] + dotProduct(alpha, costVector) < g[(int)out[i]]) {
+							g[(int)out[i]] = g[(int)min[0]] + dotProduct(alpha, costVector);
+							f[(int)out[i]] = g[(int)out[i]] + heuristicALT((int)min[0],target);
+							parent[(int)out[i]] = (int)min[0];
+							if (heap.posInHeap[(int)out[i]] != -1) {// in heap
+								heap.decreaseKey((int)out[i], f[(int)out[i]]);
+							}else {
+								heap.add((int)out[i], f[(int)out[i]]);
+							}
 						}
 					}
+					min = heap.remove();
+				}else{
+					min = heap.remove();
 				}
-				min = heap.remove();
 			}
 		}
 		
@@ -246,11 +254,13 @@ public class AStar_Standard {
 
 	public static void main(String[] args) {
 		Graph g = new Graph("/Users/xinpang/Desktop/Studium/5. Semester/FP/graph-files/map.txt");
-		AStar_Standard aStar = new AStar_Standard(g, 23, 233, "ALT", 3, 3);
+		int start = 5487;
+		int end = 34579;
+		AStar_Standard aStar = new AStar_Standard(g, start, end, "ALT", 2, 2);
 		double[] alpha = {0.5, 0.5};
 		aStar.setAlpha(alpha);
 		aStar.compute();
-		System.out.println(aStar.getShortestPathInLonLat(233));
+		System.out.println(aStar.getShortestPathInLonLat(end));
 	}
 
 
