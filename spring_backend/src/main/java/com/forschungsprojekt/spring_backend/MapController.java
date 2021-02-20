@@ -20,6 +20,8 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class MapController {
     static Graph testgraph;
+    Graph graph;
+    Quadtree quadtree;
 
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
@@ -40,8 +42,9 @@ public class MapController {
     public String sendCordinates(@RequestParam(name = "path") String path) {
         decodedpath = URLDecoder.decode(path, StandardCharsets.UTF_8);
         System.out.println(decodedpath);
-        //Graph graph= new Graph(decodedpath);
-        return "[["+testgraph.getLongitude(0)+","+testgraph.getLatitude(0)+"]]";
+        graph= new Graph(decodedpath);
+        quadtree = new Quadtree(decodedpath);
+        return "[["+graph.getLongitude(0)+","+graph.getLatitude(0)+"]]";
     } // here to revoke algorithm and turn the result into string to be returned
 
     @CrossOrigin(origins = "http://localhost:4200")
@@ -52,7 +55,7 @@ public class MapController {
         decodedpath = URLDecoder.decode(path, StandardCharsets.UTF_8);
                 
         System.out.println(decodedpath+"----- "+start);
-        Graph graph = new Graph(decodedpath);
+        
         String[] alphaStringArray = alpha.split(" ");
         double[] doubleAlpha = Arrays.stream(alphaStringArray).mapToDouble(Double::parseDouble).toArray();
         Dijkstra dij = new Dijkstra(graph, start, doubleAlpha);
@@ -70,10 +73,11 @@ public class MapController {
                 //type is now Standard and ALT
         decodedpath = URLDecoder.decode(path, StandardCharsets.UTF_8);
         System.out.println(decodedpath);
-        Graph graph = new Graph(decodedpath);
+       
         String[] alphaStringArray = alpha.split(" ");
         double[] doubleAlpha = Arrays.stream(alphaStringArray).mapToDouble(Double::parseDouble).toArray();
        AStar_Standard aStar = new AStar_Standard(graph, start, end, type, landmark, candidate);
+       aStar.setAlpha(doubleAlpha);
         cordinates = aStar.getShortestPathInLonLat(end);
         return cordinates;
     }
@@ -89,7 +93,7 @@ public class MapController {
                 //type is now Standard and ALT
         decodedpath = URLDecoder.decode(path, StandardCharsets.UTF_8);//path decoding
         System.out.println(decodedpath);
-        Quadtree quadtree = new Quadtree(decodedpath);//Quadtree and graph initialize
+        
         String[] alphaStringArray = alpha.split(" ");//split the value of cost vector in String
         double[] doubleAlpha = Arrays.stream(alphaStringArray).mapToDouble(Double::parseDouble).toArray();//convert String value to double
         String[] startLatLon = start.split(" ");//split the coordinate of start point from user
@@ -105,6 +109,7 @@ public class MapController {
         int endPoint = quadtree.nextNeighborWithReset(endLat, endLon);//compute the coorespind point in datastructure/quadtree
 
         AStar_Standard aStar = new AStar_Standard(quadtree.getGraph(), startPoint, endPoint,type, landmark, candidate);
+        aStar.setAlpha(doubleAlpha);
         cordinates = aStar.getShortestPathInLonLat(endPoint);
 
         return cordinates;
@@ -119,7 +124,7 @@ public class MapController {
                  //type is now Standard and ALT
          decodedpath = URLDecoder.decode(path, StandardCharsets.UTF_8);
          System.out.println(decodedpath);
-         Quadtree quadtree = new Quadtree(decodedpath);
+        
          String[] alphaStringArray = alpha.split(" ");
          double[] doubleAlpha = Arrays.stream(alphaStringArray).mapToDouble(Double::parseDouble).toArray();
          String[] startLatLon = start.split(" ");
