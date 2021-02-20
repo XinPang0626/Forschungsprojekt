@@ -133,11 +133,11 @@ export class MapComponent implements AfterViewInit {
       }
     }
   }
-  computAstar(start: number, end: number, alpha: string, landmark: number) {
+  computAstar(start: number, end: number, alpha: string, landmark: number, candidate:number) {
     var astar:string;
     var array: number[][];
     if (!(start == -1 || end == -1)) {
-      this.mapservice.getAstarpath(this.url, start, end, alpha, this.astartype, landmark).subscribe(data => {
+      this.mapservice.getAstarpath(this.url, start, end, alpha, this.astartype, landmark, candidate).subscribe(data => {
          astar = data;
         console.log(astar);
          array = this.parseNodeString(astar);
@@ -149,7 +149,7 @@ export class MapComponent implements AfterViewInit {
         alert("Please enter a start id and end id or chose cordinates for start and end")
       } else {
         console.log('using cordinates to get path '+this.startcor+ ' '+ this.endcor);
-        this.mapservice.getAstarcorpath(this.url, this.startcor, this.endcor, alpha, this.astartype, landmark).subscribe(data => {
+        this.mapservice.getAstarcorpath(this.url, this.startcor, this.endcor, alpha, this.astartype, landmark, candidate).subscribe(data => {
            astar = data;
           console.log(astar);
           array = this.parseNodeString(astar);
