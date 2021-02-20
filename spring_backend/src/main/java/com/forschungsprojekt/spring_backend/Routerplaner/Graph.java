@@ -127,7 +127,7 @@ public class Graph {
 	/**
 	 * 
 	 * @param nodeID
-	 * @return Array with number of outgoing edges * 3
+	 * 
 	 */
 	double[] getOutgoingEdgesArray(int nodeID) {
 		if (nrOfOutgoingEdges[nodeID] >= 1) {
@@ -144,8 +144,22 @@ public class Graph {
 	 * @param nodeID
 	 * @return the number of outgoing edges for the node
 	 */
-	int getNumberOfOutgoingEdge(int nodeID) {
+	public int getNumberOfOutgoingEdge(int nodeID) {
 		return nrOfOutgoingEdges[nodeID];
+	}
+
+	public int getNrOFMetrik(){
+		return nrOfMetrik;
+	}
+
+	public int maxNrOfOutgoingEdges(){
+		int max = 0;
+		for(int i = 0; i < nodeNr; i++){
+			if(getNrOfOutgoingEdges(i) > max){
+				max = getNrOfOutgoingEdges(i);
+			}
+		}
+		return max;
 	}
 
 }
