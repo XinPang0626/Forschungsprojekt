@@ -38,10 +38,10 @@ export class MapService {
   public getDijcorpath(path:string, start:string, end:string, alpha:string): Observable<string> {
     return this.http.get<string>(this.dijCorURL+path+"&start="+start+"&end="+end+"&alpha="+alpha, this.HTTPOptions);
   }
-  public getAstarpath(path:string, start:number, end:number, alpha:string, type:string, landmark:number): Observable<string> {
-    return this.http.get<string>(this.astarURL+path+"&start="+start+"&end="+end+"&alpha="+alpha+"&type="+type+"&landmark="+landmark, this.HTTPOptions);}
+  public getAstarpath(path:string, start:number, end:number, alpha:string, type:string, landmark:number, candidate:number): Observable<string> {
+    return this.http.get<string>(this.astarURL+path+"&start="+start+"&end="+end+"&alpha="+alpha+"&type="+type+"&landmark="+landmark+"&candidate="+candidate, this.HTTPOptions);}
    
-  public getAstarcorpath(path:string, start:string, end:string, alpha:string, type:string, landmark:number): Observable<string> {
-    return this.http.get<string>(this.astarCorURL+path+"&start="+start+"&end="+end+"&alpha="+alpha+"&type="+type+"&landmark="+landmark, this.HTTPOptions);} 
+  public getAstarcorpath(path:string, start:string, end:string, alpha:string, type:string, landmark:number, candidate:number): Observable<string> {
+    return this.http.get<string>(this.astarCorURL+path+"&start="+start+"&end="+end+"&alpha="+alpha+"&type="+type+"&landmark="+landmark+"&candidate="+candidate, this.HTTPOptions);} 
 
 }
