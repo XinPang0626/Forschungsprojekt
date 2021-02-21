@@ -78,6 +78,7 @@ public class MapController {
         double[] doubleAlpha = Arrays.stream(alphaStringArray).mapToDouble(Double::parseDouble).toArray();
        AStar_Standard aStar = new AStar_Standard(graph, start, end, type, landmark, candidate);
        aStar.setAlpha(doubleAlpha);
+       aStar.compute();
         cordinates = aStar.getShortestPathInLonLat(end);
         return cordinates;
     }
@@ -110,6 +111,7 @@ public class MapController {
 
         AStar_Standard aStar = new AStar_Standard(quadtree.getGraph(), startPoint, endPoint,type, landmark, candidate);
         aStar.setAlpha(doubleAlpha);
+        aStar.compute();
         cordinates = aStar.getShortestPathInLonLat(endPoint);
 
         return cordinates;
