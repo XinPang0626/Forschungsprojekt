@@ -42,8 +42,6 @@ public class AStar_Standard {
 			g[i] = Double.MAX_VALUE;
 			parent[i] = -1; // no parent
 		}
-		
-		
 		parent[start] = start;
 		g[start] = 0.0;
 		if(heuristic.equals("Standard")){
@@ -58,7 +56,7 @@ public class AStar_Standard {
 						double[] costVector =  Arrays.copyOfRange(out, i+1, i + 1 + alpha.length);
 						if (g[(int)min[0]] + dotProduct(alpha, costVector) < g[(int)out[i]]) {
 							g[(int)out[i]] = g[(int)min[0]] + dotProduct(alpha, costVector);
-							f[(int)out[i]] = g[(int)out[i]] + heuristicStandard((int)min[0],target);
+							f[(int)out[i]] = g[(int)out[i]] + heuristicStandard((int)out[i],target);
 							parent[(int)out[i]] = (int)min[0];
 							if (heap.posInHeap[(int)out[i]] != -1) {// in heap
 								heap.decreaseKey((int)out[i], f[(int)out[i]]);
@@ -84,7 +82,7 @@ public class AStar_Standard {
 						double[] costVector =  Arrays.copyOfRange(out, i+1, i + 1 + alpha.length);
 						if (g[(int)min[0]] + dotProduct(alpha, costVector) < g[(int)out[i]]) {
 							g[(int)out[i]] = g[(int)min[0]] + dotProduct(alpha, costVector);
-							f[(int)out[i]] = g[(int)out[i]] + heuristicALT((int)min[0],target);
+							f[(int)out[i]] = g[(int)out[i]] + heuristicALT((int)out[i],target);
 							parent[(int)out[i]] = (int)min[0];
 							if (heap.posInHeap[(int)out[i]] != -1) {// in heap
 								heap.decreaseKey((int)out[i], f[(int)out[i]]);
@@ -128,10 +126,13 @@ public class AStar_Standard {
 		for(int i = 0; i < backwardPath.length; i++) {
 			backwardPath[i] = -1;
 		}
-		for(int i = 0; parent[target] != start; i++) {
+		backwardPath[0] = target;
+		int i;
+		for( i = 1; parent[target] != start; i++) {
 			backwardPath[i] = parent[target];
 			target = parent[target];
 		}
+		backwardPath[i] = start;
 		return backwardPath;
 	}
 	
@@ -151,10 +152,37 @@ public class AStar_Standard {
 		return pathInLonLat;
 	}
 
-	public boolean strictLessThan(double[] d1, double[] d2){//d1 is less than d2 in every component
+	public boolean strictLessThan(double[] d1, double[] d2){//d1 is less than d2 in at least one component
 		int length = d1.length;
+		boolean equal = true;
 		for (int i = 0; i < length; i++) {
 			if(d1[i] > d2[i]){
+				return false;
+			}
+			if(d1[i] != d2[i]){
+				equal = false;
+			}
+		}
+		if(equal){
+			return false;
+		}
+		return true;
+	}
+
+	private boolean strictGreaterThan(double[] d1, double[] d2){
+		boolean greater = true;
+		for (int i = 0; i < d2.length; i++) {
+			if(d1[i] < d2[i]){
+				greater = false;
+				break;
+			}
+		}
+		return greater;
+	}
+
+	private boolean vectorAreEqual(double[] v1, double[] v2){
+		for (int i = 0; i < v2.length; i++) {
+			if(v1[i] != v2[i]){
 				return false;
 			}
 		}
@@ -162,20 +190,10 @@ public class AStar_Standard {
 	}
 
 	private void updateCandidate(int landmarkNr, int nodeNr, double[] newCost){
-		for(double[] cost : landmarkDistance[landmarkNr][nodeNr]){
-			boolean isZero = true;//assume the cost is zero
-			for(double i : cost){
-				if(i != 0.0){
-					isZero = false;
-					break;
-				}
-			}
-			if(isZero){
-				cost = newCost;
-				break;
-			}
-			else if(strictLessThan(newCost, cost)){
-				cost = newCost;
+		//double[] zeroVector = new double[graph.getNrOFMetrik()];
+		for(int i = 0; i < landmarkDistance[landmarkNr][nodeNr].length; i++){
+			if(strictLessThan(newCost, landmarkDistance[landmarkNr][nodeNr][i])){
+				landmarkDistance[landmarkNr][nodeNr][i] = Arrays.copyOf(newCost, newCost.length);
 				break;
 			}
 		}
@@ -183,21 +201,59 @@ public class AStar_Standard {
 
 	private void preCalculationOfALT(){
 		landmarkDistance = new double[nrOfLandmark][graph.getNodeNr()][nrOfCandidate][graph.getNrOFMetrik()];
-		double[][][] cost = new double[graph.getNodeNr()][graph.maxNrOfOutgoingEdges()][graph.getNrOFMetrik()];
-		for(int nodeId = 0; nodeId < graph.getNodeNr(); nodeId++){
-			double[] out = graph.getOutgoingEdgesArray(nodeId);
-			if(out != null){
-				for(int i = 0; i < out.length; i += (1+graph.getNrOFMetrik())){
-					int j = 0;
-					cost[nodeId][j] = addTwoVector(cost[nodeId][j], Arrays.copyOfRange(out, i+1, i+1+graph.getNrOFMetrik())); 
-					if(isLandmark((int)out[i])){
-						updateCandidate(getLandmarkNr((int)out[i]), nodeId, cost[nodeId][j]);
+		for(int lm = 0; lm < nrOfLandmark; lm++){
+			for(int node = 0; node < graph.getNodeNr(); node++){
+				for(int candi = 0; candi < nrOfCandidate; candi++){
+					if(isLandmark(node)){
+						Arrays.fill(landmarkDistance[lm][node][candi], 0.0);
+					}else{
+						Arrays.fill(landmarkDistance[lm][node][candi], Double.MAX_VALUE);
 					}
-					j++;
+				}
+			}
+		}
+
+
+		for(int landmarkId = 0; landmarkId < nrOfLandmark; landmarkId++){
+			double[][] cost = new double[graph.getNodeNr()][graph.getNrOFMetrik()];
+			for (int i = 0; i < graph.getNodeNr(); i++) {//initialization
+				for(int j = 0; j < graph.getNrOFMetrik(); j++){
+					if(i == landmark[landmarkId]){
+						cost[i][j] = 0.0;
+					}else{
+						cost[i][j] = Double.MAX_VALUE;
+					}
+				}
+			}
+			double[][] edgeArray = graph.getEdgeArray();
+			int counter = 0;
+			for(int j = 0; j < 500; j++){
+				for(int i = 0; i < graph.getEdgeNr(); i++){
+					double[] costVector = Arrays.copyOfRange(edgeArray[i], 2, 2+graph.getNrOFMetrik());
+					if(notInfinity(cost[(int)edgeArray[i][1]])){//if endpoint has been updated
+						double[] newCost = addTwoVector(cost[(int)edgeArray[i][1]], costVector);
+						if(!strictGreaterThan(newCost, cost[(int)edgeArray[i][0]])){
+							cost[(int)edgeArray[i][0]] = Arrays.copyOf(newCost, newCost.length);
+							updateCandidate(landmarkId, (int)edgeArray[i][0], cost[(int)edgeArray[i][0]]);
+						}
+					}
+				}
+				counter++;
+				if(counter % 10000 == 0){
+					System.out.println("edge counter: "+counter + " ");//should < number of nodes
 				}
 			}
 
 		}
+	}
+
+	private boolean notInfinity(double[] cost){
+		for (int i = 0; i < cost.length; i++) {
+			if(cost[i] != Double.MAX_VALUE){
+				return true;
+			}
+		}
+		return false;
 	}
 
 	private boolean isLandmark(int nodeId){
@@ -248,19 +304,27 @@ public class AStar_Standard {
 		return lowestCost;
 	}
 	
+	public double[][] getLandmarkDistance(int landmark, int nodeId){
+		return landmarkDistance[landmark][nodeId];
+	}
 
 
 
 
 	public static void main(String[] args) {
-		Graph g = new Graph("/Users/xinpang/Desktop/Studium/5. Semester/FP/graph-files/map.txt");
-		int start = 5487;
-		int end = 34579;
-		AStar_Standard aStar = new AStar_Standard(g, start, end, "ALT", 2, 2);
+		Graph g = new Graph("/Users/xinpang/Desktop/Studium/5. Semester/FP/graph-files/bremen.txt");
+		int start = 1324;
+		int end = 2478;
+		AStar_Standard aStar = new AStar_Standard(g, start, end, "ALT", 2, 4);
 		double[] alpha = {0.5, 0.5};
 		aStar.setAlpha(alpha);
+		long sTime = System.currentTimeMillis();
 		aStar.compute();
+		long eTime = System.currentTimeMillis();
+		long time = eTime - sTime;
+		System.out.println("aStar with ALT Computation took ["+time+"] milli seconds");
 		System.out.println(aStar.getShortestPathInLonLat(end));
+		System.out.println(Arrays.deepToString(aStar.getLandmarkDistance(0,78)));
 	}
 
 

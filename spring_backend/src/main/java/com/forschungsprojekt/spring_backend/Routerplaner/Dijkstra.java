@@ -80,10 +80,13 @@ public class Dijkstra {
 		for(int i = 0; i < backwardPath.length; i++) {
 			backwardPath[i] = -1;
 		}
-		for(int i = 0; parent[target] != start; i++) {
+		backwardPath[0] = target;
+		int i;
+		for( i = 1; parent[target] != start; i++) {
 			backwardPath[i] = parent[target];
 			target = parent[target];
 		}
+		backwardPath[i] = start;
 		return backwardPath;
 	}
 	
@@ -103,4 +106,13 @@ public class Dijkstra {
 		return pathInLonLat;
 	}
 
+	public static void main(String[] args) {
+		Graph g = new Graph("/Users/xinpang/Desktop/Studium/5. Semester/FP/graph-files/bremen.txt");
+		int start = 1324;
+		int end = 2478;
+		double[] alpha = {0.5, 0.5};
+		Dijkstra dij = new Dijkstra(g, start, alpha);
+		System.out.println(dij.getShortestPathInLonLat(end));
+
+	}
 }
