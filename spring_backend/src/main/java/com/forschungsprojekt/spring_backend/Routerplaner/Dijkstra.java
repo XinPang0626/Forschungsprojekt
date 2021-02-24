@@ -46,7 +46,7 @@ public class Dijkstra {
 					if (dis[(int)min[0]] + dotProduct(alpha, costVector) < dis[(int)out[i]]) {
 						dis[(int)out[i]] = dis[(int)min[0]] + dotProduct(alpha, costVector);
 						parent[(int)out[i]] = (int)min[0];
-						if (heap.posInHeap[(int)out[i]] != -1) {// in heap
+						if (heap.getPositionInHeap((int)out[i]) != -1) {// in heap
 							heap.decreaseKey((int)out[i], dis[(int)out[i]]);
 						}else {
 							heap.add((int)out[i], dis[(int)out[i]]);
@@ -80,10 +80,13 @@ public class Dijkstra {
 		for(int i = 0; i < backwardPath.length; i++) {
 			backwardPath[i] = -1;
 		}
-		for(int i = 0; parent[target] != start; i++) {
+		backwardPath[0] = target;
+		int i;
+		for( i = 1; parent[target] != start; i++) {
 			backwardPath[i] = parent[target];
 			target = parent[target];
 		}
+		backwardPath[i] = start;
 		return backwardPath;
 	}
 	
@@ -103,4 +106,13 @@ public class Dijkstra {
 		return pathInLonLat;
 	}
 
+	public static void main(String[] args) {
+		Graph g = new Graph("/Users/xinpang/Desktop/Studium/5. Semester/FP/graph-files/bremen.txt");
+		int start = 1324;
+		int end = 2478;
+		double[] alpha = {0.5, 0.5};
+		Dijkstra dij = new Dijkstra(g, start, alpha);
+		System.out.println(dij.getShortestPathInLonLat(end));
+
+	}
 }

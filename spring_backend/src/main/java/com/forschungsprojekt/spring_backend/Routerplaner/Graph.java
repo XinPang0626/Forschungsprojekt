@@ -18,7 +18,8 @@ public class Graph {
 	private double[] latitude;
 	private double[] longitude;
 	private int[] nrOfOutgoingEdges;
-	private double[] edgeArray;
+	private double[] compressedEdgeArray;
+	private double[][] edgeArray;
 	private int[] nodeArray;// save the corrosponding edge index of edgeArray
 
 	public Graph(String path) {
@@ -47,8 +48,9 @@ public class Graph {
 			latitude = new double[nodeNr];
 			longitude = new double[nodeNr];
 			nrOfOutgoingEdges = new int[nodeNr];
-			edgeArray = new double[edgeNr * lengthOfEdgeElement];
+			compressedEdgeArray = new double[edgeNr * lengthOfEdgeElement];
 			nodeArray = new int[nodeNr];
+			edgeArray = new double[edgeNr][2 + nrOfMetrik];
 			
 			// fill nodeArray
 			for (int i = 0; i < nodeNr; i++) {// read lines of all nodes
@@ -61,7 +63,7 @@ public class Graph {
 				longitude[i] = Double.valueOf(tempString[3]);
 				nodeArray[i] = -1;
 			}
-			// fill edgeArray
+			// fill edgeArray and compressedEdgeArray
 			int index = 0;
 			int startNode = -1;
 			int newStartNode = -1;
@@ -80,11 +82,17 @@ public class Graph {
 				}
 				endNode = Integer.parseInt(tempStringArray[1]);
 				nrOfOutgoingEdges[startNode]++;//count the number of outgoing edges
-				edgeArray[index] = endNode;
+				compressedEdgeArray[index] = endNode;
 				index++;
 				
+				edgeArray[i][0] = newStartNode;
+				edgeArray[i][1] = endNode;
+				for(int j = 0; j < nrOfMetrik;j++){
+					edgeArray[i][j+2] = Double.parseDouble(tempStringArray[2 + j]);
+				}
+
 				for (int j = 0; j < nrOfMetrik; j++) {//add metric in edgearray
-					edgeArray[index] = Double.parseDouble(tempStringArray[2 + j]);
+					compressedEdgeArray[index] = Double.parseDouble(tempStringArray[2 + j]);
 					index++;
 				}
 			}
@@ -96,12 +104,16 @@ public class Graph {
 		}
 	}
 
-	double[] getEdgeArray() {
-		return edgeArray;
+	double[] getCompressedEdgeArray() {
+		return compressedEdgeArray;
 	}
 
 	int[] getNodeArray() {
 		return nodeArray;
+	}
+
+	double[][] getEdgeArray(){
+		return edgeArray;
 	}
 
 	int getNrOfOutgoingEdges(int nodeID) {
@@ -129,13 +141,24 @@ public class Graph {
 	 * @param nodeID
 	 * 
 	 */
-	double[] getOutgoingEdgesArray(int nodeID) {
+	public double[] getOutgoingEdgesArray(int nodeID) {
 		if (nrOfOutgoingEdges[nodeID] >= 1) {
 			int startIndex = nodeArray[nodeID];
 			int endIndex = getNrOfOutgoingEdges(nodeID) * lengthOfEdgeElement + startIndex;
-			return Arrays.copyOfRange(edgeArray, startIndex, endIndex);
+			return Arrays.copyOfRange(compressedEdgeArray, startIndex, endIndex);
 		}
 		return null;
+	}
+
+	public int[] getNeighbours(int nodeId){
+		int[] neighbours = new int[getNrOfOutgoingEdges(nodeId)];
+		double[] out = getOutgoingEdgesArray(nodeId);
+		for (int i = 0; i < out.length; i+=lengthOfEdgeElement) {
+			int j = 0;
+			neighbours[j] = (int)out[i];
+			j++;
+		}
+		return neighbours;
 	}
 
 	/**
