@@ -1,22 +1,24 @@
 package com.forschungsprojekt.spring_backend.routerplaner;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 
 
 public class AStar_Standard {
 	private Graph graph;
-	private double[] f, g;//g: cost of past, f = cost of past + cost of future
+	private double[] f;
+	private double[] g;//g: cost of past, f = cost of past + cost of future
 	private double[] alpha;
 	private int[] parent;
 	private int start;
 	private int target;
 	private String heuristic;
 	private int[] landmark;
-	private double[][][][] landmarkDistance;
+	private ArrayList<ArrayList<ArrayList<double[]>>> landmarkDistance;
 	private int nrOfLandmark;
-	private int nrOfCandidate;
+	private int[][] nrOfCandidate;
 	
-	public AStar_Standard(Graph graph, int start, int target,  String heuristic, int nrOfLandmark, int nrOfCandidate) {
+	public AStar_Standard(Graph graph, int start, int target,  String heuristic, int nrOfLandmark) {
 		this.graph = graph;
 		this.f = new double[graph.getNodeNr()];
 		this.g = new double[graph.getNodeNr()];
@@ -24,7 +26,7 @@ public class AStar_Standard {
 		this.start = start;
 		this.target = target;
 		this.nrOfLandmark = nrOfLandmark;
-		this.nrOfCandidate = nrOfCandidate;
+		this.nrOfCandidate = new int[nrOfLandmark][graph.getNodeNr()];//initialize with zero's
 		this.heuristic = heuristic;
 		if(heuristic.equals("ALT")){
 			this.landmark = new int[nrOfLandmark];
@@ -48,8 +50,9 @@ public class AStar_Standard {
 			MinHeap heap = new MinHeap(graph.getNodeNr());
 			heap.add(start, g[start] + heuristicStandard(start, target));
 		
-			double[] min = heap.remove();
-			while(min[0] != target) {
+			
+			while(heap.getSize() > 0) {
+				double[] min = heap.remove();
 				double[] out = graph.getOutgoingEdgesArray((int)min[0]);
 				if(out != null){
 					for (int i = 0; i < out.length; i += (1+alpha.length)) {
@@ -58,25 +61,23 @@ public class AStar_Standard {
 							g[(int)out[i]] = g[(int)min[0]] + dotProduct(alpha, costVector);
 							f[(int)out[i]] = g[(int)out[i]] + heuristicStandard((int)out[i],target);
 							parent[(int)out[i]] = (int)min[0];
-							if (heap.posInHeap[(int)out[i]] != -1) {// in heap
+							if (heap.getPositionInHeap((int)out[i]) != -1) {// in heap
 								heap.decreaseKey((int)out[i], f[(int)out[i]]);
 							}else {
 								heap.add((int)out[i], f[(int)out[i]]);
 							}
 						}
 					}
-					min = heap.remove();
-				}else{
-					min = heap.remove();
 				}
 			}
 		}else if(heuristic.equals("ALT")){
 			MinHeap heap = new MinHeap(graph.getNodeNr());
 			heap.add(start, g[start] + heuristicALT(start, target));
 		
-			double[] min = heap.remove();
-			while(min[0] != target) {
+			while(heap.getSize() > 0){
+				double[] min = heap.remove();
 				double[] out = graph.getOutgoingEdgesArray((int)min[0]);
+
 				if(out != null){
 					for (int i = 0; i < out.length; i += (1+alpha.length)) {
 						double[] costVector =  Arrays.copyOfRange(out, i+1, i + 1 + alpha.length);
@@ -84,16 +85,13 @@ public class AStar_Standard {
 							g[(int)out[i]] = g[(int)min[0]] + dotProduct(alpha, costVector);
 							f[(int)out[i]] = g[(int)out[i]] + heuristicALT((int)out[i],target);
 							parent[(int)out[i]] = (int)min[0];
-							if (heap.posInHeap[(int)out[i]] != -1) {// in heap
+							if (heap.getPositionInHeap((int)out[i]) != -1) {// in heap
 								heap.decreaseKey((int)out[i], f[(int)out[i]]);
 							}else {
 								heap.add((int)out[i], f[(int)out[i]]);
 							}
 						}
 					}
-					min = heap.remove();
-				}else{
-					min = heap.remove();
 				}
 			}
 		}
@@ -109,7 +107,7 @@ public class AStar_Standard {
 	}
 	
 	public double heuristicALT(int s, int t){
-		double h = Math.abs(lowestCostOfAllLandmarks(s, alpha) - lowestCostOfAllLandmarks(t, alpha));
+		double h = lowestCostOfAllLandmarks(s, t, alpha);
 		return h;
 	}
 	
@@ -154,27 +152,24 @@ public class AStar_Standard {
 
 	public boolean strictLessThan(double[] d1, double[] d2){//d1 is less than d2 in at least one component
 		int length = d1.length;
-		boolean equal = true;
 		for (int i = 0; i < length; i++) {
 			if(d1[i] > d2[i]){
 				return false;
 			}
-			if(d1[i] != d2[i]){
-				equal = false;
-			}
-		}
-		if(equal){
-			return false;
 		}
 		return true;
 	}
-
+	/**
+	 * check wether d1 is greater than d2 in every component 
+	 * @param d1
+	 * @param d2
+	 * @return
+	 */
 	private boolean strictGreaterThan(double[] d1, double[] d2){
 		boolean greater = true;
 		for (int i = 0; i < d2.length; i++) {
 			if(d1[i] < d2[i]){
-				greater = false;
-				break;
+				return false;
 			}
 		}
 		return greater;
@@ -189,58 +184,78 @@ public class AStar_Standard {
 		return true;
 	}
 
-	private void updateCandidate(int landmarkNr, int nodeNr, double[] newCost){
-		//double[] zeroVector = new double[graph.getNrOFMetrik()];
-		for(int i = 0; i < landmarkDistance[landmarkNr][nodeNr].length; i++){
-			if(strictLessThan(newCost, landmarkDistance[landmarkNr][nodeNr][i])){
-				landmarkDistance[landmarkNr][nodeNr][i] = Arrays.copyOf(newCost, newCost.length);
-				break;
+	private boolean updateCandidate(int landmarkNr, int nodeNr, double[] newCost){
+		boolean update = false;
+		boolean replaced = false;
+		for(int i = 0; i < landmarkDistance.get(landmarkNr).get(nodeNr).size(); i++){
+			if(strictGreaterThan(newCost, landmarkDistance.get(landmarkNr).get(nodeNr).get(i))){
+				return false;
+			}
+			if(strictLessThan(newCost, landmarkDistance.get(landmarkNr).get(nodeNr).get(i))){
+				if(replaced){
+					landmarkDistance.get(landmarkNr).get(nodeNr).remove(landmarkDistance.get(landmarkNr).get(nodeNr).get(i));
+					nrOfCandidate[landmarkNr][nodeNr]--;
+					//System.out.println("replaced");
+					update = true;
+				}else{
+					landmarkDistance.get(landmarkNr).get(nodeNr).set(i, newCost);
+					replaced = true;
+					update = true;
+					//System.out.println("seted");
+				}
 			}
 		}
+		if(!update){
+			landmarkDistance.get(landmarkNr).get(nodeNr).add(newCost);
+			nrOfCandidate[landmarkNr][nodeNr]++;
+			//System.out.println("added cost");
+			update = true;
+		}
+		return update;
 	}
 
 	private void preCalculationOfALT(){
-		landmarkDistance = new double[nrOfLandmark][graph.getNodeNr()][nrOfCandidate][graph.getNrOFMetrik()];
+		landmarkDistance = new ArrayList<ArrayList<ArrayList<double[]>>>();
+
 		for(int lm = 0; lm < nrOfLandmark; lm++){
+			ArrayList<ArrayList<double[]>> nodeList = new ArrayList<>();
 			for(int node = 0; node < graph.getNodeNr(); node++){
-				for(int candi = 0; candi < nrOfCandidate; candi++){
-					if(isLandmark(node)){
-						Arrays.fill(landmarkDistance[lm][node][candi], 0.0);
-					}else{
-						Arrays.fill(landmarkDistance[lm][node][candi], Double.MAX_VALUE);
-					}
+				ArrayList<double[]> candiList = new ArrayList<>();
+				if(isLandmark(node)){
+					double[] zero = {0.0, 0.0};
+					candiList.add(zero);
+					nodeList.add(candiList);
+					landmarkDistance.add(nodeList);
+				}else{
+					double[] infinity = {Double.MAX_VALUE, Double.MAX_VALUE};
+					candiList.add(infinity);
+					nodeList.add(candiList);
+					landmarkDistance.add(nodeList);
 				}
 			}
 		}
 
-
 		for(int landmarkId = 0; landmarkId < nrOfLandmark; landmarkId++){
-			double[][] cost = new double[graph.getNodeNr()][graph.getNrOFMetrik()];
-			for (int i = 0; i < graph.getNodeNr(); i++) {//initialization
-				for(int j = 0; j < graph.getNrOFMetrik(); j++){
-					if(i == landmark[landmarkId]){
-						cost[i][j] = 0.0;
-					}else{
-						cost[i][j] = Double.MAX_VALUE;
-					}
-				}
-			}
+			boolean[] updated = new boolean[graph.getNodeNr()];
+			updated[landmark[landmarkId]] = true;
 			double[][] edgeArray = graph.getEdgeArray();
 			int counter = 0;
-			for(int j = 0; j < 500; j++){
+			for(int j = 0; j < 100; j++){
+				boolean[] updateInNextIter = new boolean[graph.getNodeNr()];
 				for(int i = 0; i < graph.getEdgeNr(); i++){
 					double[] costVector = Arrays.copyOfRange(edgeArray[i], 2, 2+graph.getNrOFMetrik());
-					if(notInfinity(cost[(int)edgeArray[i][1]])){//if endpoint has been updated
-						double[] newCost = addTwoVector(cost[(int)edgeArray[i][1]], costVector);
-						if(!strictGreaterThan(newCost, cost[(int)edgeArray[i][0]])){
-							cost[(int)edgeArray[i][0]] = Arrays.copyOf(newCost, newCost.length);
-							updateCandidate(landmarkId, (int)edgeArray[i][0], cost[(int)edgeArray[i][0]]);
+					if(updated[(int)edgeArray[i][1]] == true){
+						for(int m = 0; m < landmarkDistance.get(landmarkId).get((int)edgeArray[i][1]).size(); m++){
+							double[] newCost = addTwoVector(landmarkDistance.get(landmarkId).get((int)edgeArray[i][1]).get(m), costVector);
+							updateInNextIter[(int)edgeArray[i][0]] = updateCandidate(landmarkId, (int)edgeArray[i][0], newCost);
 						}
 					}
 				}
+				updated = Arrays.copyOf(updateInNextIter, updateInNextIter.length);
+				updateInNextIter = new boolean[graph.getNodeNr()];
 				counter++;
-				if(counter % 10000 == 0){
-					System.out.println("edge counter: "+counter + " ");//should < number of nodes
+				if(counter % 1 == 0){
+					System.out.println("node counter: "+counter + " ");//should < number of nodes
 				}
 			}
 
@@ -284,47 +299,79 @@ public class AStar_Standard {
 		return v3;
 	}
 
-	private double lowestHeuristicFromP2ToP1(int landmark, int nodeId, double[] alpha){
-		double lowestCost = Double.MAX_VALUE;
-		for(double[] cost: landmarkDistance[landmark][nodeId]){
-			if(dotProduct(cost, alpha) < lowestCost){
-				lowestCost = dotProduct(cost, alpha);
+	private double lowestHeuristicToOneLandmark(int landmark, int nodeId1, int nodeId2, double[] alpha){
+		double lowestCost1 = Double.MAX_VALUE;
+		double lowestCost2 = Double.MAX_VALUE;
+		double lowestCost;
+		for(double[] cost: landmarkDistance.get(landmark).get(nodeId1)){
+			if(dotProduct(cost, alpha) < lowestCost1){
+				lowestCost1 = dotProduct(cost, alpha);
 			}
 		}
+		for(double[] cost : landmarkDistance.get(landmark).get(nodeId2)){
+			if(dotProduct(cost, alpha) < lowestCost2){
+				lowestCost2 = dotProduct(cost, alpha);
+			}
+		}
+		lowestCost = Math.abs(lowestCost1 - lowestCost2);
 		return lowestCost;
 	}
 
-	private double lowestCostOfAllLandmarks(int nodeId, double[] alpha){
+	private double lowestCostOfAllLandmarks(int nodeId1,int nodeId2, double[] alpha){
 		double lowestCost = Double.MAX_VALUE;
 		for(int i =0; i < landmark.length; i++){
-			if(lowestHeuristicFromP2ToP1(i, nodeId, alpha) < lowestCost){
-				lowestCost = lowestHeuristicFromP2ToP1(i, nodeId, alpha);
+			if(lowestHeuristicToOneLandmark(i, nodeId1, nodeId2, alpha) < lowestCost){
+				lowestCost = lowestHeuristicToOneLandmark(i, nodeId1, nodeId2, alpha);
 			}
 		}
 		return lowestCost;
 	}
 	
-	public double[][] getLandmarkDistance(int landmark, int nodeId){
-		return landmarkDistance[landmark][nodeId];
+	public ArrayList<double[]> getLandmarkDistance(int landmarkNr, int nodeId){
+		return landmarkDistance.get(landmarkNr).get(nodeId);
 	}
 
 
+	public int[][] getNrOfCandiMaxtrix(){
+		return nrOfCandidate;
+	}
 
 
 	public static void main(String[] args) {
 		Graph g = new Graph("/Users/xinpang/Desktop/Studium/5. Semester/FP/graph-files/bremen.txt");
 		int start = 1324;
 		int end = 2478;
-		AStar_Standard aStar = new AStar_Standard(g, start, end, "ALT", 2, 4);
+		AStar_Standard aStar = new AStar_Standard(g, start, end, "ALT", 1);
 		double[] alpha = {0.5, 0.5};
 		aStar.setAlpha(alpha);
+
+		System.out.println(Arrays.deepToString(aStar.landmarkDistance.get(0).get(aStar.landmark[0]+1).toArray()));
+
 		long sTime = System.currentTimeMillis();
 		aStar.compute();
 		long eTime = System.currentTimeMillis();
 		long time = eTime - sTime;
 		System.out.println("aStar with ALT Computation took ["+time+"] milli seconds");
 		System.out.println(aStar.getShortestPathInLonLat(end));
-		System.out.println(Arrays.deepToString(aStar.getLandmarkDistance(0,78)));
+
+		int maxNrOfCandi = 0;
+		int lmWithMaxCandi = 0;
+		int nodeWithMaxCandi = 0;
+		int[][] nrOfCandiMatrix = aStar.getNrOfCandiMaxtrix();
+		for(int i = 0; i < aStar.nrOfLandmark; i++){
+			for (int j = 0; j < g.getNodeNr(); j++) {
+				if(nrOfCandiMatrix[i][j] > maxNrOfCandi){
+					maxNrOfCandi = nrOfCandiMatrix[i][j];
+					lmWithMaxCandi = i;
+					nodeWithMaxCandi = j;
+				}
+			}
+		}
+		System.out.println("max number of candidate:");
+		System.out.println(maxNrOfCandi+1);//initialzed as 0, indicate 1
+		System.out.println("longest candidate list:");
+		System.out.println(Arrays.deepToString(aStar.landmarkDistance.get(lmWithMaxCandi).get(nodeWithMaxCandi).toArray()));
+		
 	}
 
 

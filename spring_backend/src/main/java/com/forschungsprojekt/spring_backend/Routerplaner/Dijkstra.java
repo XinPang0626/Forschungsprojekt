@@ -46,7 +46,7 @@ public class Dijkstra {
 					if (dis[(int)min[0]] + dotProduct(alpha, costVector) < dis[(int)out[i]]) {
 						dis[(int)out[i]] = dis[(int)min[0]] + dotProduct(alpha, costVector);
 						parent[(int)out[i]] = (int)min[0];
-						if (heap.posInHeap[(int)out[i]] != -1) {// in heap
+						if (heap.getPositionInHeap((int)out[i]) != -1) {// in heap
 							heap.decreaseKey((int)out[i], dis[(int)out[i]]);
 						}else {
 							heap.add((int)out[i], dis[(int)out[i]]);
