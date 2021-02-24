@@ -2,49 +2,60 @@ package com.forschungsprojekt.spring_backend.routerplaner;
 
 public class MinHeap {
 	private int size;
-	private int[] nodeId;
-	private double[] cost; // heap
-	int[] posInHeap;
-	
+	private int[] nodeIdAt;//indicate the nodeId at correspond index, equals -1 if node not in heap
+	private double[] cost; // indicate the cost of the node/given index
+	private int[] posInHeap;//indicate the heap position/index of a nodeid
+	/**
+	 * Constructor of heap with given size
+	 * @param capacity : int number, the given size
+	 */
 	MinHeap(int capacity){
-		this.size = 0;
-		this.nodeId = new int[capacity];
+		this.size = 0;//how many element in heap
+		this.nodeIdAt = new int[capacity];
 		this.cost = new double[capacity];
 		this.posInHeap = new int[capacity];
 		
 		for (int i = 0; i < capacity; i++) {
-			nodeId[i] = -1;
-			cost[i] = Integer.MAX_VALUE;
+			nodeIdAt[i] = -1;//heap is empty
+			cost[i] = Double.MAX_VALUE;
 			posInHeap[i] = -1;
 		}
 	}
-	
+	/**
+	 * Add a unseen node in the heap 
+	 * @param nodeId: int number, id of the node
+	 * @param cost: double number, cost from start point to this node
+	 */
 	void add(int nodeId, double cost) {
-		this.nodeId[size] = nodeId;
+		this.nodeIdAt[size] = nodeId;
 		this.cost[size] = cost;
 		this.posInHeap[nodeId] = size;
 		heapifyUP(size);
 		size++;
 	}
 	
+	public int getPositionInHeap(int nodeId){
+		return posInHeap[nodeId];
+	}
+
 	double[] remove() {
-		double[] min = {nodeId[0], cost[0]};
+		double[] min = {nodeIdAt[0], cost[0]};
 		
-		if (size != 1) {
-			this.posInHeap[nodeId[0]] = -1;
+		if (size != 1) {// more than 1 element in heap
+			
 			swap(0, size - 1);
-			this.nodeId[size - 1] = -1;
-			this.cost[size - 1] = Integer.MAX_VALUE;
-			this.posInHeap[nodeId[0]] = 0;
+			this.posInHeap[nodeIdAt[size - 1]] = -1;
+			this.nodeIdAt[size - 1] = -1;
+			this.cost[size - 1] = Double.MAX_VALUE;
+			size--;
+			heapifyDown(0);
+		} else {//last element in heap is removed
 			
-		} else if (size == 1) {
-			
-			this.posInHeap[nodeId[0]] = -1;
-			this.nodeId[0] = -1;
-			this.cost[0] = Integer.MAX_VALUE;
+			this.posInHeap[nodeIdAt[0]] = -1;
+			this.nodeIdAt[0] = -1;
+			this.cost[0] = Double.MAX_VALUE;
+			size--;
 		}
-		size--;
-		heapifyDown(0);
 		return min;
 	}
 
@@ -62,15 +73,18 @@ public class MinHeap {
 	}
 	
 	private void swap(int fpos, int spos) {
+		if(fpos == -1 || spos == -1){
+			System.out.println("not in heap");
+		}
 		double tmp0;
 		int tmp1;
 		// position or index of node
-		posInHeap[nodeId[fpos]] = spos;
-		posInHeap[nodeId[spos]] = fpos;
+		posInHeap[nodeIdAt[fpos]] = spos;
+		posInHeap[nodeIdAt[spos]] = fpos;
 		// swap Id
-		tmp1 = nodeId[fpos];
-		nodeId[fpos] = nodeId[spos];
-		nodeId[spos] = tmp1;
+		tmp1 = nodeIdAt[fpos];
+		nodeIdAt[fpos] = nodeIdAt[spos];
+		nodeIdAt[spos] = tmp1;
 		// swap cost
 		tmp0 = cost[fpos];
 		cost[fpos] = cost[spos];
@@ -109,7 +123,10 @@ public class MinHeap {
 	
 	public void decreaseKey(int nodeId, double newcost) {
 		int pos = this.posInHeap[nodeId];
-		if (pos != -1) {
+		if(pos == -1){
+			add(nodeId, newcost);
+		}
+		if(pos != -1){
 			cost[pos] = newcost;
 			heapifyUP(pos);
 		}

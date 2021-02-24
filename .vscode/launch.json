@@ -35,16 +35,17 @@
         },
         {
             "type": "java",
-            "name": "Launch Main",
+            "name": "Launch Dijkstra",
             "request": "launch",
-            "mainClass": "com.forschungsprojekt.spring_backend.routerplaner.Main",
+            "mainClass": "com.forschungsprojekt.spring_backend.routerplaner.Dijkstra",
             "projectName": "spring_backend"
         },
         {
             "type": "java",
-            "name": "Launch Main(1)",
+            "name": "Launch Main",
             "request": "launch",
-            "mainClass": "Backend_Dij/Routerplaner.Main"
+            "mainClass": "com.forschungsprojekt.spring_backend.routerplaner.Main",
+            "projectName": "spring_backend"
         }
     ]
 }
