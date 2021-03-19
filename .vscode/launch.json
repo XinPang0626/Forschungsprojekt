@@ -30,7 +30,8 @@
             "name": "Launch SpringBackendApplication",
             "request": "launch",
             "mainClass": "com.forschungsprojekt.spring_backend.SpringBackendApplication",
-            "projectName": "spring_backend"
+            "projectName": "spring_backend",
+            "vmArgs": "-Xmx8g"
         },
         {
             "type": "java",

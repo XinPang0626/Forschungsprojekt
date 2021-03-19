@@ -27,7 +27,7 @@ public class MapController {
         Scanner scanner = new Scanner(System.in);
         System.out.println("Enter path to File: ");
         String path = scanner.nextLine();
-        testgraph = new Graph(path);
+        //testgraph = new Graph(path);
         scanner.close();
 		SpringApplication.run(SpringBackendApplication.class, args);
 	}
@@ -71,8 +71,8 @@ public class MapController {
             @RequestParam(name = "end") int end, @RequestParam(name = "alpha") String alpha, @RequestParam(name = "type") String type,
             @RequestParam(name = "landmark") int landmark, @RequestParam(name = "candidate") int candidate) {
                 //type is now Standard and ALT
-        decodedpath = URLDecoder.decode(path, StandardCharsets.UTF_8);
-        System.out.println(decodedpath);
+        
+        System.out.println("computing A*");
        
         String[] alphaStringArray = alpha.split(" ");
         double[] doubleAlpha = Arrays.stream(alphaStringArray).mapToDouble(Double::parseDouble).toArray();
@@ -80,6 +80,7 @@ public class MapController {
        aStar.setStart(start);
        aStar.setTarget(end);
        aStar.setAlpha(doubleAlpha);
+       aStar.compute();
         cordinates = aStar.getShortestPathInLonLat(end);
         return cordinates;
     }
@@ -93,8 +94,7 @@ public class MapController {
             @RequestParam(name = "end") String end, @RequestParam(name = "alpha") String alpha, @RequestParam(name = "type") String type,
             @RequestParam(name = "landmark") int landmark, @RequestParam(name = "candidate") int candidate) {
                 //type is now Standard and ALT
-        decodedpath = URLDecoder.decode(path, StandardCharsets.UTF_8);//path decoding
-        System.out.println(decodedpath);
+                System.out.println("computing A*");
         
         String[] alphaStringArray = alpha.split(" ");//split the value of cost vector in String
         double[] doubleAlpha = Arrays.stream(alphaStringArray).mapToDouble(Double::parseDouble).toArray();//convert String value to double
@@ -114,6 +114,7 @@ public class MapController {
         aStar.setStart(startPoint);
         aStar.setTarget(endPoint);
         aStar.setAlpha(doubleAlpha);
+        aStar.compute();
         cordinates = aStar.getShortestPathInLonLat(endPoint);
 
         return cordinates;
