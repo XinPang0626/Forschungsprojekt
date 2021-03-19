@@ -30,12 +30,12 @@ export class MapComponent implements AfterViewInit {
   startlong: number;
   endla: number;
   endlong: number;
-  startcor:string;
-  endcor:string; 
+  startcor: string;
+  endcor: string;
 
-//label for button like a light switch
+  //label for button like a light switch
   startchange = false;
-  endchange = false;  
+  endchange = false;
   startbutton: string = 'change start';
   endbutton: string = 'change end';
 
@@ -111,9 +111,9 @@ export class MapComponent implements AfterViewInit {
     var array: number[][];
     if (!(start == -1 || end == -1)) {
       this.mapservice.getDijpath(start, end, alpha).subscribe(data => {
-         dijpath = data;
+        dijpath = data;
         console.log(dijpath);
-         array = this.parseNodeString(dijpath);
+        array = this.parseNodeString(dijpath);
         this.makeaLINE(array, this.myStyleDij);
         console.log("dijpath loaded");
       });
@@ -122,7 +122,7 @@ export class MapComponent implements AfterViewInit {
       if (this.startla == null || this.endla == null) {
         alert("Please enter a start id and end id or chose cordinates for start and end")
       } else {
-        console.log('using cordinates to get path '+this.startcor+ ' '+ this.endcor);
+        console.log('using cordinates to get path ' + this.startcor + ' ' + this.endcor);
         this.mapservice.getDijcorpath(this.startcor, this.endcor, alpha).subscribe(data => {
           dijpath = data;
           console.log(dijpath);
@@ -133,14 +133,23 @@ export class MapComponent implements AfterViewInit {
       }
     }
   }
-  computAstar(start: number, end: number, alpha: string, landmark: number, candidate:number) {
-    var astar:string;
+  loadASTAR(alpha: string, landmark: number, candidate: number) {
+    this.mapservice.loadAstar(alpha, this.astartype, landmark, candidate).subscribe(data => {
+      let astar = data;
+      console.log(astar);
+
+    });
+  }
+
+  computeASTARPATH(start: number, end: number) {
+    var astar: string;
     var array: number[][];
+
     if (!(start == -1 || end == -1)) {
-      this.mapservice.getAstarpath( start, end, alpha, this.astartype, landmark, candidate).subscribe(data => {
-         astar = data;
+      this.mapservice.getAstarpath(start, end).subscribe(data => {
+        astar = data;
         console.log(astar);
-         array = this.parseNodeString(astar);
+        array = this.parseNodeString(astar);
         this.makeaLINE(array, this.myStyle);
         console.log("astarpath loaded");
       });
@@ -148,9 +157,9 @@ export class MapComponent implements AfterViewInit {
       if (this.startla == null || this.endla == null) {
         alert("Please enter a start id and end id or chose cordinates for start and end")
       } else {
-        console.log('using cordinates to get path '+this.startcor+ ' '+ this.endcor);
-        this.mapservice.getAstarcorpath(this.startcor, this.endcor, alpha, this.astartype, landmark, candidate).subscribe(data => {
-           astar = data;
+        console.log('using cordinates to get path ' + this.startcor + ' ' + this.endcor);
+        this.mapservice.getAstarcorpath(this.startcor, this.endcor).subscribe(data => {
+          astar = data;
           console.log(astar);
           array = this.parseNodeString(astar);
           this.makeaLINE(array, this.myStyle);
@@ -253,13 +262,13 @@ export class MapComponent implements AfterViewInit {
           if (this.startchange) {
             this.startla = e.latlng.lat.toFixed(4);
             this.startlong = e.latlng.lng.toFixed(4);
-            this.startcor=this.startla+' '+this.startlong;
-            
+            this.startcor = this.startla + ' ' + this.startlong;
+
           }
           if (this.endchange) {
             this.endla = e.latlng.lat.toFixed(4);
             this.endlong = e.latlng.lng.toFixed(4);
-            this.endcor=this.endla+' '+this.endlong;
+            this.endcor = this.endla + ' ' + this.endlong;
           }
           container.innerHTML = `
           <h2>Latitude is 
