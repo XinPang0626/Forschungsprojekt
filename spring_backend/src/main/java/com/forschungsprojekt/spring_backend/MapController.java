@@ -50,11 +50,11 @@ public class MapController {
     @CrossOrigin(origins = "http://localhost:4200")
     @RequestMapping("/dij")
     @ResponseBody
-    public String sendDipath(@RequestParam(name = "path") String path, @RequestParam(name = "start") Integer start,
+    public String sendDipath( @RequestParam(name = "start") Integer start,
             @RequestParam(name = "end") Integer end,@RequestParam(name = "alpha") String alpha) {
-        decodedpath = URLDecoder.decode(path, StandardCharsets.UTF_8);
+        
                 
-        System.out.println(decodedpath+"----- "+start);
+        System.out.println("dijkstra start with "+start+"-"+ end);
         
         String[] alphaStringArray = alpha.split(" ");
         double[] doubleAlpha = Arrays.stream(alphaStringArray).mapToDouble(Double::parseDouble).toArray();
@@ -67,12 +67,12 @@ public class MapController {
     @CrossOrigin(origins = "http://localhost:4200")
     @RequestMapping("/astar")
     @ResponseBody
-    public String sendAstar(@RequestParam(name = "path") String path, @RequestParam(name = "start") int start,
+    public String sendAstar(@RequestParam(name = "start") int start,
             @RequestParam(name = "end") int end, @RequestParam(name = "alpha") String alpha, @RequestParam(name = "type") String type,
             @RequestParam(name = "landmark") int landmark, @RequestParam(name = "candidate") int candidate) {
                 //type is now Standard and ALT
         
-        System.out.println("computing A*");
+                System.out.println("A* "+ type+" start with "+start+"-"+ end);
        
         String[] alphaStringArray = alpha.split(" ");
         double[] doubleAlpha = Arrays.stream(alphaStringArray).mapToDouble(Double::parseDouble).toArray();
@@ -90,7 +90,7 @@ public class MapController {
     @CrossOrigin(origins = "http://localhost:4200")
     @RequestMapping("/astarcor")
     @ResponseBody
-    public String sendAstarcor(@RequestParam(name = "path") String path, @RequestParam(name = "start") String start,
+    public String sendAstarcor(@RequestParam(name = "start") String start,
             @RequestParam(name = "end") String end, @RequestParam(name = "alpha") String alpha, @RequestParam(name = "type") String type,
             @RequestParam(name = "landmark") int landmark, @RequestParam(name = "candidate") int candidate) {
                 //type is now Standard and ALT
@@ -124,11 +124,11 @@ public class MapController {
      @CrossOrigin(origins = "http://localhost:4200")
      @RequestMapping("/dijcor")
      @ResponseBody
-     public String sendDijcor(@RequestParam(name = "path") String path, @RequestParam(name = "start") String start,
+     public String sendDijcor( @RequestParam(name = "start") String start,
              @RequestParam(name = "end") String end, @RequestParam(name = "alpha") String alpha) {
-                 //type is now Standard and ALT
-         decodedpath = URLDecoder.decode(path, StandardCharsets.UTF_8);
-         System.out.println(decodedpath);
+        
+                System.out.println("dijkstra cordinates start with "+start+"-"+ end);
+        
         
          String[] alphaStringArray = alpha.split(" ");
          double[] doubleAlpha = Arrays.stream(alphaStringArray).mapToDouble(Double::parseDouble).toArray();
