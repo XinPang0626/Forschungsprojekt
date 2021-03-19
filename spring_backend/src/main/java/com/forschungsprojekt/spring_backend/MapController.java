@@ -76,7 +76,9 @@ public class MapController {
        
         String[] alphaStringArray = alpha.split(" ");
         double[] doubleAlpha = Arrays.stream(alphaStringArray).mapToDouble(Double::parseDouble).toArray();
-       AStar_Standard aStar = new AStar_Standard(graph, start, end, type, candidate);
+       AStar_Standard aStar = new AStar_Standard(graph, type, candidate);
+       aStar.setStart(start);
+       aStar.setTarget(end);
        aStar.setAlpha(doubleAlpha);
         cordinates = aStar.getShortestPathInLonLat(end);
         return cordinates;
@@ -108,7 +110,9 @@ public class MapController {
         double endLon = doubleEndLatLon[1];//get the longtitud of end point in double
         int endPoint = quadtree.nextNeighborWithReset(endLat, endLon);//compute the coorespind point in datastructure/quadtree
 
-        AStar_Standard aStar = new AStar_Standard(quadtree.getGraph(), startPoint, endPoint,type, candidate);
+        AStar_Standard aStar = new AStar_Standard(quadtree.getGraph(),type, candidate);
+        aStar.setStart(startPoint);
+        aStar.setTarget(endPoint);
         aStar.setAlpha(doubleAlpha);
         cordinates = aStar.getShortestPathInLonLat(endPoint);
 

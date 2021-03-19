@@ -17,26 +17,38 @@ public class AStar_Standard {
 	private ArrayList<ArrayList<ArrayList<double[]>>> landmarkDistance;
 	private int nrOfLandmark;
 	private int[][] nrOfCandidate;
+	private CHFilter filter;
 	
-	public AStar_Standard(Graph graph, int start, int target,  String heuristic, int nrOfLandmark) {
+	public AStar_Standard(Graph graph, String heuristic, int nrOfLandmark) {
 		this.graph = graph;
 		this.f = new double[graph.getNodeNr()];
 		this.g = new double[graph.getNodeNr()];
 		this.parent = new int[graph.getNodeNr()];
-		this.start = start;
-		this.target = target;
 		this.nrOfLandmark = nrOfLandmark;
 		this.nrOfCandidate = new int[nrOfLandmark][graph.getNodeNr()];//initialize with zero's
 		this.heuristic = heuristic;
+		this.filter = new CHFilter(graph.getNrOFMetrik());
 		if(heuristic.equals("ALT")){
 			this.landmark = new int[nrOfLandmark];
 			for(int i = 0; i < landmark.length; i++){
 				landmark[i] = (int)Math.round(Math.random()*graph.getNodeNr());
 			}
 			//pre-calculation of ALT
+			long sTime = System.currentTimeMillis();
 			preCalculationOfALT();
-			System.out.println("precalculation complete.");
+			long eTime = System.currentTimeMillis();
+			long time = eTime - sTime;
+			time = time / 60000;
+			System.out.println("precalculation complete in ["+ time + "] mins.");
 		}
+	}
+
+	public void setStart(int startId){
+		this.start = startId;
+	}
+
+	public void setTarget(int targetId){
+		this.target = targetId;
 	}
 
 	public void compute(){
@@ -214,7 +226,7 @@ public class AStar_Standard {
 		return update;
 	}
 
-	private void preCalculationOfALT(){
+	public void preCalculationOfALT(){
 		landmarkDistance = new ArrayList<ArrayList<ArrayList<double[]>>>();
 
 		for(int lm = 0; lm < nrOfLandmark; lm++){
@@ -240,7 +252,7 @@ public class AStar_Standard {
 			updated[landmark[landmarkId]] = true;
 			double[][] edgeArray = graph.getEdgeArray();
 			int counter = 0;
-			for(int j = 0; j < 100; j++){
+			for(int j = 0; j < graph.getNodeNr(); j++){
 				boolean[] updateInNextIter = new boolean[graph.getNodeNr()];
 				for(int i = 0; i < graph.getEdgeNr(); i++){
 					double[] costVector = Arrays.copyOfRange(edgeArray[i], 2, 2+graph.getNrOFMetrik());
@@ -339,9 +351,11 @@ public class AStar_Standard {
 
 	public static void main(String[] args) {
 		Graph g = new Graph("/Users/xinpang/Desktop/Studium/5. Semester/FP/graph-files/bremen.txt");
-		int start = 1324;
-		int end = 2478;
-		AStar_Standard aStar = new AStar_Standard(g, start, end, "ALT", 1);
+		int start = 23489;
+		int end = 567;
+		AStar_Standard aStar = new AStar_Standard(g, "ALT", 1);
+		aStar.setStart(start);
+		aStar.setTarget(end);
 		double[] alpha = {0.5, 0.5};
 		aStar.setAlpha(alpha);
 
