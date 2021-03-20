@@ -66,23 +66,22 @@ public class MapController {
 
     /**
      * TODO load the first pre-calculation of A* 
-     *  note: start and end parameter sind noch vorhanden  aber kann später entfernt werden
+     * 
      */
     @CrossOrigin(origins = "http://localhost:4200")
     @RequestMapping("/astarload")
     @ResponseBody
-    public String sendAstar(@RequestParam(name = "start") int start, @RequestParam(name = "end") int end,
-            @RequestParam(name = "alpha") String alpha, @RequestParam(name = "type") String type,
+    public String sendAstar(  @RequestParam(name = "alpha") String alpha, @RequestParam(name = "type") String type,
             @RequestParam(name = "landmark") int landmark, @RequestParam(name = "candidate") int candidate) {
         // type is now Standard and ALT
         
 
         String[] alphaStringArray = alpha.split(" ");
         double[] doubleAlpha = Arrays.stream(alphaStringArray).mapToDouble(Double::parseDouble).toArray();
-        AStar_Standard aStar = new AStar_Standard(graph, start, end, type, candidate);
-        aStar.setAlpha(doubleAlpha);
-        aStar.compute();
-        cordinates = aStar.getShortestPathInLonLat(end);
+     //   AStar_Standard aStar = new AStar_Standard(graph, start, end, type, candidate);
+     //   aStar.setAlpha(doubleAlpha);
+     //   aStar.compute();
+      //  cordinates = aStar.getShortestPathInLonLat(end);
               //instead of cordinates, one can return a status text for the precalculation being done
         return cordinates;
     }
@@ -115,11 +114,13 @@ public class MapController {
     @CrossOrigin(origins = "http://localhost:4200")
     @RequestMapping("/astarcor")
     @ResponseBody
-    public String sendAstarcor(@RequestParam(name = "start") String start, @RequestParam(name = "end") String end,
-            @RequestParam(name = "alpha") String alpha, @RequestParam(name = "type") String type,
-            @RequestParam(name = "landmark") int landmark, @RequestParam(name = "candidate") int candidate) {
+    public String sendAstarcor(@RequestParam(name = "start") String start, @RequestParam(name = "end") String end) {
         // type is now Standard and ALT
         System.out.println("computing A*");
+
+        /**
+         * 
+        
 
         String[] alphaStringArray = alpha.split(" ");// split the value of cost vector in String
         double[] doubleAlpha = Arrays.stream(alphaStringArray).mapToDouble(Double::parseDouble).toArray();// convert String value to double
@@ -135,10 +136,12 @@ public class MapController {
         double endLon = doubleEndLatLon[1];// get the longtitud of end point in double
         int endPoint = quadtree.nextNeighborWithReset(endLat, endLon);// compute the coorespind point in atastructure/quadtree
 
-        AStar_Standard aStar = new AStar_Standard(quadtree.getGraph(), startPoint, endPoint, type, candidate);
+       AStar_Standard aStar = new AStar_Standard(quadtree.getGraph(), startPoint, endPoint, type, candidate);
         aStar.setAlpha(doubleAlpha);
         aStar.compute();
-        cordinates = aStar.getShortestPathInLonLat(endPoint);
+        cordinates = aStar.getShortestPathInLonLat(endPoint); 
+        
+        */
 
         return cordinates;
     }
