@@ -32,8 +32,14 @@ export class MapComponent implements AfterViewInit {
   endlong: number;
   startcor: string;
   endcor: string;
+  
+  //geoJSON layer
+  geoJsonLayer;
+  geoJSONdataLine;
+  geoJSONdataStart;
+  geoJSONdataEnd;
 
-  //label for button like a light switch
+  //label for button 
   startchange = false;
   endchange = false;
   startbutton: string = 'change start';
@@ -45,17 +51,13 @@ export class MapComponent implements AfterViewInit {
     "weight": 7,
     "opacity": 0.65
   };
-  myStyle = {
+  myStyleAstar = {
     "color": "#000080",
     "weight": 5,
     "opacity": 0.65
   };
 
-  mypointStyle = {
-    "color": "#000080",
-    "weight": 5,
-    "opacity": 0.9
-  };
+  
 
   url: string;
   nodeString;
@@ -127,17 +129,17 @@ export class MapComponent implements AfterViewInit {
           dijpath = data;
           console.log(dijpath);
           array = this.parseNodeString(dijpath);
-          this.makeaLINE(array, this.myStyle);
+          this.makeaLINE(array, this.myStyleDij);
           console.log("dijpath loaded");
         });
       }
     }
   }
+
   loadASTAR(alpha: string, landmark: number, candidate: number) {
     this.mapservice.loadAstar(alpha, this.astartype, landmark, candidate).subscribe(data => {
       let astar = data;
       console.log(astar);
-
     });
   }
 
@@ -145,12 +147,12 @@ export class MapComponent implements AfterViewInit {
     var astar: string;
     var array: number[][];
 
-    if (!(start == -1 || end == -1)) {
+    if (!(start == -1 || end == -1) && this.loaded) {
       this.mapservice.getAstarpath(start, end).subscribe(data => {
         astar = data;
         console.log(astar);
         array = this.parseNodeString(astar);
-        this.makeaLINE(array, this.myStyle);
+        this.makeaLINE(array, this.myStyleAstar);
         console.log("astarpath loaded");
       });
     } else {
@@ -162,7 +164,7 @@ export class MapComponent implements AfterViewInit {
           astar = data;
           console.log(astar);
           array = this.parseNodeString(astar);
-          this.makeaLINE(array, this.myStyle);
+          this.makeaLINE(array, this.myStyleAstar);
           console.log("astarpath loaded");
         });
       }
@@ -171,32 +173,25 @@ export class MapComponent implements AfterViewInit {
 
   }
 
-  makeDOTS(nodearray: number[][]) {
-    var long = nodearray[0][0];
-    var lat = nodearray[0][1];
-    this.changeMapp(lat, long);
-    var Points = {
-      "type": "FeatureCollection",
-      "features": [
-        {
-          "type": "Feature",
-          "properties": {},
-          "geometry": {
-            "type": "MultiPoint",
-            "coordinates": nodearray
-          }
-        }
-      ]
-    }
-    L.geoJSON(Points, {
-      style: this.mypointStyle
-    }).addTo(this.map);
-  }
+ 
 
   makeaLINE(nodearray: number[][], myStyle) {
-    var long = nodearray[0][0];
-    var lat = nodearray[0][1];
-    this.changeMapp(lat, long);
+    //remove previous line on map
+    this.geoJsonLayer.removeLayer(this.geoJSONdataLine);
+    this.geoJsonLayer.removeLayer(this.geoJSONdataEnd);
+    this.geoJsonLayer.removeLayer(this.geoJSONdataStart);
+    var mypointStylestart = {
+      radius: 10,
+      fillColor: "#6BBA29",
+      color: "#A9EC71",
+    };
+    var mypointStylesend = {
+      radius: 10,
+      fillColor: "#FF5733",
+      color: "#C70039",
+    };
+
+    this.changeMapp(nodearray[0][1],  nodearray[0][0]);
     var myLines = {
       "type": "FeatureCollection",
       "features": [
@@ -210,21 +205,53 @@ export class MapComponent implements AfterViewInit {
         }
       ]
     }
-    L.geoJSON(myLines, {
-      style: myStyle
-    }).addTo(this.map);
+    var Pointstart = {
+      "type": "FeatureCollection",
+      "features": [
+        {
+          "type": "Feature",
+          "properties": {},
+          "geometry": {
+            "type": "Point",
+            "coordinates": [nodearray[0][0], nodearray[0][1]]
+          }
+        }
+      ]
+    }
+    var Pointend = {
+      "type": "FeatureCollection",
+      "features": [
+        {
+          "type": "Feature",
+          "properties": {},
+          "geometry": {
+            "type": "Point",
+            "coordinates": [nodearray[nodearray.length-1][0], nodearray[nodearray.length-1][1]]
+          }
+        }
+      ]
+    }
+
+    this.geoJSONdataLine= L.geoJSON(myLines, {style: myStyle  }).addTo(this.map);
+    this.geoJSONdataEnd=L.geoJSON(Pointend, {
+      pointToLayer: function (feature, latlng) {
+          return L.circleMarker(latlng, mypointStylesend);
+      }
+  }).addTo(this.map);
+    this.geoJSONdataStart=L.geoJSON(Pointstart, {
+      pointToLayer: function (feature, latlng) {
+          return L.circleMarker(latlng, mypointStylestart);
+      }
+  }).addTo(this.map);
+
+    this.geoJsonLayer.addLayer(this.geoJSONdataLine);
+    this.geoJsonLayer.addLayer(this.geoJSONdataEnd);
+    this.geoJsonLayer.addLayer(this.geoJSONdataStart);
   }
+
 
   changeMapp(la: number, lng: number) {
     this.map.panTo(new L.LatLng(la, lng));
-  }
-
-  onEachFeature(feature, layer): void {
-    layer.on('click', function (e) {
-      //alert(feature.properties.popupContent);
-      //or
-      alert(feature.properties.id);
-    });
   }
 
   sendpath(input: string) {
@@ -235,9 +262,11 @@ export class MapComponent implements AfterViewInit {
       this.mapservice.getNodes(this.url).subscribe(data => {
         this.nodeString = data;
         console.log(this.nodeString);
-        var array = this.parseNodeString(this.nodeString);
-        this.makeDOTS(array);
-        console.log("markers loaded");
+        var nodearray = this.parseNodeString(this.nodeString);
+     
+        this.changeMapp(nodearray[0][1], nodearray[0][0]);
+       
+        console.log("graph and quadtree are build");
         this.loaded = true;
       })
     } else {
@@ -280,6 +309,9 @@ export class MapComponent implements AfterViewInit {
       }
     });
     this.map.addControl(new Coordinates({ position: "bottomleft" }));
+    this.geoJsonLayer= new L.LayerGroup();
+    this.geoJsonLayer.addTo(this.map);
+
   }
 
 
