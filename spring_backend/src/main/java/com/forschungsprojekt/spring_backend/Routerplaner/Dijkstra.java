@@ -108,8 +108,8 @@ public class Dijkstra {
 
 	public static void main(String[] args) {
 		Graph g = new Graph("/Users/xinpang/Desktop/Studium/5. Semester/FP/graph-files/bremen.txt");
-		int start = 1324;
-		int end = 2478;
+		int start = 23489;
+		int end = 567;
 		double[] alpha = {0.5, 0.5};
 		Dijkstra dij = new Dijkstra(g, start, alpha);
 		System.out.println(dij.getShortestPathInLonLat(end));

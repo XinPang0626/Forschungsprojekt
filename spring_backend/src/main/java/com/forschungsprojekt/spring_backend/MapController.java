@@ -78,11 +78,20 @@ public class MapController {
 
         String[] alphaStringArray = alpha.split(" ");
         double[] doubleAlpha = Arrays.stream(alphaStringArray).mapToDouble(Double::parseDouble).toArray();
+<<<<<<< HEAD
+       AStar_Standard aStar = new AStar_Standard(graph, type, candidate);
+       aStar.setStart(start);
+       aStar.setTarget(end);
+       aStar.setAlpha(doubleAlpha);
+       aStar.compute();
+        cordinates = aStar.getShortestPathInLonLat(end);
+=======
      //   AStar_Standard aStar = new AStar_Standard(graph, start, end, type, candidate);
      //   aStar.setAlpha(doubleAlpha);
      //   aStar.compute();
       //  cordinates = aStar.getShortestPathInLonLat(end);
               //instead of cordinates, one can return a status text for the precalculation being done
+>>>>>>> ec0f5f7f18501f730e7ddf7e24e889b90ea30653
         return cordinates;
     }
 
@@ -121,6 +130,25 @@ public class MapController {
         /**
          * 
         
+<<<<<<< HEAD
+        String[] alphaStringArray = alpha.split(" ");//split the value of cost vector in String
+        double[] doubleAlpha = Arrays.stream(alphaStringArray).mapToDouble(Double::parseDouble).toArray();//convert String value to double
+        String[] startLatLon = start.split(" ");//split the coordinate of start point from user
+        double[] doubleStartLatLon = Arrays.stream(startLatLon).mapToDouble(Double::parseDouble).toArray();//convert coordinate to double value
+        double startLat = doubleStartLatLon[0];//get the latitude of start point in double
+        double startLon = doubleStartLatLon[1];//get the longtitude of start point in double
+        int startPoint = quadtree.nextNeighborWithReset(startLat, startLon);//compute the coorespond point in datastructure/quadtree
+
+        String[] endLatLon = end.split(" ");//split the coordinate of end point
+        double[] doubleEndLatLon = Arrays.stream(endLatLon).mapToDouble(Double::parseDouble).toArray();//convert coordinate to double value
+        double endLat = doubleEndLatLon[0];//get the latitude of end point in double
+        double endLon = doubleEndLatLon[1];//get the longtitud of end point in double
+        int endPoint = quadtree.nextNeighborWithReset(endLat, endLon);//compute the coorespind point in datastructure/quadtree
+
+        AStar_Standard aStar = new AStar_Standard(quadtree.getGraph(),type, candidate);
+        aStar.setStart(startPoint);
+        aStar.setTarget(endPoint);
+=======
 
         String[] alphaStringArray = alpha.split(" ");// split the value of cost vector in String
         double[] doubleAlpha = Arrays.stream(alphaStringArray).mapToDouble(Double::parseDouble).toArray();// convert String value to double
@@ -137,6 +165,7 @@ public class MapController {
         int endPoint = quadtree.nextNeighborWithReset(endLat, endLon);// compute the coorespind point in atastructure/quadtree
 
        AStar_Standard aStar = new AStar_Standard(quadtree.getGraph(), startPoint, endPoint, type, candidate);
+>>>>>>> ec0f5f7f18501f730e7ddf7e24e889b90ea30653
         aStar.setAlpha(doubleAlpha);
         aStar.compute();
         cordinates = aStar.getShortestPathInLonLat(endPoint); 
