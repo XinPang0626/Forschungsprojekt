@@ -19,11 +19,13 @@ export class MapService {
     }),
     responseType: 'text'
  }
+  astarpathURL: string;
 
   constructor(private http: HttpClient) {
     this.cordinatesURL = 'http://localhost:8080/api?path=';
     this.dijURL='http://localhost:8080/dij?';
-    this.astarURL='http://localhost:8080/astar?';
+    this.astarURL='http://localhost:8080/astarload?';
+    this.astarpathURL='http://localhost:8080/astarpath?';
     this.dijCorURL='http://localhost:8080/dijcor?';
     this.astarCorURL='http://localhost:8080/astarcor?'
   }
@@ -38,10 +40,14 @@ export class MapService {
   public getDijcorpath( start:string, end:string, alpha:string): Observable<string> {
     return this.http.get<string>(this.dijCorURL+"start="+start+"&end="+end+"&alpha="+alpha, this.HTTPOptions);
   }
-  public getAstarpath( start:number, end:number, alpha:string, type:string, landmark:number, candidate:number): Observable<string> {
-    return this.http.get<string>(this.astarURL+"start="+start+"&end="+end+"&alpha="+alpha+"&type="+type+"&landmark="+landmark+"&candidate="+candidate, this.HTTPOptions);}
+  public loadAstar( alpha:string, type:string, landmark:number, candidate:number): Observable<string> {
+    return this.http.get<string>(this.astarURL+"alpha="+alpha+"&type="+type+"&landmark="+landmark+"&candidate="+candidate, this.HTTPOptions);}
+    
+  public getAstarpath( start:number, end:number): Observable<string> {
+      return this.http.get<string>(this.astarpathURL+"start="+start+"&end="+end, this.HTTPOptions);}
+        
    
-  public getAstarcorpath( start:string, end:string, alpha:string, type:string, landmark:number, candidate:number): Observable<string> {
-    return this.http.get<string>(this.astarCorURL+"start="+start+"&end="+end+"&alpha="+alpha+"&type="+type+"&landmark="+landmark+"&candidate="+candidate, this.HTTPOptions);} 
+  public getAstarcorpath( start:string, end:string): Observable<string> {
+    return this.http.get<string>(this.astarCorURL+"start="+start+"&end="+end, this.HTTPOptions);} 
 
 }

@@ -10,7 +10,7 @@ public class ExampleCode {
 	public static void main(String[] args) {
 		// test data
 		int dimensions = 2;
-		int vertexCount = 100;
+		int vertexCount = 1000;
 		ArrayList<double[]> exampleVertices = generateVertices(vertexCount, dimensions);
 		long startTime = System.currentTimeMillis();
 
@@ -20,14 +20,19 @@ public class ExampleCode {
 		CHFilter filter = new CHFilter(dimensions);
 
 		System.out.println("Add some cost vectors...");
-		double[] someVertex1 = exampleVertices.remove(0);
-		double[] someVertex2 = exampleVertices.remove(0);
-		filter.addVertex(someVertex1);
-		filter.addVertex(someVertex2);
+		// double[] someVertex1 = exampleVertices.remove(0);
+		// double[] someVertex2 = exampleVertices.remove(0);
+		// filter.addVertex(someVertex1);
+		// filter.addVertex(someVertex2);
+		for (int i = 0; i < 990; i++) {
+			double[] vertex = exampleVertices.remove(0);
+			filter.addVertex(vertex);
+		}
 
 		System.out.println(
 				"We can always query the CHFilter object for the cost vectors that are (potentially) optimal for some alpha:");
 		HashSet<double[]> goodCosts = filter.getFilteredVertices();
+		goodCosts = filter.getFilteredVertices();
 		prettyPrint(goodCosts, dimensions);
 
 		System.out.println(

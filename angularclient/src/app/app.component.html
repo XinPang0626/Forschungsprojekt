@@ -3,8 +3,9 @@
   <button class="button" (click)="appMap.sendpath(input.value)">send Path</button>
   <div id="space"></div>
   <button class="button" (click)="appMap.computeDij(start.value,end.value,alpha.value)"> compute Dijkstra </button>
-  <button class="button" (click)="appMap.computAstar(start.value,end.value,alpha.value ,landmark.value, candidate.value)">compute A*
-  </button>
+  <button class="button" (click)="appMap.loadASTAR(alpha.value ,landmark.value, candidate.value)">load A*</button>
+  <button class="button" (click)="appMap.computeASTARPATH(start.value,end.value)">compute A* path</button>
+
   <div class="flex"> 
   <label class="text">start id:</label>
   <div class="block"></div>
