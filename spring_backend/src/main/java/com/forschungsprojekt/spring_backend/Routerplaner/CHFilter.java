@@ -185,6 +185,7 @@ public class CHFilter {
 			if (isDupe) {
 				return false;
 			}
+			next = managedVertices.lower(next);
 		}
 
 		// no dupe found? return true
@@ -219,10 +220,10 @@ public class CHFilter {
 		if (ch == null) {
 			filteredVertices.addAll(firstVertices);
 			// if managedVertices has too many removed vertices, update it
-			if (managedVertices.size() > DIM * 8) {
-				managedVertices.clear();
-				managedVertices.addAll(firstVertices);
-			}
+//			if (managedVertices.size() > DIM * 8) {
+//				managedVertices.clear();
+//				managedVertices.addAll(firstVertices);
+//			}
 		} else {
 			HashSet<double[]> allVertices = new HashSet<double[]>();
 			for (Facet f : ch.livingFacets) {
@@ -235,10 +236,10 @@ public class CHFilter {
 				}
 			}
 			// if managedVertices has too many removed vertices, update it
-			if (managedVertices.size() > 3 * allVertices.size()) {
-				managedVertices.clear();
-				managedVertices.addAll(allVertices);
-			}
+//			if (managedVertices.size() > 3 * allVertices.size()) {
+//				managedVertices.clear();
+//				managedVertices.addAll(allVertices);
+//			}
 		}
 	}
 
