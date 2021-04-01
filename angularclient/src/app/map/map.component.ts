@@ -139,19 +139,19 @@ export class MapComponent implements AfterViewInit {
     }
   }
 
-  loadASTAR(alpha: string, landmark: number, candidate: number) {
-    this.mapservice.loadAstar(alpha, this.astartype, landmark, candidate).subscribe(data => {
+  loadASTAR(landmark: number, candidate: number) {
+    this.mapservice.loadAstar(this.astartype, landmark).subscribe(data => {
       let astar = data;
       console.log(astar);
     });
   }
 
-  computeASTARPATH(start: number, end: number) {
+  computeASTARPATH(start: number, end: number, alpha: string) {
     var astar: string;
     var array: number[][];
 
     if (!(start == -1 || end == -1) && this.loaded) {
-      this.mapservice.getAstarpath(start, end).subscribe(data => {
+      this.mapservice.getAstarpath(start, end, alpha).subscribe(data => {
         astar = data;
         console.log(astar);
         array = this.parseNodeString(astar);
@@ -163,7 +163,7 @@ export class MapComponent implements AfterViewInit {
         alert("Please enter a start id and end id or chose cordinates for start and end")
       } else {
         console.log('using cordinates to get path ' + this.startcor + ' ' + this.endcor);
-        this.mapservice.getAstarcorpath(this.startcor, this.endcor).subscribe(data => {
+        this.mapservice.getAstarcorpath(this.startcor, this.endcor, alpha).subscribe(data => {
           astar = data;
           console.log(astar);
           array = this.parseNodeString(astar);
@@ -207,8 +207,6 @@ export class MapComponent implements AfterViewInit {
     }
     return line;
   }
-
- 
 
   makeaLINE(nodearray: number[][], myStyle) {
     //remove previous line on map
