@@ -46,6 +46,8 @@ export class MapComponent implements AfterViewInit {
   endbutton: string = 'change end';
 
   loaded: boolean = false;
+
+  //line color for dij and a*
   myStyleDij = {
     "color": "#f321b4",
     "weight": 7,
@@ -61,12 +63,13 @@ export class MapComponent implements AfterViewInit {
 
   url: string;
   nodeString;
-
+  
 
   constructor(private mapservice: MapService) { }
 
   ngAfterViewInit(): void {
     this.initMap();
+    this.initGeoJsonlayer();
   }
   //string be parsed into nodearray
   parseNodeString(nodeString: string): number[][] {
@@ -136,19 +139,19 @@ export class MapComponent implements AfterViewInit {
     }
   }
 
-  loadASTAR(alpha: string, landmark: number, candidate: number) {
-    this.mapservice.loadAstar(alpha, this.astartype, landmark, candidate).subscribe(data => {
+  loadASTAR(landmark: number, candidate: number) {
+    this.mapservice.loadAstar(this.astartype, landmark).subscribe(data => {
       let astar = data;
       console.log(astar);
     });
   }
 
-  computeASTARPATH(start: number, end: number) {
+  computeASTARPATH(start: number, end: number, alpha: string) {
     var astar: string;
     var array: number[][];
 
     if (!(start == -1 || end == -1) && this.loaded) {
-      this.mapservice.getAstarpath(start, end).subscribe(data => {
+      this.mapservice.getAstarpath(start, end, alpha).subscribe(data => {
         astar = data;
         console.log(astar);
         array = this.parseNodeString(astar);
@@ -160,7 +163,7 @@ export class MapComponent implements AfterViewInit {
         alert("Please enter a start id and end id or chose cordinates for start and end")
       } else {
         console.log('using cordinates to get path ' + this.startcor + ' ' + this.endcor);
-        this.mapservice.getAstarcorpath(this.startcor, this.endcor).subscribe(data => {
+        this.mapservice.getAstarcorpath(this.startcor, this.endcor, alpha).subscribe(data => {
           astar = data;
           console.log(astar);
           array = this.parseNodeString(astar);
@@ -168,12 +171,42 @@ export class MapComponent implements AfterViewInit {
           console.log("astarpath loaded");
         });
       }
-
     }
-
   }
 
- 
+  returnPointJson(long:number, lat:number){
+    var point={
+      "type": "FeatureCollection",
+      "features": [
+        {
+          "type": "Feature",
+          "properties": {},
+          "geometry": {
+            "type": "Point",
+            "coordinates": [long, lat]
+          }
+        }
+      ]
+    };
+    return point;
+  }
+
+  returnLineJson(cordarray: number[][]){
+    var line={
+      "type": "FeatureCollection",
+      "features": [
+        {
+          "type": "Feature",
+          "properties": {},
+          "geometry": {
+            "type": "LineString",
+            "coordinates": cordarray
+          }
+        }
+      ]
+    }
+    return line;
+  }
 
   makeaLINE(nodearray: number[][], myStyle) {
     //remove previous line on map
@@ -192,64 +225,23 @@ export class MapComponent implements AfterViewInit {
     };
 
     this.changeMapp(nodearray[0][1],  nodearray[0][0]);
-    var myLines = {
-      "type": "FeatureCollection",
-      "features": [
-        {
-          "type": "Feature",
-          "properties": {},
-          "geometry": {
-            "type": "LineString",
-            "coordinates": nodearray
-          }
-        }
-      ]
-    }
-    var Pointstart = {
-      "type": "FeatureCollection",
-      "features": [
-        {
-          "type": "Feature",
-          "properties": {},
-          "geometry": {
-            "type": "Point",
-            "coordinates": [nodearray[0][0], nodearray[0][1]]
-          }
-        }
-      ]
-    }
-    var Pointend = {
-      "type": "FeatureCollection",
-      "features": [
-        {
-          "type": "Feature",
-          "properties": {},
-          "geometry": {
-            "type": "Point",
-            "coordinates": [nodearray[nodearray.length-1][0], nodearray[nodearray.length-1][1]]
-          }
-        }
-      ]
-    }
-
+    //start node and goal node
+    var Pointstart= this.returnPointJson(nodearray[0][0],nodearray[0][1]);
+    var Pointend=this.returnPointJson(nodearray[nodearray.length-1][0], nodearray[nodearray.length-1][1]);
+    var myLines= this.returnLineJson(nodearray);
+   
     this.geoJSONdataLine= L.geoJSON(myLines, {style: myStyle  }).addTo(this.map);
     this.geoJSONdataEnd=L.geoJSON(Pointend, {
       pointToLayer: function (feature, latlng) {
-          return L.circleMarker(latlng, mypointStylesend);
-      }
-  }).addTo(this.map);
-    this.geoJSONdataStart=L.geoJSON(Pointstart, {
-      pointToLayer: function (feature, latlng) {
-          return L.circleMarker(latlng, mypointStylestart);
-      }
-  }).addTo(this.map);
+          return L.circleMarker(latlng, mypointStylesend);}}).addTo(this.map);
+    this.geoJSONdataStart=L.geoJSON(Pointstart, { pointToLayer: function (feature, latlng) {  
+      return L.circleMarker(latlng, mypointStylestart); }}).addTo(this.map);
 
     this.geoJsonLayer.addLayer(this.geoJSONdataLine);
     this.geoJsonLayer.addLayer(this.geoJSONdataEnd);
     this.geoJsonLayer.addLayer(this.geoJSONdataStart);
   }
-
-
+ 
   changeMapp(la: number, lng: number) {
     this.map.panTo(new L.LatLng(la, lng));
   }
@@ -272,6 +264,26 @@ export class MapComponent implements AfterViewInit {
     } else {
       alert('this is not a valid path');
     }
+  }
+
+  private initGeoJsonlayer():void{
+    var hiddenpoint = {
+      opacity:0 };
+    this.geoJsonLayer= new L.LayerGroup();
+
+    var emptydot= this.returnPointJson(0,0);
+    var emptyline= this.returnLineJson([]);
+
+    this.geoJSONdataLine= L.geoJSON(emptyline).addTo(this.map);
+    this.geoJSONdataStart=L.geoJSON(emptydot, {
+      pointToLayer: function (feature, latlng) {
+          return L.circleMarker(latlng, hiddenpoint);}}).addTo(this.map);
+    this.geoJSONdataEnd=this.geoJSONdataStart;
+
+    this.geoJsonLayer.addTo(this.map);
+    this.geoJsonLayer.addLayer(this.geoJSONdataLine);
+    this.geoJsonLayer.addLayer(this.geoJSONdataEnd);
+    this.geoJsonLayer.addLayer(this.geoJSONdataStart);
   }
 
   private initMap(): void {
@@ -309,9 +321,7 @@ export class MapComponent implements AfterViewInit {
       }
     });
     this.map.addControl(new Coordinates({ position: "bottomleft" }));
-    this.geoJsonLayer= new L.LayerGroup();
-    this.geoJsonLayer.addTo(this.map);
-
+    
   }
 
 
