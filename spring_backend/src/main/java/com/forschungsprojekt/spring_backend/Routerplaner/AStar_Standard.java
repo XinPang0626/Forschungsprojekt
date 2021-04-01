@@ -5,12 +5,10 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 
-import jdk.internal.org.jline.reader.Candidate;
-
 
 public class AStar_Standard {
 	private Graph graph;
-	private double[] f;
+	private double f;
 	private double[] g;//g: cost of past, f = cost of past + cost of future
 	private double[] alpha;
 	private int[] parent;
@@ -25,17 +23,13 @@ public class AStar_Standard {
 	
 	public AStar_Standard(Graph graph, String heuristic, int nrOfLandmark) {
 		this.graph = graph;
-		this.f = new double[graph.getNodeNr()];
+		this.f = 0.0;
 		this.g = new double[graph.getNodeNr()];
 		this.parent = new int[graph.getNodeNr()];
 		this.nrOfLandmark = nrOfLandmark;
 		this.nrOfCandidate = new int[nrOfLandmark][graph.getNodeNr()];//initialize with zero's
 		this.heuristic = heuristic;
 		
-		// this.filter = new CHFilter[graph.getNodeNr()];
-		// for (int i = 0; i < filter.length; i++) {
-		// 	filter[i] = new CHFilter(graph.getNrOFMetrik());
-		// }
 		if(heuristic.equals("ALT")){
 			this.landmark = new int[nrOfLandmark];
 			for(int i = 0; i < landmark.length; i++){
@@ -69,22 +63,27 @@ public class AStar_Standard {
 		if(heuristic.equals("Standard")){
 			MinHeap heap = new MinHeap(graph.getNodeNr());
 			heap.add(start, g[start] + heuristicStandard(start, target));
-		
+			boolean foundTarget = false;
 			
-			while(heap.getSize() > 0) {
+			while(heap.getSize() > 0 && !foundTarget) {
 				double[] min = heap.remove();
-				double[] out = graph.getOutgoingEdgesArray((int)min[0]);
+				int currentNode = (int)min[0];
+				if(currentNode == target){
+					foundTarget = true;
+				}
+				int[] out = graph.getOutgoingEdgesArrayIndex(currentNode);
 				if(out != null){
-					for (int i = 0; i < out.length; i += (1+alpha.length)) {
-						double[] costVector =  Arrays.copyOfRange(out, i+1, i + 1 + alpha.length);
-						if (g[(int)min[0]] + dotProduct(alpha, costVector) < g[(int)out[i]]) {
-							g[(int)out[i]] = g[(int)min[0]] + dotProduct(alpha, costVector);
-							f[(int)out[i]] = g[(int)out[i]] + heuristicStandard((int)out[i],target);
-							parent[(int)out[i]] = (int)min[0];
-							if (heap.getPositionInHeap((int)out[i]) != -1) {// in heap
-								heap.decreaseKey((int)out[i], f[(int)out[i]]);
+					for (int i = out[0]; i < out[1]; i += (1+alpha.length)) {
+						double[] costVector =  Arrays.copyOfRange(graph.getCompressedEdgeArray(), i+1, i + 1 + alpha.length);
+						int kinderNode = (int)graph.getCompressedEdgeArray()[i];
+						if (g[currentNode] + dotProduct(alpha, costVector) < g[kinderNode]) {
+							g[kinderNode] = g[currentNode]+ dotProduct(alpha, costVector);
+							f = g[kinderNode] + heuristicStandard(kinderNode,target);
+							parent[kinderNode] = currentNode;
+							if (heap.getPositionInHeap(kinderNode) != -1) {// in heap
+								heap.decreaseKey(kinderNode, f);
 							}else {
-								heap.add((int)out[i], f[(int)out[i]]);
+								heap.add(kinderNode, f);
 							}
 						}
 					}
@@ -93,22 +92,27 @@ public class AStar_Standard {
 		}else if(heuristic.equals("ALT")){
 			MinHeap heap = new MinHeap(graph.getNodeNr());
 			heap.add(start, g[start] + heuristicALT(start, target));
-		
-			while(heap.getSize() > 0){
+			boolean foundTarget = false;
+			while(heap.getSize() > 0 && !foundTarget){
 				double[] min = heap.remove();
-				double[] out = graph.getOutgoingEdgesArray((int)min[0]);
+				int currentNode = (int)min[0];
+				if(currentNode == target){
+					foundTarget = true;
+				}
+				int[] out = graph.getOutgoingEdgesArrayIndex(currentNode);
 
 				if(out != null){
-					for (int i = 0; i < out.length; i += (1+alpha.length)) {
-						double[] costVector =  Arrays.copyOfRange(out, i+1, i + 1 + alpha.length);
-						if (g[(int)min[0]] + dotProduct(alpha, costVector) < g[(int)out[i]]) {
-							g[(int)out[i]] = g[(int)min[0]] + dotProduct(alpha, costVector);
-							f[(int)out[i]] = g[(int)out[i]] + heuristicALT((int)out[i],target);
-							parent[(int)out[i]] = (int)min[0];
-							if (heap.getPositionInHeap((int)out[i]) != -1) {// in heap
-								heap.decreaseKey((int)out[i], f[(int)out[i]]);
+					for (int i = out[0]; i < out[1]; i += (1+alpha.length)) {
+						double[] costVector =  Arrays.copyOfRange(graph.getCompressedEdgeArray(), i+1, i + 1 + alpha.length);
+						int kinderNode = (int)graph.getCompressedEdgeArray()[i];
+						if (g[currentNode] + dotProduct(alpha, costVector) < g[kinderNode]) {
+							g[kinderNode] = g[currentNode] + dotProduct(alpha, costVector);
+							f = g[kinderNode] + heuristicALT(kinderNode,target);
+							parent[kinderNode] = currentNode;
+							if (heap.getPositionInHeap(kinderNode) != -1) {// in heap
+								heap.decreaseKey(kinderNode, f);
 							}else {
-								heap.add((int)out[i], f[(int)out[i]]);
+								heap.add(kinderNode, f);
 							}
 						}
 					}
@@ -234,15 +238,18 @@ public class AStar_Standard {
 	// 	return update;
 	// }
 
-	private boolean updateWithFilter(int landmarkNr, int nodeNr, double[] newCost){
+	public boolean updateWithFilter(int landmarkNr, int nodeNr, double[] newCost){
 		filter = new CHFilter(graph.getNrOFMetrik());
 		boolean updated = false;
 		for(int i = 0; i < landmarkDistance.get(landmarkNr).get(nodeNr).size(); i++){
 			filter.addVertex(landmarkDistance.get(landmarkNr).get(nodeNr).get(i));
 		}
 		updated = filter.addVertex(newCost);
-		ArrayList<double[]> newCandidates = new ArrayList<double[]>(filter.getFilteredVertices());
-		Collections.copy(landmarkDistance.get(landmarkNr).get(nodeNr),newCandidates);
+		if(updated == true){
+			ArrayList<double[]> newCandidates = new ArrayList<double[]>(filter.getFilteredVertices());
+			landmarkDistance.get(landmarkNr).set(nodeNr, newCandidates);
+			nrOfCandidate[landmarkNr][nodeNr] = newCandidates.size();
+		}
 		return updated;
 	}
 
@@ -250,7 +257,7 @@ public class AStar_Standard {
 		landmarkDistance = new ArrayList<ArrayList<ArrayList<double[]>>>();
 
 		for(int lm = 0; lm < nrOfLandmark; lm++){
-			ArrayList<ArrayList<double[]>> nodeList = new ArrayList<>();
+			ArrayList<ArrayList<double[]>> nodeList = new ArrayList<ArrayList<double[]>>();
 			for(int node = 0; node < graph.getNodeNr(); node++){
 				ArrayList<double[]> candiList = new ArrayList<double[]>();
 				if(isLandmark(node)){
@@ -266,30 +273,37 @@ public class AStar_Standard {
 				}
 			}
 		}
-		double[][] edgeArray = graph.getEdgeArray();
 		for(int landmarkId = 0; landmarkId < nrOfLandmark; landmarkId++){
 			boolean[] updated = new boolean[graph.getNodeNr()];
 			updated[landmark[landmarkId]] = true;
-			HashSet<double[]> candidates = new HashSet<double[]>();
+			ArrayList<double[]> candidates = new ArrayList<double[]>();
 			for(int j = 0; j < graph.getNodeNr(); j++){
 				System.out.println("current loop number: " + j);
 				boolean globalChange = false;
 				boolean[] updateInNextIter = new boolean[graph.getNodeNr()];
-				for(int i = 0; i < graph.getEdgeNr(); i++){
-					double[] costVector = Arrays.copyOfRange(edgeArray[i], 2, 2+graph.getNrOFMetrik());
-					if(updated[(int)edgeArray[i][1]] == true){
-						//candidates = landmarkDistance.get(landmarkId).get((int)edgeArray[i][1]).getFilteredVertices();
-						for(double[] cost: landmarkDistance.get(landmarkId).get((int)edgeArray[i][1])){
-							double[] newCost = addTwoVector(cost, costVector);
-							//updateInNextIter[(int)edgeArray[i][0]] = updateCandidate(landmarkId, (int)edgeArray[i][0], newCost);
-							updateInNextIter[(int)edgeArray[i][0]] = updateInNextIter[(int)edgeArray[i][0]] || updateWithFilter(landmarkId, (int)edgeArray[i][0], newCost);
-							// if(landmarkDistance.get(landmarkId).get((int)edgeArray[i][0]).addVertex(newCost)){
-							// 	updateInNextIter[(int)edgeArray[i][0]] = true;
-							// }
-							globalChange = globalChange || updateInNextIter[(int)edgeArray[i][0]];
+				for(int i = 0; i < graph.getNodeNr(); i++){
+					//double[] costVector = Arrays.copyOfRange(edgeArray[i], 2, 2+graph.getNrOFMetrik());
+					int[] out = graph.getOutgoingEdgesArrayIndex(i);
+					if(out != null){
+						int edgeBegin = i;
+						for( int m = out[0]; m < out[1]; m += (1+graph.getNrOFMetrik())){
+							int edgeEnd = (int)graph.getCompressedEdgeArray()[m];
+							double[] costVector =  Arrays.copyOfRange(graph.getCompressedEdgeArray(), m+1, m + 1 + graph.getNrOFMetrik());
+							if(updated[edgeEnd] == true){
+								candidates = landmarkDistance.get(landmarkId).get(edgeEnd);
+								for(double[] cost: candidates){
+									double[] newCost = addTwoVector(cost, costVector);
+									//updateInNextIter[(int)edgeArray[i][0]] = updateCandidate(landmarkId, (int)edgeArray[i][0], newCost);
+									updateInNextIter[edgeBegin] = updateInNextIter[edgeBegin] || updateWithFilter(landmarkId, edgeBegin, newCost);
+									// if(landmarkDistance.get(landmarkId).get((int)edgeArray[i][0]).addVertex(newCost)){
+									// 	updateInNextIter[(int)edgeArray[i][0]] = true;
+									// }
+								}
+							}
+							globalChange = globalChange || updateInNextIter[edgeBegin];
+							//System.out.println("node: " + j + "edge: " + i);
 						}
 					}
-					//System.out.println("node: " + j + "edge: " + i);
 				}
 				if(globalChange == false){
 					System.out.println("no more global changes");
@@ -297,7 +311,6 @@ public class AStar_Standard {
 				}
 				updated = Arrays.copyOf(updateInNextIter, updateInNextIter.length);
 			}
-
 		}
 	}
 
@@ -409,7 +422,7 @@ public class AStar_Standard {
 			}
 		}
 		System.out.println("max number of candidate:");
-		System.out.println(maxNrOfCandi+1);//initialzed as 0, indicate 1
+		System.out.println(maxNrOfCandi);
 		System.out.println("longest candidate list:");
 		System.out.println(Arrays.deepToString(aStar.landmarkDistance.get(lmWithMaxCandi).get(nodeWithMaxCandi).toArray()));
 		

@@ -78,20 +78,11 @@ public class MapController {
 
         String[] alphaStringArray = alpha.split(" ");
         double[] doubleAlpha = Arrays.stream(alphaStringArray).mapToDouble(Double::parseDouble).toArray();
-<<<<<<< HEAD
-       AStar_Standard aStar = new AStar_Standard(graph, type, candidate);
-       aStar.setStart(start);
-       aStar.setTarget(end);
-       aStar.setAlpha(doubleAlpha);
-       aStar.compute();
-        cordinates = aStar.getShortestPathInLonLat(end);
-=======
      //   AStar_Standard aStar = new AStar_Standard(graph, start, end, type, candidate);
      //   aStar.setAlpha(doubleAlpha);
      //   aStar.compute();
       //  cordinates = aStar.getShortestPathInLonLat(end);
               //instead of cordinates, one can return a status text for the precalculation being done
->>>>>>> ec0f5f7f18501f730e7ddf7e24e889b90ea30653
         return cordinates;
     }
 
