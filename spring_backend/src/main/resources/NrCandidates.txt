@@ -1,0 +1,2 @@
+Nrcandidates=3
+NrLandmarks=7
