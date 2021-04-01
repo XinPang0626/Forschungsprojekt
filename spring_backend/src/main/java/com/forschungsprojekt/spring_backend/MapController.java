@@ -18,6 +18,8 @@ public class MapController {
     // declare variables that should be accessed by every method in this
     Graph graph;
     Quadtree quadtree;
+    AStar_Standard aStar;
+
 
     String decodedpath;
     // dummy string format be: [[long, lat),(long, lat),(long,lat).... due Geojson
@@ -71,28 +73,12 @@ public class MapController {
     @CrossOrigin(origins = "http://localhost:4200")
     @RequestMapping("/astarload")
     @ResponseBody
-    public String sendAstar(  @RequestParam(name = "alpha") String alpha, @RequestParam(name = "type") String type,
-            @RequestParam(name = "landmark") int landmark, @RequestParam(name = "candidate") int candidate) {
+    public String sendAstar(  @RequestParam(name = "type") String type,
+            @RequestParam(name = "landmark") int landmark) {
         // type is now Standard and ALT
-        
 
-        String[] alphaStringArray = alpha.split(" ");
-        double[] doubleAlpha = Arrays.stream(alphaStringArray).mapToDouble(Double::parseDouble).toArray();
-<<<<<<< HEAD
-       AStar_Standard aStar = new AStar_Standard(graph, type, candidate);
-       aStar.setStart(start);
-       aStar.setTarget(end);
-       aStar.setAlpha(doubleAlpha);
-       aStar.compute();
-        cordinates = aStar.getShortestPathInLonLat(end);
-=======
-     //   AStar_Standard aStar = new AStar_Standard(graph, start, end, type, candidate);
-     //   aStar.setAlpha(doubleAlpha);
-     //   aStar.compute();
-      //  cordinates = aStar.getShortestPathInLonLat(end);
-              //instead of cordinates, one can return a status text for the precalculation being done
->>>>>>> ec0f5f7f18501f730e7ddf7e24e889b90ea30653
-        return cordinates;
+        aStar = new AStar_Standard(graph, type, landmark);
+        return "loaded";
     }
 
     /**TODO
@@ -102,9 +88,14 @@ public class MapController {
     @CrossOrigin(origins = "http://localhost:4200")
     @RequestMapping("/astarpath")
     @ResponseBody
-    public String resendAstar(@RequestParam(name = "start") int start, @RequestParam(name = "end") int end) {
-      
-
+    public String resendAstar(@RequestParam(name = "start") int start, @RequestParam(name = "end") int end,  @RequestParam(name = "alpha") String alpha) {
+        String[] alphaStringArray = alpha.split(" ");
+        double[] doubleAlpha = Arrays.stream(alphaStringArray).mapToDouble(Double::parseDouble).toArray();
+        aStar.setStart(start);
+        aStar.setTarget(end);
+        aStar.setAlpha(doubleAlpha);
+        aStar.compute();
+         cordinates = aStar.getShortestPathInLonLat(end);
         System.out.println("A* " + " start with " + start + "-" + end);
 
         return cordinates;
@@ -123,14 +114,11 @@ public class MapController {
     @CrossOrigin(origins = "http://localhost:4200")
     @RequestMapping("/astarcor")
     @ResponseBody
-    public String sendAstarcor(@RequestParam(name = "start") String start, @RequestParam(name = "end") String end) {
+    public String sendAstarcor(@RequestParam(name = "start") String start, @RequestParam(name = "end") String end, @RequestParam(name = "alpha") String alpha) {
         // type is now Standard and ALT
         System.out.println("computing A*");
 
-        /**
-         * 
-        
-<<<<<<< HEAD
+    
         String[] alphaStringArray = alpha.split(" ");//split the value of cost vector in String
         double[] doubleAlpha = Arrays.stream(alphaStringArray).mapToDouble(Double::parseDouble).toArray();//convert String value to double
         String[] startLatLon = start.split(" ");//split the coordinate of start point from user
@@ -145,32 +133,14 @@ public class MapController {
         double endLon = doubleEndLatLon[1];//get the longtitud of end point in double
         int endPoint = quadtree.nextNeighborWithReset(endLat, endLon);//compute the coorespind point in datastructure/quadtree
 
-        AStar_Standard aStar = new AStar_Standard(quadtree.getGraph(),type, candidate);
+        
         aStar.setStart(startPoint);
         aStar.setTarget(endPoint);
-=======
-
-        String[] alphaStringArray = alpha.split(" ");// split the value of cost vector in String
-        double[] doubleAlpha = Arrays.stream(alphaStringArray).mapToDouble(Double::parseDouble).toArray();// convert String value to double
-        String[] startLatLon = start.split(" ");// split the coordinate of start point from user
-        double[] doubleStartLatLon = Arrays.stream(startLatLon).mapToDouble(Double::parseDouble).toArray();// convert coordinate to double value
-        double startLat = doubleStartLatLon[0];// get the latitude of start point in double
-        double startLon = doubleStartLatLon[1];// get the longtitude of start point in double
-        int startPoint = quadtree.nextNeighborWithReset(startLat, startLon);// compute the coorespond point in datastructure/quadtree
-
-        String[] endLatLon = end.split(" ");// split the coordinate of end point
-        double[] doubleEndLatLon = Arrays.stream(endLatLon).mapToDouble(Double::parseDouble).toArray();// convertcoordinate to double value
-        double endLat = doubleEndLatLon[0];// get the latitude of end point in double
-        double endLon = doubleEndLatLon[1];// get the longtitud of end point in double
-        int endPoint = quadtree.nextNeighborWithReset(endLat, endLon);// compute the coorespind point in atastructure/quadtree
-
-       AStar_Standard aStar = new AStar_Standard(quadtree.getGraph(), startPoint, endPoint, type, candidate);
->>>>>>> ec0f5f7f18501f730e7ddf7e24e889b90ea30653
         aStar.setAlpha(doubleAlpha);
         aStar.compute();
         cordinates = aStar.getShortestPathInLonLat(endPoint); 
         
-        */
+        
 
         return cordinates;
     }
