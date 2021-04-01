@@ -19,7 +19,7 @@ public class Graph {
 	private double[] longitude;
 	private int[] nrOfOutgoingEdges;
 	private double[] compressedEdgeArray;
-	private double[][] edgeArray;
+	//private double[][] edgeArray;
 	private int[] nodeArray;// save the corrosponding edge index of edgeArray
 
 	public Graph(String path) {
@@ -50,7 +50,7 @@ public class Graph {
 			nrOfOutgoingEdges = new int[nodeNr];
 			compressedEdgeArray = new double[edgeNr * lengthOfEdgeElement];
 			nodeArray = new int[nodeNr];
-			edgeArray = new double[edgeNr][2 + nrOfMetrik];
+			//edgeArray = new double[edgeNr][2 + nrOfMetrik];
 			
 			// fill nodeArray
 			for (int i = 0; i < nodeNr; i++) {// read lines of all nodes
@@ -85,11 +85,11 @@ public class Graph {
 				compressedEdgeArray[index] = endNode;
 				index++;
 				
-				edgeArray[i][0] = newStartNode;
-				edgeArray[i][1] = endNode;
-				for(int j = 0; j < nrOfMetrik;j++){
-					edgeArray[i][j+2] = Double.parseDouble(tempStringArray[2 + j]);
-				}
+				//edgeArray[i][0] = newStartNode;
+				// edgeArray[i][1] = endNode;
+				// for(int j = 0; j < nrOfMetrik;j++){
+				// 	edgeArray[i][j+2] = Double.parseDouble(tempStringArray[2 + j]);
+				// }
 
 				for (int j = 0; j < nrOfMetrik; j++) {//add metric in edgearray
 					compressedEdgeArray[index] = Double.parseDouble(tempStringArray[2 + j]);
@@ -112,9 +112,9 @@ public class Graph {
 		return nodeArray;
 	}
 
-	double[][] getEdgeArray(){
-		return edgeArray;
-	}
+	// double[][] getEdgeArray(){
+	// 	return edgeArray;
+	// }
 
 	int getNrOfOutgoingEdges(int nodeID) {
 		return nrOfOutgoingEdges[nodeID];
@@ -141,25 +141,27 @@ public class Graph {
 	 * @param nodeID
 	 * 
 	 */
-	public double[] getOutgoingEdgesArray(int nodeID) {
+	public int[] getOutgoingEdgesArrayIndex(int nodeID) {
 		if (nrOfOutgoingEdges[nodeID] >= 1) {
 			int startIndex = nodeArray[nodeID];
 			int endIndex = getNrOfOutgoingEdges(nodeID) * lengthOfEdgeElement + startIndex;
-			return Arrays.copyOfRange(compressedEdgeArray, startIndex, endIndex);
+			//return Arrays.copyOfRange(compressedEdgeArray, startIndex, endIndex);
+			int[] startAndEnd = {startIndex, endIndex};
+			return startAndEnd;
 		}
 		return null;
 	}
 
-	public int[] getNeighbours(int nodeId){
-		int[] neighbours = new int[getNrOfOutgoingEdges(nodeId)];
-		double[] out = getOutgoingEdgesArray(nodeId);
-		for (int i = 0; i < out.length; i+=lengthOfEdgeElement) {
-			int j = 0;
-			neighbours[j] = (int)out[i];
-			j++;
-		}
-		return neighbours;
-	}
+	// public int[] getNeighbours(int nodeId){
+	// 	int[] neighbours = new int[getNrOfOutgoingEdges(nodeId)];
+	// 	int[] out = getOutgoingEdgesArray(nodeId);
+	// 	for (int i = out[0]; i < out[1]; i+=lengthOfEdgeElement) {
+	// 		int j = 0;
+	// 		neighbours[j] = (int)compressedEdgeArray[i];
+	// 		j++;
+	// 	}
+	// 	return neighbours;
+	// }
 
 	/**
 	 * to return the number of outgoing edges for specific node
@@ -167,9 +169,9 @@ public class Graph {
 	 * @param nodeID
 	 * @return the number of outgoing edges for the node
 	 */
-	public int getNumberOfOutgoingEdge(int nodeID) {
-		return nrOfOutgoingEdges[nodeID];
-	}
+	// public int getNumberOfOutgoingEdge(int nodeID) {
+	// 	return nrOfOutgoingEdges[nodeID];
+	// }
 
 	public int getNrOFMetrik(){
 		return nrOfMetrik;

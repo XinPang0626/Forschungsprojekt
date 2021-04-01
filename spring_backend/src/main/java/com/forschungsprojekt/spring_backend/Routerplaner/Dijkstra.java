@@ -38,18 +38,20 @@ public class Dijkstra {
 		
 		while(heap.getSize() > 0) {
 			double[] min = heap.remove();
-			double[] out = graph.getOutgoingEdgesArray((int)min[0]);
+			int currentNode = (int)min[0];
+			int[] out = graph.getOutgoingEdgesArrayIndex(currentNode);
 			
 			if(out != null) {
-				for (int i = 0; i < out.length; i += (1+alpha.length)) {
-					double[] costVector =  Arrays.copyOfRange(out, i+1, i+alpha.length + 1);
-					if (dis[(int)min[0]] + dotProduct(alpha, costVector) < dis[(int)out[i]]) {
-						dis[(int)out[i]] = dis[(int)min[0]] + dotProduct(alpha, costVector);
-						parent[(int)out[i]] = (int)min[0];
-						if (heap.getPositionInHeap((int)out[i]) != -1) {// in heap
-							heap.decreaseKey((int)out[i], dis[(int)out[i]]);
+				for (int i = out[0]; i < out[1]; i += (1+alpha.length)) {
+					int kinderNode = (int)graph.getCompressedEdgeArray()[i];
+					double[] costVector =  Arrays.copyOfRange(graph.getCompressedEdgeArray(), i+1, i+alpha.length + 1);
+					if (dis[currentNode] + dotProduct(alpha, costVector) < dis[kinderNode]) {
+						dis[kinderNode] = dis[currentNode] + dotProduct(alpha, costVector);
+						parent[kinderNode] = currentNode;
+						if (heap.getPositionInHeap(kinderNode) != -1) {// in heap
+							heap.decreaseKey(kinderNode, dis[kinderNode]);
 						}else {
-							heap.add((int)out[i], dis[(int)out[i]]);
+							heap.add(kinderNode, dis[kinderNode]);
 						}
 					}
 				}
