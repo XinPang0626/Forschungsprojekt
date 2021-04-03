@@ -20,6 +20,9 @@ public class AStar_Standard {
 	private int nrOfLandmark;
 	private int[][] nrOfCandidate;
 	private CHFilter filter;
+	private ArrayList<Integer> modifiedNode;
+	private boolean targetNodeKLT;
+	private double[] targetToLandmarkKLT;
 	
 	public AStar_Standard(Graph graph, String heuristic, int nrOfLandmark) {
 		this.graph = graph;
@@ -29,9 +32,15 @@ public class AStar_Standard {
 		this.nrOfLandmark = nrOfLandmark;
 		this.nrOfCandidate = new int[nrOfLandmark][graph.getNodeNr()];//initialize with zero's
 		this.heuristic = heuristic;
+
+		for (int i = 0; i < graph.getNodeNr(); i++) {
+			g[i] = Double.MAX_VALUE;
+			parent[i] = -1; // no parent
+		}
 		
 		if(heuristic.equals("ALT")){
 			this.landmark = new int[nrOfLandmark];
+			this.targetToLandmarkKLT = new double[nrOfLandmark];
 			for(int i = 0; i < landmark.length; i++){
 				landmark[i] = (int)Math.round(Math.random()*graph.getNodeNr());
 			}
@@ -54,12 +63,14 @@ public class AStar_Standard {
 	}
 
 	public void compute(){
-		for (int i = 0; i < graph.getNodeNr(); i++) {
-			g[i] = Double.MAX_VALUE;
-			parent[i] = -1; // no parent
+		modifiedNode = new ArrayList<>();
+		for (int i = 0; i < modifiedNode.size(); i++) {
+			g[modifiedNode.get(i)] = Double.MAX_VALUE;
+			parent[modifiedNode.get(i)] = -1;
 		}
 		parent[start] = start;
 		g[start] = 0.0;
+		modifiedNode.add(start);
 		if(heuristic.equals("Standard")){
 			MinHeap heap = new MinHeap(graph.getNodeNr());
 			heap.add(start, g[start] + heuristicStandard(start, target));
@@ -78,6 +89,7 @@ public class AStar_Standard {
 						int kinderNode = (int)graph.getCompressedEdgeArray()[i];
 						if (g[currentNode] + dotProduct(alpha, costVector) < g[kinderNode]) {
 							g[kinderNode] = g[currentNode]+ dotProduct(alpha, costVector);
+							modifiedNode.add(kinderNode);
 							f = g[kinderNode] + heuristicStandard(kinderNode,target);
 							parent[kinderNode] = currentNode;
 							if (heap.getPositionInHeap(kinderNode) != -1) {// in heap
@@ -104,9 +116,10 @@ public class AStar_Standard {
 				if(out != null){
 					for (int i = out[0]; i < out[1]; i += (1+alpha.length)) {
 						double[] costVector =  Arrays.copyOfRange(graph.getCompressedEdgeArray(), i+1, i + 1 + alpha.length);
-						int kinderNode = (int)graph.getCompressedEdgeArray()[i];
+						int kinderNode = graph.getTargetNodeArray()[i];
 						if (g[currentNode] + dotProduct(alpha, costVector) < g[kinderNode]) {
 							g[kinderNode] = g[currentNode] + dotProduct(alpha, costVector);
+							modifiedNode.add(kinderNode);
 							f = g[kinderNode] + heuristicALT(kinderNode,target);
 							parent[kinderNode] = currentNode;
 							if (heap.getPositionInHeap(kinderNode) != -1) {// in heap
@@ -118,8 +131,8 @@ public class AStar_Standard {
 					}
 				}
 			}
+			
 		}
-		
 	}
 	
 	public void setAlpha(double[] alpha){
@@ -355,16 +368,44 @@ public class AStar_Standard {
 		double lowestCost1 = Double.MAX_VALUE;
 		double lowestCost2 = Double.MAX_VALUE;
 		double lowestCost;
-		for(double[] cost: landmarkDistance.get(landmark).get(nodeId1)){
-			if(dotProduct(cost, alpha) < lowestCost1){
-				lowestCost1 = dotProduct(cost, alpha);
+		
+		if(nodeId1 == target && !targetNodeKLT){
+			for(double[] cost: landmarkDistance.get(landmark).get(nodeId1)){
+				if(dotProduct(cost, alpha) < lowestCost1){
+					lowestCost1 = dotProduct(cost, alpha);
+				}
+			}
+			targetNodeKLT = true;
+			targetToLandmarkKLT[landmark] = lowestCost1;
+		}else if(nodeId1 == target && targetNodeKLT){
+			lowestCost1 = targetToLandmarkKLT[landmark];
+		}else{
+			for(double[] cost: landmarkDistance.get(landmark).get(nodeId1)){
+				if(dotProduct(cost, alpha) < lowestCost1){
+					lowestCost1 = dotProduct(cost, alpha);
+				}
 			}
 		}
-		for(double[] cost : landmarkDistance.get(landmark).get(nodeId2)){
-			if(dotProduct(cost, alpha) < lowestCost2){
-				lowestCost2 = dotProduct(cost, alpha);
+
+
+		if(nodeId2 == target && !targetNodeKLT){
+			for(double[] cost : landmarkDistance.get(landmark).get(nodeId2)){
+				if(dotProduct(cost, alpha) < lowestCost2){
+					lowestCost2 = dotProduct(cost, alpha);
+				}
+			}
+			targetNodeKLT = true;
+			targetToLandmarkKLT[landmark] = lowestCost2;
+		}else if(nodeId2 == target && targetNodeKLT){
+			lowestCost2 = targetToLandmarkKLT[landmark];
+		}else{
+			for(double[] cost : landmarkDistance.get(landmark).get(nodeId2)){
+				if(dotProduct(cost, alpha) < lowestCost2){
+					lowestCost2 = dotProduct(cost, alpha);
+				}
 			}
 		}
+
 		lowestCost = Math.abs(lowestCost1 - lowestCost2);
 		return lowestCost;
 	}
