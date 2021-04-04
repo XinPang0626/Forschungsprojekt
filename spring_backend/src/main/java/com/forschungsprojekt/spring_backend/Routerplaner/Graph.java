@@ -21,6 +21,7 @@ public class Graph {
 	private double[] compressedEdgeArray;
 	//private double[][] edgeArray;
 	private int[] nodeArray;// save the corrosponding edge index of edgeArray
+	private int[] targetNodeArray;
 
 	public Graph(String path) {
 		System.out.println();
@@ -49,6 +50,7 @@ public class Graph {
 			longitude = new double[nodeNr];
 			nrOfOutgoingEdges = new int[nodeNr];
 			compressedEdgeArray = new double[edgeNr * lengthOfEdgeElement];
+			targetNodeArray= new int[edgeNr * lengthOfEdgeElement];
 			nodeArray = new int[nodeNr];
 			//edgeArray = new double[edgeNr][2 + nrOfMetrik];
 			
@@ -63,7 +65,7 @@ public class Graph {
 				longitude[i] = Double.valueOf(tempString[3]);
 				nodeArray[i] = -1;
 			}
-			// fill edgeArray and compressedEdgeArray
+			// fill  compressedEdgeArray
 			int index = 0;
 			int startNode = -1;
 			int newStartNode = -1;
@@ -83,6 +85,7 @@ public class Graph {
 				endNode = Integer.parseInt(tempStringArray[1]);
 				nrOfOutgoingEdges[startNode]++;//count the number of outgoing edges
 				compressedEdgeArray[index] = endNode;
+				targetNodeArray[index] = endNode;
 				index++;
 				
 				//edgeArray[i][0] = newStartNode;
@@ -102,6 +105,10 @@ public class Graph {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+	}
+
+	int[] getTargetNodeArray(){
+		return this.targetNodeArray;
 	}
 
 	double[] getCompressedEdgeArray() {
