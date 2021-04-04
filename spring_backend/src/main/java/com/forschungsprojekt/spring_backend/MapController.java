@@ -1,8 +1,12 @@
 package com.forschungsprojekt.spring_backend;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
+
 import com.forschungsprojekt.spring_backend.localization.Quadtree;
 import com.forschungsprojekt.spring_backend.routerplaner.AStar_Standard;
 import com.forschungsprojekt.spring_backend.routerplaner.Dijkstra;
@@ -19,8 +23,6 @@ public class MapController {
     Graph graph;
     Quadtree quadtree;
     AStar_Standard aStar;
-
-
     String decodedpath;
     // dummy string format be: [[long, lat),(long, lat),(long,lat).... due Geojson
     // reading in that format
@@ -71,11 +73,19 @@ public class MapController {
     @CrossOrigin(origins = "http://localhost:4200")
     @RequestMapping("/astarload")
     @ResponseBody
-    public String sendAstar(  @RequestParam(name = "type") String type,
-            @RequestParam(name = "landmark") int landmark) {
-        // type is now Standard and ALT
-
-        aStar = new AStar_Standard(graph, type, landmark);
+    public String sendAstar(  @RequestParam(name = "type") String type) {
+        // type is now Standard or ALT
+        int landmark=2;
+        try {
+			BufferedReader br = new BufferedReader(new FileReader("./spring_backend/src/main/resources/NrLandmarks.txt"));
+			 String line = br.readLine();
+             landmark= Integer.parseInt(line);
+            System.out.println(landmark); 
+            aStar = new AStar_Standard(graph, type, landmark);
+            br.close();
+        }catch (IOException e) {
+			e.printStackTrace();
+		}
         return "loaded";
     }
 

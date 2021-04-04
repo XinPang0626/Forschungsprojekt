@@ -139,8 +139,8 @@ export class MapComponent implements AfterViewInit {
     }
   }
 
-  loadASTAR(landmark: number, candidate: number) {
-    this.mapservice.loadAstar(this.astartype, landmark).subscribe(data => {
+  loadASTAR() {
+    this.mapservice.loadAstar(this.astartype).subscribe(data => {
       let astar = data;
       console.log(astar);
     });
