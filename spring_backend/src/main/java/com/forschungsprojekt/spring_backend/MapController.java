@@ -27,7 +27,6 @@ public class MapController {
     String cordinates = "[[-104.98809814453125, 39.76632525654491],[-104.9359130859375,39.751017451967144],[-104.974365234375, 39.720919782725545]]";
 
     /**
-     * 
      * @param path builds graph and quadtree once, so it doesn't need to be builld
      * @return moves to the center of the new map in frontend
      */
@@ -44,11 +43,10 @@ public class MapController {
 
     /**
      * calls Dijkstra algorithm when triggered
-     * 
      * @param start id
      * @param end   id
      * @param alpha
-     * @return
+     * @return cordinates 
      */
     @CrossOrigin(origins = "http://localhost:4200")
     @RequestMapping("/dij")
@@ -67,7 +65,7 @@ public class MapController {
     }
 
     /**
-     * TODO load the first pre-calculation of A* 
+     * load the first pre-calculation of A* 
      * 
      */
     @CrossOrigin(origins = "http://localhost:4200")
@@ -81,7 +79,7 @@ public class MapController {
         return "loaded";
     }
 
-    /**TODO
+    /**
      * aktualisiere mit neuen Node start und end feld nur nachdem man sendAstar
      * aufgerufen wird
      */
@@ -102,7 +100,7 @@ public class MapController {
     }
 
     /**
-     * TODO: Falls loading auch für Koordinaten senden gilt, dann kann wird später die restlichen Paramter entfernt, Sodass diese nur start und end parameter hat
+     *
      * @param start
      * @param end
      * @param alpha
