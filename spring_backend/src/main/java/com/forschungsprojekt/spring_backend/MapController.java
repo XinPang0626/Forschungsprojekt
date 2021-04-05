@@ -1,8 +1,12 @@
 package com.forschungsprojekt.spring_backend;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
+
 import com.forschungsprojekt.spring_backend.localization.Quadtree;
 import com.forschungsprojekt.spring_backend.routerplaner.AStar_Standard;
 import com.forschungsprojekt.spring_backend.routerplaner.Dijkstra;
@@ -19,15 +23,12 @@ public class MapController {
     Graph graph;
     Quadtree quadtree;
     AStar_Standard aStar;
-
-
     String decodedpath;
     // dummy string format be: [[long, lat),(long, lat),(long,lat).... due Geojson
     // reading in that format
     String cordinates = "[[-104.98809814453125, 39.76632525654491],[-104.9359130859375,39.751017451967144],[-104.974365234375, 39.720919782725545]]";
 
     /**
-     * 
      * @param path builds graph and quadtree once, so it doesn't need to be builld
      * @return moves to the center of the new map in frontend
      */
@@ -44,11 +45,10 @@ public class MapController {
 
     /**
      * calls Dijkstra algorithm when triggered
-     * 
      * @param start id
      * @param end   id
      * @param alpha
-     * @return
+     * @return cordinates 
      */
     @CrossOrigin(origins = "http://localhost:4200")
     @RequestMapping("/dij")
@@ -67,21 +67,29 @@ public class MapController {
     }
 
     /**
-     * TODO load the first pre-calculation of A* 
+     * load the first pre-calculation of A* 
      * 
      */
     @CrossOrigin(origins = "http://localhost:4200")
     @RequestMapping("/astarload")
     @ResponseBody
-    public String sendAstar(  @RequestParam(name = "type") String type,
-            @RequestParam(name = "landmark") int landmark) {
-        // type is now Standard and ALT
-
-        aStar = new AStar_Standard(graph, type, landmark);
+    public String sendAstar(  @RequestParam(name = "type") String type) {
+        // type is now Standard or ALT
+        int landmark=2;
+        try {
+			BufferedReader br = new BufferedReader(new FileReader("./spring_backend/src/main/resources/NrLandmarks.txt"));
+			 String line = br.readLine();
+             landmark= Integer.parseInt(line);
+            System.out.println(landmark); 
+            aStar = new AStar_Standard(graph, type, landmark);
+            br.close();
+        }catch (IOException e) {
+			e.printStackTrace();
+		}
         return "loaded";
     }
 
-    /**TODO
+    /**
      * aktualisiere mit neuen Node start und end feld nur nachdem man sendAstar
      * aufgerufen wird
      */
@@ -102,7 +110,7 @@ public class MapController {
     }
 
     /**
-     * TODO: Falls loading auch für Koordinaten senden gilt, dann kann wird später die restlichen Paramter entfernt, Sodass diese nur start und end parameter hat
+     *
      * @param start
      * @param end
      * @param alpha

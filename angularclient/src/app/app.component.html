@@ -3,7 +3,7 @@
   <button class="button" (click)="appMap.sendpath(input.value)">send Path</button>
   <div id="space"></div>
   <button class="button" (click)="appMap.computeDij(start.value,end.value,alpha.value)"> compute Dijkstra </button>
-  <button class="button" (click)="appMap.loadASTAR(landmark.value)">load A*</button>
+  <button class="button" (click)="appMap.loadASTAR()">load A*</button>
   <button class="button" (click)="appMap.computeASTARPATH(start.value,end.value, alpha.value)">compute A* path</button>
 
   <div class="flex"> 
@@ -31,16 +31,6 @@
       <span class="checkmark"></span>
     </label>
   </fieldset>
-  <div class="flex"> 
-    <label class="text">landmarks: </label>
-    <div class="block"></div>
-   
-    </div>
-
-    <div class="flex"> 
-      <input #landmark max="4" min="1" class="input_number" placeholder="1-4" type="number" />
-      </div>
-  
   <label class="text"> start: lat: {{appMap.startla}} <br>long: {{appMap.startlong}} </label>
   <button class="button" (click)="appMap.havestart()">{{appMap.startbutton}} </button>
   <label class="text"> end: lat: {{appMap.endla}} <br>long: {{appMap.endlong}} </label>
