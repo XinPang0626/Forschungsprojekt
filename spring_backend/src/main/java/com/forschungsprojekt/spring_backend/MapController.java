@@ -24,6 +24,8 @@ public class MapController {
     Quadtree quadtree;
     AStar_Standard aStar;
     String decodedpath;
+    int endPoint;
+    int startPoint;
     // dummy string format be: [[long, lat),(long, lat),(long,lat).... due Geojson
     // reading in that format
     String cordinates = "[[-104.98809814453125, 39.76632525654491],[-104.9359130859375,39.751017451967144],[-104.974365234375, 39.720919782725545]]";
@@ -42,6 +44,28 @@ public class MapController {
         quadtree = new Quadtree(decodedpath);
         return "[[" + graph.getLongitude(0) + "," + graph.getLatitude(0) + "]]";
     }
+
+    @CrossOrigin(origins = "http://localhost:4200")
+    @RequestMapping(value = "/apicor")
+    @ResponseBody
+    public String sendPoint(@RequestParam(name = "point") String point, @RequestParam(name = "startOrend") String startOrend) {
+        
+        String[] latLon = point.split(" ");
+        double[] doubleLatLon = Arrays.stream(latLon).mapToDouble(Double::parseDouble).toArray();
+        double lat = doubleLatLon[0];
+        double lon = doubleLatLon[1];
+        int pointID = quadtree.nextNeighborWithReset(lat, lon);
+        System.out.println(pointID + " lat;" + lat + " long:" + lon);
+      
+        if(startOrend.equals("start")){
+            startPoint=pointID;
+        }else if(startOrend.equals("end")){
+            endPoint=pointID;
+        }
+
+        return "[[" + graph.getLongitude(pointID) + "," + graph.getLatitude(pointID) + "]]";
+    }
+
 
     /**
      * calls Dijkstra algorithm when triggered
@@ -124,23 +148,9 @@ public class MapController {
     @ResponseBody
     public String sendAstarcor(@RequestParam(name = "start") String start, @RequestParam(name = "end") String end, @RequestParam(name = "alpha") String alpha) {
         // type is now Standard and ALT
-        System.out.println("computing A*");
-
-    
+        System.out.println("computing A* from "+startPoint+ "-"+endPoint);
         String[] alphaStringArray = alpha.split(" ");//split the value of cost vector in String
         double[] doubleAlpha = Arrays.stream(alphaStringArray).mapToDouble(Double::parseDouble).toArray();//convert String value to double
-        String[] startLatLon = start.split(" ");//split the coordinate of start point from user
-        double[] doubleStartLatLon = Arrays.stream(startLatLon).mapToDouble(Double::parseDouble).toArray();//convert coordinate to double value
-        double startLat = doubleStartLatLon[0];//get the latitude of start point in double
-        double startLon = doubleStartLatLon[1];//get the longtitude of start point in double
-        int startPoint = quadtree.nextNeighborWithReset(startLat, startLon);//compute the coorespond point in datastructure/quadtree
-
-        String[] endLatLon = end.split(" ");//split the coordinate of end point
-        double[] doubleEndLatLon = Arrays.stream(endLatLon).mapToDouble(Double::parseDouble).toArray();//convert coordinate to double value
-        double endLat = doubleEndLatLon[0];//get the latitude of end point in double
-        double endLon = doubleEndLatLon[1];//get the longtitud of end point in double
-        int endPoint = quadtree.nextNeighborWithReset(endLat, endLon);//compute the coorespind point in datastructure/quadtree
-
         
         aStar.setStart(startPoint);
         aStar.setTarget(endPoint);
@@ -164,19 +174,7 @@ public class MapController {
 
         String[] alphaStringArray = alpha.split(" ");
         double[] doubleAlpha = Arrays.stream(alphaStringArray).mapToDouble(Double::parseDouble).toArray();
-        String[] startLatLon = start.split(" ");
-        double[] doubleStartLatLon = Arrays.stream(startLatLon).mapToDouble(Double::parseDouble).toArray();
-        double startLat = doubleStartLatLon[0];
-        double startLon = doubleStartLatLon[1];
-        int startPoint = quadtree.nextNeighborWithReset(startLat, startLon);
-        System.out.println(startPoint + " lat;" + startLat + " long:" + startLon);
-
-        String[] endLatLon = end.split(" ");
-        double[] doubleEndLatLon = Arrays.stream(endLatLon).mapToDouble(Double::parseDouble).toArray();
-        double endLat = doubleEndLatLon[0];
-        double endLon = doubleEndLatLon[1];
-        int endPoint = quadtree.nextNeighborWithReset(endLat, endLon);
-        System.out.println(endPoint + " lat;" + endLat + " long:" + endLon);
+        
 
         Dijkstra dij = new Dijkstra(quadtree.getGraph(), startPoint, doubleAlpha);
         cordinates = dij.getShortestPathInLonLat(endPoint);

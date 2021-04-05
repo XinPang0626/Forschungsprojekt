@@ -12,6 +12,7 @@ export class MapService {
   private astarURL:string;
   private dijCorURL:string;
   private astarCorURL:string;
+  private pointURL:string;
    HTTPOptions:Object = {
 
     headers: new HttpHeaders({
@@ -28,6 +29,7 @@ export class MapService {
     this.astarpathURL='http://localhost:8080/astarpath?';
     this.dijCorURL='http://localhost:8080/dijcor?';
     this.astarCorURL='http://localhost:8080/astarcor?'
+    this.pointURL='http://localhost:8080/apicor?point=';
   }
 
   public getNodes(path:string){
@@ -45,6 +47,9 @@ export class MapService {
     
   public getAstarpath( start:number, end:number, alpha:string): Observable<string> {
       return this.http.get<string>(this.astarpathURL+"start="+start+"&end="+end+"&alpha="+alpha, this.HTTPOptions);}
+
+  public getPoint( cordinatespoint:string, startorend:string): Observable<string> {
+        return this.http.get<string>(this.pointURL+cordinatespoint+"&startOrend="+startorend, this.HTTPOptions);}
         
    
   public getAstarcorpath( start:string, end:string, alpha:string): Observable<string> {
