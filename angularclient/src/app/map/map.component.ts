@@ -58,6 +58,7 @@ export class MapComponent implements AfterViewInit {
     "weight": 5,
     "opacity": 0.65
   };
+  
 
   
 
@@ -208,17 +209,59 @@ export class MapComponent implements AfterViewInit {
     return line;
   }
 
-  makeaLINE(nodearray: number[][], myStyle) {
-    //remove previous line on map
-    this.geoJsonLayer.removeLayer(this.geoJSONdataLine);
-    this.geoJsonLayer.removeLayer(this.geoJSONdataEnd);
-    this.geoJsonLayer.removeLayer(this.geoJSONdataStart);
+  findDot(cordinates:string, isStart:string){
     var mypointStylestart = {
       radius: 10,
       fillColor: "#6BBA29",
       color: "#A9EC71",
     };
-    var mypointStylesend = {
+     var mypointStylesend = {
+      radius: 10,
+      fillColor: "#FF5733",
+      color: "#C70039",
+    };
+    let pointarray;
+    let PointgeoJson;
+    this.geoJsonLayer.removeLayer(this.geoJSONdataLine);
+    this.mapservice.getPoint(cordinates, isStart).subscribe(data => {
+      let nodeString = data;
+      console.log(nodeString);
+       pointarray = this.parseNodeString(nodeString);
+       PointgeoJson= this.returnPointJson(pointarray[0][0], pointarray[0][1]);
+       switch(isStart){
+        case "start":
+          this.geoJsonLayer.removeLayer(this.geoJSONdataStart);
+          this.geoJSONdataStart=L.geoJSON(PointgeoJson, { pointToLayer: function (feature, latlng) {
+            return L.circleMarker(latlng, mypointStylestart);}}).addTo(this.map);
+          console.log("hhh")
+            this.geoJsonLayer.addLayer(this.geoJSONdataStart);
+            break;
+        case "end":
+          this.geoJsonLayer.removeLayer(this.geoJSONdataEnd);
+          this.geoJSONdataEnd=L.geoJSON(PointgeoJson, { pointToLayer: function (feature, latlng) {
+                return L.circleMarker(latlng, mypointStylesend);}}).addTo(this.map);
+          this.geoJsonLayer.addLayer(this.geoJSONdataEnd);
+          break;
+      }
+      this.geoJSONdataLine= L.geoJSON(this.returnLineJson([])).addTo(this.map);
+      this.geoJsonLayer.addLayer(this.geoJSONdataLine);
+    });
+
+  }
+
+
+  makeaLINE(nodearray: number[][], myStyle) {
+    //remove previous line on map
+    this.geoJsonLayer.removeLayer(this.geoJSONdataLine);
+    this.geoJsonLayer.removeLayer(this.geoJSONdataEnd);
+    this.geoJsonLayer.removeLayer(this.geoJSONdataStart);
+     
+    var mypointStylestart = {
+      radius: 10,
+      fillColor: "#6BBA29",
+      color: "#A9EC71",
+    };
+     var mypointStylesend = {
       radius: 10,
       fillColor: "#FF5733",
       color: "#C70039",
@@ -226,8 +269,8 @@ export class MapComponent implements AfterViewInit {
 
     this.changeMapp(nodearray[0][1],  nodearray[0][0]);
     //start node and goal node
-    var Pointstart= this.returnPointJson(nodearray[0][0],nodearray[0][1]);
-    var Pointend=this.returnPointJson(nodearray[nodearray.length-1][0], nodearray[nodearray.length-1][1]);
+    var Pointstart= this.returnPointJson(nodearray[nodearray.length-1][0], nodearray[nodearray.length-1][1]);
+    var Pointend=this.returnPointJson(nodearray[0][0],nodearray[0][1]);
     var myLines= this.returnLineJson(nodearray);
    
     this.geoJSONdataLine= L.geoJSON(myLines, {style: myStyle  }).addTo(this.map);
@@ -272,9 +315,7 @@ export class MapComponent implements AfterViewInit {
     this.geoJsonLayer= new L.LayerGroup();
 
     var emptydot= this.returnPointJson(0,0);
-    var emptyline= this.returnLineJson([]);
-
-    this.geoJSONdataLine= L.geoJSON(emptyline).addTo(this.map);
+    this.geoJSONdataLine= L.geoJSON(this.returnLineJson([])).addTo(this.map);
     this.geoJSONdataStart=L.geoJSON(emptydot, {
       pointToLayer: function (feature, latlng) {
           return L.circleMarker(latlng, hiddenpoint);}}).addTo(this.map);
@@ -304,12 +345,14 @@ export class MapComponent implements AfterViewInit {
             this.startla = e.latlng.lat.toFixed(4);
             this.startlong = e.latlng.lng.toFixed(4);
             this.startcor = this.startla + ' ' + this.startlong;
+            this.findDot(this.startcor,"start");
 
           }
           if (this.endchange) {
             this.endla = e.latlng.lat.toFixed(4);
             this.endlong = e.latlng.lng.toFixed(4);
             this.endcor = this.endla + ' ' + this.endlong;
+            this.findDot(this.endcor,"end");
           }
           container.innerHTML = `
           <h2>Latitude is 

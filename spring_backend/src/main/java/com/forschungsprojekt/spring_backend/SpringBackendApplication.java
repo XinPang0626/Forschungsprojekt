@@ -14,7 +14,12 @@ public class SpringBackendApplication implements CommandLineRunner {
 	@Override
 	public void run(String... args) throws Exception {
 		// TODO Auto-generated method stub
+	}
 
+	public String read(String path){
+		String file="";
+     //TODO
+		return file;
 	}
 
 }
