@@ -1,8 +1,4 @@
 package com.forschungsprojekt.spring_backend;
-
-
-import java.net.URLDecoder;
-import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 
 import com.forschungsprojekt.spring_backend.localization.Quadtree;
@@ -39,7 +35,7 @@ public class MapController {
        quadtree= new Quadtree(ReadConfig.filepath);
        landmarks= ReadConfig.nrLandmarks;
 
-       aStar_Standard= new AStar_Standard(graph, "Standard", ReadConfig.nrLandmarks);
+       aStar_Standard= new AStar_Standard(graph, "Standard", 0);
        aStar_Alt= new AStar_Standard(graph, "ALT", ReadConfig.nrLandmarks);
       
       
