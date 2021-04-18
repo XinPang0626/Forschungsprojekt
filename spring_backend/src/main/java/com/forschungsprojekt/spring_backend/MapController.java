@@ -31,15 +31,16 @@ public class MapController {
 
 		SpringApplication.run(SpringBackendApplication.class, args);
         ReadConfig.read("./spring_backend/src/main/resources/config.txt");
-       graph= new Graph(ReadConfig.filepath);
-       quadtree= new Quadtree(ReadConfig.filepath);
-       landmarks= ReadConfig.nrLandmarks;
-
-       aStar_Standard= new AStar_Standard(graph, "Standard", 0);
-       aStar_Alt= new AStar_Standard(graph, "ALT", ReadConfig.nrLandmarks);
-      
-      
+       start();
 	}
+
+    public static void start(){
+        graph= new Graph(ReadConfig.filepath);
+        quadtree= new Quadtree(ReadConfig.filepath);
+        aStar_Alt= new AStar_Standard(graph, "ALT", ReadConfig.nrLandmarks);
+        aStar_Standard= new AStar_Standard(graph, "Standard", 0);  
+
+    }
 
     /**
      * @return moves to the center of the new map in frontend
@@ -47,7 +48,8 @@ public class MapController {
     @CrossOrigin(origins = "http://localhost:4200")
     @RequestMapping(value = "/api")
     @ResponseBody
-    public String sendCordinates() {
+    public String sendCordinates() {  
+       
         return "[[" + graph.getLongitude(0) + "," + graph.getLatitude(0) + "]]";
     }
 
