@@ -1,9 +1,7 @@
 <div class="sidenav">
-  <input #input class="input-box" placeholder="enter path to file" />
-  <button class="button" (click)="appMap.sendpath(input.value)">send Path</button>
+  <button class="button" (click)="appMap.sendpath()">center to map</button>
   <div id="space"></div>
   <button class="button" (click)="appMap.computeDij(start.value,end.value,alpha.value)"> compute Dijkstra </button>
-  <button class="button" (click)="appMap.loadASTAR()">load A*</button>
   <button class="button" (click)="appMap.computeASTARPATH(start.value,end.value, alpha.value)">compute A* path</button>
 
   <div class="flex"> 
