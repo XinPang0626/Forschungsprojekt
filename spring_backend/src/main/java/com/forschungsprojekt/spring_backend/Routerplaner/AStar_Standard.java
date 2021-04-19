@@ -33,10 +33,10 @@ public class AStar_Standard {
 		this.nrOfCandidate = new int[nrOfLandmark][graph.getNodeNr()];//initialize with zero's
 		this.heuristic = heuristic;
 
-		for (int i = 0; i < graph.getNodeNr(); i++) {
-			g[i] = Double.MAX_VALUE;
-			parent[i] = -1; // no parent
-		}
+		// for (int i = 0; i < graph.getNodeNr(); i++) {
+		// 	g[i] = Double.MAX_VALUE;
+		// 	parent[i] = -1; // no parent
+		// }
 		
 		if(heuristic.equals("ALT")){
 			this.landmark = new int[nrOfLandmark];
@@ -54,6 +54,7 @@ public class AStar_Standard {
 		}
 	}
 
+
 	public void setStart(int startId){
 		this.start = startId;
 	}
@@ -67,6 +68,10 @@ public class AStar_Standard {
 		for (int i = 0; i < modifiedNode.size(); i++) {
 			g[modifiedNode.get(i)] = Double.MAX_VALUE;
 			parent[modifiedNode.get(i)] = -1;
+		}
+		for (int i = 0; i < graph.getNodeNr(); i++) {
+			g[i] = Double.MAX_VALUE;
+			parent[i] = -1; // no parent
 		}
 		parent[start] = start;
 		g[start] = 0.0;
@@ -162,10 +167,11 @@ public class AStar_Standard {
 			backwardPath[i] = -1;
 		}
 		backwardPath[0] = target;
+		int tempParent = target;
 		int i;
-		for( i = 1; parent[target] != start; i++) {
-			backwardPath[i] = parent[target];
-			target = parent[target];
+		for( i = 1; parent[tempParent] != start; i++) {
+			backwardPath[i] = parent[tempParent];
+			tempParent= parent[tempParent];
 		}
 		backwardPath[i] = start;
 		return backwardPath;
@@ -174,9 +180,8 @@ public class AStar_Standard {
 	public String getShortestPathInLonLat(int target){
 		int[] path = getShortestPathTo(target);
 		int pathLength = 0;
-		for(int i = 0; i < path.length; i++) {
-			if(path[i] != -1)
-				pathLength++;
+		for(int i = 0; i < path.length && path[i] != -1; i++) {
+			pathLength++;
 		}
 		double[][] shortestPathInLonLat = new double[pathLength][2];
 		for(int i = 0; i < pathLength; i++) {
@@ -429,32 +434,13 @@ public class AStar_Standard {
 		return nrOfCandidate;
 	}
 
-
-	public static void main(String[] args) {
-		Graph g = new Graph("/Users/xinpang/Desktop/Studium/5. Semester/FP/graph-files/bremen.txt");
-		int start = 23489;
-		int end = 567;
-		AStar_Standard aStar = new AStar_Standard(g, "ALT", 1);
-		aStar.setStart(start);
-		aStar.setTarget(end);
-		double[] alpha = {0.5, 0.5};
-		aStar.setAlpha(alpha);
-
-		System.out.println(Arrays.deepToString(aStar.landmarkDistance.get(0).get(aStar.landmark[0]+1).toArray()));
-
-		long sTime = System.currentTimeMillis();
-		aStar.compute();
-		long eTime = System.currentTimeMillis();
-		long time = eTime - sTime;
-		System.out.println("aStar with ALT Computation took ["+time+"] milli seconds");
-		System.out.println(aStar.getShortestPathInLonLat(end));
-
+	public void getMaxCandidatesArray(){
 		int maxNrOfCandi = 0;
 		int lmWithMaxCandi = 0;
 		int nodeWithMaxCandi = 0;
-		int[][] nrOfCandiMatrix = aStar.getNrOfCandiMaxtrix();
-		for(int i = 0; i < aStar.nrOfLandmark; i++){
-			for (int j = 0; j < g.getNodeNr(); j++) {
+		int[][] nrOfCandiMatrix = getNrOfCandiMaxtrix();
+		for(int i = 0; i < nrOfLandmark; i++){
+			for (int j = 0; j < graph.getNodeNr(); j++) {
 				if(nrOfCandiMatrix[i][j] > maxNrOfCandi){
 					maxNrOfCandi = nrOfCandiMatrix[i][j];
 					lmWithMaxCandi = i;
@@ -465,17 +451,53 @@ public class AStar_Standard {
 		System.out.println("max number of candidate:");
 		System.out.println(maxNrOfCandi);
 		System.out.println("longest candidate list:");
-		System.out.println(Arrays.deepToString(aStar.landmarkDistance.get(lmWithMaxCandi).get(nodeWithMaxCandi).toArray()));
-		
+		System.out.println(Arrays.deepToString(landmarkDistance.get(lmWithMaxCandi).get(nodeWithMaxCandi).toArray()));
 	}
 
-	// public static void main(String[] args) {
-	// 	CHFilter filter = new CHFilter(2);
-	// 	double[] v1 = {Double.MAX_VALUE, Double.MAX_VALUE};
-	// 	double[] v2 = {1, 20};
-	// 	filter.addVertex(v1);
-	// 	filter.addVertex(v2);
-	// 	System.out.println(Arrays.deepToString(filter.getFilteredVertices().toArray()));
-	// }
+	public static void main(String[] args) {
+		Graph g = new Graph("/Users/xinpang/Desktop/Studium/5. Semester/FP/graph-files/bremen.txt");
+		int start = 23489;
+		int end = 11111;
+		AStar_Standard aStar = new AStar_Standard(g, "ALT", 1);
+		aStar.setStart(start);
+		aStar.setTarget(end);
+		double[] alpha = {0.5, 0.5};
+		aStar.setAlpha(alpha);
+
+		//System.out.println(Arrays.deepToString(aStar.landmarkDistance.get(0).get(aStar.landmark[0]+1).toArray()));
+
+		long sTime = System.currentTimeMillis();
+		aStar.compute();
+		long eTime = System.currentTimeMillis();
+		long time = eTime - sTime;
+		System.out.println("aStar with ALT Computation took ["+time+"] milli seconds");
+		System.out.println(aStar.getShortestPathInLonLat(end));
+
+		start = 12312;
+		end = 34235;
+		aStar.setStart(start);
+		aStar.setTarget(end);
+		sTime = System.currentTimeMillis();
+		aStar.compute();
+		eTime = System.currentTimeMillis();
+		time = eTime - sTime;
+		System.out.println("aStar with ALT Computation took ["+time+"] milli seconds");
+		System.out.println(aStar.getShortestPathInLonLat(end));
+
+		start = 4712;
+		end = 22721;
+		aStar.setStart(start);
+		aStar.setTarget(end);
+		sTime = System.currentTimeMillis();
+		aStar.compute();
+		eTime = System.currentTimeMillis();
+		time = eTime - sTime;
+		System.out.println("aStar with ALT Computation took ["+time+"] milli seconds");
+		System.out.println(aStar.getShortestPathInLonLat(end));
+
+		aStar.getMaxCandidatesArray();
+		
+		
+	}
 }
 
