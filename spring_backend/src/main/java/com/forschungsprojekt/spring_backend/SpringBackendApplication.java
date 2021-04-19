@@ -16,10 +16,6 @@ public class SpringBackendApplication implements CommandLineRunner {
 		// TODO Auto-generated method stub
 	}
 
-	public String read(String path){
-		String file="";
-     //TODO
-		return file;
-	}
+	
 
 }

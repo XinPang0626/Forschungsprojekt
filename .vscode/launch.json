@@ -6,9 +6,9 @@
     "configurations": [
         {
             "type": "java",
-            "name": "Launch Test",
+            "name": "Launch ReadConfig",
             "request": "launch",
-            "mainClass": "com.forschungsprojekt.spring_backend.test.Test",
+            "mainClass": "com.forschungsprojekt.spring_backend.ReadConfig",
             "projectName": "spring_backend"
         },
         {

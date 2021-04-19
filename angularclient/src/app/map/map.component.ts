@@ -140,19 +140,14 @@ export class MapComponent implements AfterViewInit {
     }
   }
 
-  loadASTAR() {
-    this.mapservice.loadAstar(this.astartype).subscribe(data => {
-      let astar = data;
-      console.log(astar);
-    });
-  }
+ 
 
   computeASTARPATH(start: number, end: number, alpha: string) {
     var astar: string;
     var array: number[][];
 
     if (!(start == -1 || end == -1) && this.loaded) {
-      this.mapservice.getAstarpath(start, end, alpha).subscribe(data => {
+      this.mapservice.getAstarpath(start, end, alpha, this.astartype).subscribe(data => {
         astar = data;
         console.log(astar);
         array = this.parseNodeString(astar);
@@ -164,7 +159,7 @@ export class MapComponent implements AfterViewInit {
         alert("Please enter a start id and end id or chose cordinates for start and end")
       } else {
         console.log('using cordinates to get path ' + this.startcor + ' ' + this.endcor);
-        this.mapservice.getAstarcorpath(this.startcor, this.endcor, alpha).subscribe(data => {
+        this.mapservice.getAstarcorpath(this.startcor, this.endcor, alpha, this.astartype).subscribe(data => {
           astar = data;
           console.log(astar);
           array = this.parseNodeString(astar);
@@ -289,24 +284,16 @@ export class MapComponent implements AfterViewInit {
     this.map.panTo(new L.LatLng(la, lng));
   }
 
-  sendpath(input: string) {
-    if (input.endsWith('.graph')) {
-      console.log(input);
-      this.url = encodeURI(input);
-      console.log(this.url);
-      this.mapservice.getNodes(this.url).subscribe(data => {
+  sendpath() {
+      this.mapservice.getNodes().subscribe(data => {
         this.nodeString = data;
         console.log(this.nodeString);
         var nodearray = this.parseNodeString(this.nodeString);
-     
         this.changeMapp(nodearray[0][1], nodearray[0][0]);
-       
         console.log("graph and quadtree are build");
         this.loaded = true;
       })
-    } else {
-      alert('this is not a valid path');
-    }
+   
   }
 
   private initGeoJsonlayer():void{

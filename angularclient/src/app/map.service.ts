@@ -23,7 +23,7 @@ export class MapService {
   astarpathURL: string;
 
   constructor(private http: HttpClient) {
-    this.cordinatesURL = 'http://localhost:8080/api?path=';
+    this.cordinatesURL = 'http://localhost:8080/api';
     this.dijURL='http://localhost:8080/dij?';
     this.astarURL='http://localhost:8080/astarload?';
     this.astarpathURL='http://localhost:8080/astarpath?';
@@ -32,8 +32,8 @@ export class MapService {
     this.pointURL='http://localhost:8080/apicor?point=';
   }
 
-  public getNodes(path:string){
-    return this.http.get(this.cordinatesURL+path, this.HTTPOptions );
+  public getNodes(){
+    return this.http.get(this.cordinatesURL, this.HTTPOptions );
   }
 
   public getDijpath( start:number, end:number, alpha:string): Observable<string> {
@@ -42,17 +42,15 @@ export class MapService {
   public getDijcorpath( start:string, end:string, alpha:string): Observable<string> {
     return this.http.get<string>(this.dijCorURL+"start="+start+"&end="+end+"&alpha="+alpha, this.HTTPOptions);
   }
-  public loadAstar(type:string): Observable<string> {
-    return this.http.get<string>(this.astarURL+"type="+type, this.HTTPOptions);}
     
-  public getAstarpath( start:number, end:number, alpha:string): Observable<string> {
-      return this.http.get<string>(this.astarpathURL+"start="+start+"&end="+end+"&alpha="+alpha, this.HTTPOptions);}
+  public getAstarpath( start:number, end:number, alpha:string, type:string): Observable<string> {
+      return this.http.get<string>(this.astarpathURL+"start="+start+"&end="+end+"&alpha="+alpha+"&type="+type, this.HTTPOptions);}
 
   public getPoint( cordinatespoint:string, startorend:string): Observable<string> {
         return this.http.get<string>(this.pointURL+cordinatespoint+"&startOrend="+startorend, this.HTTPOptions);}
         
    
-  public getAstarcorpath( start:string, end:string, alpha:string): Observable<string> {
-    return this.http.get<string>(this.astarCorURL+"start="+start+"&end="+end+"&alpha="+alpha, this.HTTPOptions);} 
+  public getAstarcorpath( start:string, end:string, alpha:string, type:string): Observable<string> {
+    return this.http.get<string>(this.astarCorURL+"start="+start+"&end="+end+"&alpha="+alpha+"&type="+type, this.HTTPOptions);} 
 
 }
