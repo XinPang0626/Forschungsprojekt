@@ -3,7 +3,6 @@ package com.forschungsprojekt.spring_backend.routerplaner;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.Arrays;
 
 /**
  * read static Graph date from File represent it as Arrays
@@ -19,7 +18,6 @@ public class Graph {
 	private double[] longitude;
 	private int[] nrOfOutgoingEdges;
 	private double[] compressedEdgeArray;
-	//private double[][] edgeArray;
 	private int[] nodeArray;// save the corrosponding edge index of edgeArray
 	private int[] targetNodeArray;
 
@@ -52,7 +50,6 @@ public class Graph {
 			compressedEdgeArray = new double[edgeNr * lengthOfEdgeElement];
 			targetNodeArray= new int[edgeNr * lengthOfEdgeElement];
 			nodeArray = new int[nodeNr];
-			//edgeArray = new double[edgeNr][2 + nrOfMetrik];
 			
 			// fill nodeArray
 			for (int i = 0; i < nodeNr; i++) {// read lines of all nodes
@@ -88,11 +85,6 @@ public class Graph {
 				targetNodeArray[index] = endNode;
 				index++;
 				
-				//edgeArray[i][0] = newStartNode;
-				// edgeArray[i][1] = endNode;
-				// for(int j = 0; j < nrOfMetrik;j++){
-				// 	edgeArray[i][j+2] = Double.parseDouble(tempStringArray[2 + j]);
-				// }
 
 				for (int j = 0; j < nrOfMetrik; j++) {//add metric in edgearray
 					compressedEdgeArray[index] = Double.parseDouble(tempStringArray[2 + j]);
@@ -118,10 +110,6 @@ public class Graph {
 	int[] getNodeArray() {
 		return nodeArray;
 	}
-
-	// double[][] getEdgeArray(){
-	// 	return edgeArray;
-	// }
 
 	int getNrOfOutgoingEdges(int nodeID) {
 		return nrOfOutgoingEdges[nodeID];
@@ -152,33 +140,12 @@ public class Graph {
 		if (nrOfOutgoingEdges[nodeID] >= 1) {
 			int startIndex = nodeArray[nodeID];
 			int endIndex = getNrOfOutgoingEdges(nodeID) * lengthOfEdgeElement + startIndex;
-			//return Arrays.copyOfRange(compressedEdgeArray, startIndex, endIndex);
 			int[] startAndEnd = {startIndex, endIndex};
 			return startAndEnd;
 		}
 		return null;
 	}
 
-	// public int[] getNeighbours(int nodeId){
-	// 	int[] neighbours = new int[getNrOfOutgoingEdges(nodeId)];
-	// 	int[] out = getOutgoingEdgesArray(nodeId);
-	// 	for (int i = out[0]; i < out[1]; i+=lengthOfEdgeElement) {
-	// 		int j = 0;
-	// 		neighbours[j] = (int)compressedEdgeArray[i];
-	// 		j++;
-	// 	}
-	// 	return neighbours;
-	// }
-
-	/**
-	 * to return the number of outgoing edges for specific node
-	 * 
-	 * @param nodeID
-	 * @return the number of outgoing edges for the node
-	 */
-	// public int getNumberOfOutgoingEdge(int nodeID) {
-	// 	return nrOfOutgoingEdges[nodeID];
-	// }
 
 	public int getNrOFMetrik(){
 		return nrOfMetrik;
