@@ -2,9 +2,6 @@ package com.forschungsprojekt.spring_backend.routerplaner;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashSet;
-
 
 public class AStar_Standard {
 	private Graph graph;
@@ -32,11 +29,11 @@ public class AStar_Standard {
 		this.nrOfLandmark = nrOfLandmark;
 		this.nrOfCandidate = new int[nrOfLandmark][graph.getNodeNr()];//initialize with zero's
 		this.heuristic = heuristic;
-
-		// for (int i = 0; i < graph.getNodeNr(); i++) {
-		// 	g[i] = Double.MAX_VALUE;
-		// 	parent[i] = -1; // no parent
-		// }
+		modifiedNode = new ArrayList<>();
+		for (int i = 0; i < graph.getNodeNr(); i++) {
+			modifiedNode.add(i);
+		}
+		
 		
 		if(heuristic.equals("ALT")){
 			this.landmark = new int[nrOfLandmark];
@@ -64,15 +61,11 @@ public class AStar_Standard {
 	}
 
 	public void compute(){
-		modifiedNode = new ArrayList<>();
 		for (int i = 0; i < modifiedNode.size(); i++) {
 			g[modifiedNode.get(i)] = Double.MAX_VALUE;
 			parent[modifiedNode.get(i)] = -1;
 		}
-		for (int i = 0; i < graph.getNodeNr(); i++) {
-			g[i] = Double.MAX_VALUE;
-			parent[i] = -1; // no parent
-		}
+		modifiedNode = new ArrayList<>();
 		parent[start] = start;
 		g[start] = 0.0;
 		modifiedNode.add(start);
@@ -149,7 +142,7 @@ public class AStar_Standard {
 	}
 	
 	public double heuristicALT(int s, int t){
-		double h = lowestCostOfAllLandmarks(s, t, alpha);
+		double h = greatestCostOfAllLandmarks(s, t, alpha);
 		return h;
 	}
 	
@@ -201,60 +194,10 @@ public class AStar_Standard {
 		}
 		return true;
 	}
-	/**
-	 * check wether d1 is greater than d2 in every component 
-	 * @param d1
-	 * @param d2
-	 * @return
-	 */
-	private boolean strictGreaterThan(double[] d1, double[] d2){
-		boolean greater = true;
-		for (int i = 0; i < d2.length; i++) {
-			if(d1[i] < d2[i]){
-				return false;
-			}
-		}
-		return greater;
-	}
 
-	private boolean vectorAreEqual(double[] v1, double[] v2){
-		for (int i = 0; i < v2.length; i++) {
-			if(v1[i] != v2[i]){
-				return false;
-			}
-		}
-		return true;
-	}
 
-	// private boolean updateCandidate(int landmarkNr, int nodeNr, double[] newCost){
-	// 	boolean update = false;
-	// 	boolean replaced = false;
-	// 	for(int i = 0; i < landmarkDistance.get(landmarkNr).get(nodeNr).size(); i++){
-	// 		if(strictGreaterThan(newCost, landmarkDistance.get(landmarkNr).get(nodeNr).get(i))){
-	// 			return false;
-	// 		}
-	// 		if(strictLessThan(newCost, landmarkDistance.get(landmarkNr).get(nodeNr).get(i))){
-	// 			if(replaced){
-	// 				landmarkDistance.get(landmarkNr).get(nodeNr).remove(landmarkDistance.get(landmarkNr).get(nodeNr).get(i));
-	// 				nrOfCandidate[landmarkNr][nodeNr]--;
-	// 				//System.out.println("replaced");
-	// 				update = true;
-	// 			}else{
-	// 				landmarkDistance.get(landmarkNr).get(nodeNr).set(i, newCost);
-	// 				replaced = true;
-	// 				update = true;
-	// 				//System.out.println("seted");
-	// 			}
-	// 		}
-	// 	}
-	// 	if(!update){
-	// 		landmarkDistance.get(landmarkNr).get(nodeNr).add(newCost);
-	// 		nrOfCandidate[landmarkNr][nodeNr]++;
-	// 		//System.out.println("added cost");
-	// 		update = true;
-	// 	}
-	// 	return update;
-	// }
+
+
 
 	public boolean updateWithFilter(int landmarkNr, int nodeNr, double[] newCost){
 		filter = new CHFilter(graph.getNrOFMetrik());
@@ -300,7 +243,6 @@ public class AStar_Standard {
 				boolean globalChange = false;
 				boolean[] updateInNextIter = new boolean[graph.getNodeNr()];
 				for(int i = 0; i < graph.getNodeNr(); i++){
-					//double[] costVector = Arrays.copyOfRange(edgeArray[i], 2, 2+graph.getNrOFMetrik());
 					int[] out = graph.getOutgoingEdgesArrayIndex(i);
 					if(out != null){
 						int edgeBegin = i;
@@ -311,15 +253,10 @@ public class AStar_Standard {
 								candidates = landmarkDistance.get(landmarkId).get(edgeEnd);
 								for(double[] cost: candidates){
 									double[] newCost = addTwoVector(cost, costVector);
-									//updateInNextIter[(int)edgeArray[i][0]] = updateCandidate(landmarkId, (int)edgeArray[i][0], newCost);
-									updateInNextIter[edgeBegin] = updateInNextIter[edgeBegin] || updateWithFilter(landmarkId, edgeBegin, newCost);
-									// if(landmarkDistance.get(landmarkId).get((int)edgeArray[i][0]).addVertex(newCost)){
-									// 	updateInNextIter[(int)edgeArray[i][0]] = true;
-									// }
+									updateInNextIter[edgeBegin] = updateInNextIter[edgeBegin] || updateWithFilter(landmarkId, edgeBegin, newCost);									// }
 								}
 							}
 							globalChange = globalChange || updateInNextIter[edgeBegin];
-							//System.out.println("node: " + j + "edge: " + i);
 						}
 					}
 				}
@@ -332,14 +269,6 @@ public class AStar_Standard {
 		}
 	}
 
-	private boolean notInfinity(double[] cost){
-		for (int i = 0; i < cost.length; i++) {
-			if(cost[i] != Double.MAX_VALUE){
-				return true;
-			}
-		}
-		return false;
-	}
 
 	private boolean isLandmark(int nodeId){
 		for(int i : landmark){
@@ -350,16 +279,6 @@ public class AStar_Standard {
 		return false;
 	}
 
-	private int getLandmarkNr(int nodeId){
-		if(isLandmark(nodeId)){
-			for(int i = 0; i < landmark.length; i++){
-				if(landmark[i] == nodeId){
-					return i;
-				}
-			}
-		}
-		return -1;
-	}
 
 	private double[] addTwoVector(double[] v1, double[] v2){
 		double[] v3 = new double[v1.length];
@@ -415,14 +334,14 @@ public class AStar_Standard {
 		return lowestCost;
 	}
 
-	private double lowestCostOfAllLandmarks(int nodeId1,int nodeId2, double[] alpha){
-		double lowestCost = Double.MAX_VALUE;
+	private double greatestCostOfAllLandmarks(int nodeId1,int nodeId2, double[] alpha){
+		double greatestCost = Double.MIN_VALUE;
 		for(int i =0; i < landmark.length; i++){
-			if(lowestHeuristicToOneLandmark(i, nodeId1, nodeId2, alpha) < lowestCost){
-				lowestCost = lowestHeuristicToOneLandmark(i, nodeId1, nodeId2, alpha);
+			if(lowestHeuristicToOneLandmark(i, nodeId1, nodeId2, alpha) > greatestCost){
+				greatestCost = lowestHeuristicToOneLandmark(i, nodeId1, nodeId2, alpha);
 			}
 		}
-		return lowestCost;
+		return greatestCost;
 	}
 	
 	public ArrayList<double[]> getLandmarkDistance(int landmarkNr, int nodeId){

@@ -16,7 +16,7 @@ public class Dijkstra {
 	 * @param alpha
 	 */
 	public Dijkstra(Graph graph, int start, double[] alpha){
-		System.out.println("computing dijkstra...");
+		//System.out.println("computing dijkstra...");
 		long sTime = System.currentTimeMillis();
 		this.dis = new double[graph.getNodeNr()];
 		this.parent = new int[graph.getNodeNr()];
@@ -62,7 +62,7 @@ public class Dijkstra {
 		}
 		long eTime = System.currentTimeMillis();
 		long time = eTime - sTime;
-		System.out.println("Dijkstra Computation took ["+time+"] milli seconds");
+		//System.out.println("Dijkstra Computation took ["+time+"] milli seconds");
 		
 	}
 	
