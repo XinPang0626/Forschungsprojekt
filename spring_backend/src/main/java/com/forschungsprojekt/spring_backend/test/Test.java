@@ -1,4 +1,7 @@
 package com.forschungsprojekt.spring_backend.test;
+import java.io.File;  // Import the File class
+import java.io.IOException;  // Import the IOException class to handle errors
+import java.lang.reflect.Array;
 
 import com.forschungsprojekt.spring_backend.routerplaner.AStar_Standard;
 import com.forschungsprojekt.spring_backend.routerplaner.Dijkstra;
@@ -16,6 +19,7 @@ public class Test {
         /**
          * compare a* and dijkstra
          */
+        String[] results;
 
         int start = 123;
         int target = 5423;
@@ -30,12 +34,25 @@ public class Test {
 		long eTime = System.currentTimeMillis();
 		long time = eTime - sTime;
 		System.out.println("aStar with ALT Computation took ["+time+"] milli seconds");
+        
 
         sTime = System.currentTimeMillis();
 		d.getCostOfShortestPathTo(target);
 		eTime = System.currentTimeMillis();
 		time = eTime - sTime;
 		System.out.println("aStar with ALT Computation took ["+time+"] milli seconds");
+
+        try {
+            File myObj = new File("./spring_backend/src/main/resources/result.txt");
+            if (myObj.createNewFile()) {
+              System.out.println("File created: " + myObj.getName());
+            } else {
+              System.out.println("File already exists.");
+            }
+          } catch (IOException e) {
+            System.out.println("An error occurred.");
+            e.printStackTrace();
+          }
 
 
 
