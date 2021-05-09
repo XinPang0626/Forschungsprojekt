@@ -1,130 +1,226 @@
 package com.forschungsprojekt.spring_backend.test;
 
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
 import com.forschungsprojekt.spring_backend.routerplaner.AStar_Standard;
 import com.forschungsprojekt.spring_backend.routerplaner.Dijkstra;
 import com.forschungsprojekt.spring_backend.routerplaner.Graph;
 
 public class Test {
+    static List<String> result = new ArrayList<>();
     public static void main(String[] args) {
         /**
          * initialize the graph using the large map and do precalculation.
          * compute and print the time for precalculation.
          */
 
-        //Graph g = new Graph("/Users/xinpang/Desktop/Studium/5. Semester/Forschungsprojekt/graph-files/map.txt");//load large graph (bawu)
-        Graph g = new Graph("/Users/xinpang/Desktop/Studium/5. Semester/FP/graph-files/bremen.txt");//load small graph (bremen)
-        AStar_Standard aStar = new AStar_Standard(g, "ALT", 1);
+      
+        Graph g1 = new Graph("chaudhmz@nekton:/scratch/altprp/bawu_bicycle_3.txt");
+        Graph g2 = new Graph("chaudhmz@nekton:/scratch/altprp/bawu_car_3.txt");
+        Graph g3 = new Graph("chaudhmz@nekton:/scratch/altprp/bw_car_2.txt");
+        Graph g4 = new Graph("chaudhmz@nekton:/scratch/altprp/germany_car_2.txt");
+        
+        Graph g5 = new Graph("chaudhmz@nekton:/scratch/altprp/saarland_car_2.txt");
+        Graph g6 = new Graph("chaudhmz@nekton:/scratch/altprp/saarland_car_3.txt");
+        Graph g7 = new Graph("chaudhmz@nekton:/scratch/altprp/saarland_bicycle_3.txt");
 
-        /**
-         * compare a* and dijkstra
-         */
+        result.add("---BAWU BICYCLE 3 GRAPH---");
+        comparisonASTARdij(g1);
+        trialsAstar(g1);
 
-        int start = 123;
-        int target = 5423;
+        result.add("---BAWU CAR 3 GRAPH---");
+        comparisonASTARdij(g2);
+        trialsAstar(g2);
+
+        result.add("---BW CAR 2 GRAPH---");
+        comparisonASTARdij(g3);
+        trialsAstar(g3);
+
+        result.add("---GERMANY CAR 2 GRAPH---");
+        comparisonASTARdij(g4);
+        trialsAstar(g4);
+
+        result.add("---SAARLAND CAR 2 GRAPH---");
+        comparisonASTARdij(g5);
+        trialsAstar(g5);
+
+        result.add("---SAARLAND CAR 3 GRAPH---");
+        comparisonASTARdij(g6);
+        trialsAstar(g6);
+
+        result.add("---SAARLAND BICYCLE 3 GRAPH---");
+        comparisonASTARdij(g7);
+        trialsAstar(g7);
+
+
+
+        try {
+           
+            FileWriter myWriter = new FileWriter("./spring_backend/src/main/resources/RESULT.txt");
+
+            for(int i=0; i<result.size(); i++ ){
+                myWriter.write(result.get(i));
+
+            }
+            myWriter.write("Files in Java might be tricky, but it is fun enough!");
+            myWriter.close();
+            System.out.println("Successfully wrote to the file.");
+
+            
+            
+          } catch (IOException e) {
+            System.out.println("An error occurred.");
+            e.printStackTrace();
+          }
+
+             
+    }
+
+
+
+
+    public static void  trialsAstar( Graph g){
         double[] alpha = {0.5, 0.5};
-        aStar.setStart(start);
-		aStar.setTarget(target);
-		aStar.setAlpha(alpha);
-        
-        long totalTimeAStar = 0;
-        long totalTimedij = 0;
-        int nrOfTrial = 200;
-        for (int i = 0; i < nrOfTrial; i++) {
-            start = (int) Math.random() * g.getNodeNr(); //choose a random start point
-            target = (int) Math.random() * g.getNodeNr(); //choose a random target point
-            aStar.setStart(start);// set the start
-            aStar.setTarget(target);//set the target
 
-            //a*
-            long sTime = System.nanoTime();
-		    aStar.compute();
-            aStar.getShortestPathInLonLat(target);
-		    long eTime = System.nanoTime();
-		    long time = eTime - sTime;
-            totalTimeAStar += time;
-
-            //dijkstra
-            sTime = System.nanoTime();
-            Dijkstra d = new Dijkstra(g, start, alpha);
-		    d.getCostOfShortestPathTo(target);
-		    eTime = System.nanoTime();
-		    time = eTime - sTime;
-            totalTimedij += time;
-        }
-        long averageTimeAStar = totalTimeAStar / nrOfTrial;
-        long averageTimedij = totalTimedij  / nrOfTrial;
-        System.out.println("aStar with ALT Computation and path retrieval took in average ["+averageTimeAStar+"] nano seconds");
-        System.out.println("Dijkstra Computation and path retrieval took in average ["+averageTimedij+"] nano seconds");
-        /**
-         * In average and 200 trials:
-         * aStar with 1 landmark takes 377475 nano secs while dij takes 16606857 nano secs
-         */
-
-
-
-        /**
-         * campare aStar with 1, 2 and 4 landmarks
-         */
+        long preprocesstimestart=System.nanoTime();
         AStar_Standard aStarWithOneLandmark = new AStar_Standard(g, "ALT", 1);
-        AStar_Standard aStarWithTwoLandmark = new AStar_Standard(g, "ALT", 2);
-        AStar_Standard aStarWithFourLandmark = new AStar_Standard(g, "ALT", 4);
-        aStarWithOneLandmark.setAlpha(alpha);
-        aStarWithTwoLandmark.setAlpha(alpha);
-        aStarWithFourLandmark.setAlpha(alpha);
-        long totalTimeAStarWithOneLandmark = 0;
-        long totalTimeAStarWithTwoLandmark = 0;
-        long totalTimeAStarWithFourLandmark = 0;
-        nrOfTrial = 200;
-        for (int i = 0; i < nrOfTrial; i++) {
-            start = (int) Math.random() * g.getNodeNr(); //choose a random start point
-            target = (int) Math.random() * g.getNodeNr(); //choose a random target point
-            aStarWithOneLandmark.setStart(start);// set the start
-            aStarWithOneLandmark.setTarget(target);//set the target
-            aStarWithTwoLandmark.setStart(start);// set the start
-            aStarWithTwoLandmark.setTarget(target);//set the target
-            aStarWithFourLandmark.setStart(start);// set the start
-            aStarWithFourLandmark.setTarget(target);//set the target
+        long preprocesstimeEnd=System.nanoTime();
+        long difftime= preprocesstimeEnd-preprocesstimestart;
+        result.add("Preprocessing time for one landmark:"+ difftime);
 
-            //astar with 1 landmark
-            long sTime = System.nanoTime();
-		    aStarWithOneLandmark.compute();
-            aStarWithOneLandmark.getShortestPathInLonLat(target);
-		    long eTime = System.nanoTime();
-		    long time = eTime - sTime;
-            totalTimeAStarWithOneLandmark += time;
-
-            //astar with 2 landmark
-            sTime = System.nanoTime();
-		    aStarWithTwoLandmark.compute();
-            aStarWithTwoLandmark.getShortestPathInLonLat(target);
-		    eTime = System.nanoTime();
-		    time = eTime - sTime;
-            totalTimeAStarWithTwoLandmark += time;
-
-            //astar with 4 landmark
-            sTime = System.nanoTime();
-            aStarWithFourLandmark.compute();
-            aStarWithFourLandmark.getShortestPathInLonLat(target);
-            eTime = System.nanoTime();
-            time = eTime - sTime;
-            totalTimeAStarWithFourLandmark += time;
-        }
-        long averageTimeAStarWithOneLandmark = totalTimeAStarWithOneLandmark / nrOfTrial;
-        long averageTimeAStarWithTwoLandmark = totalTimeAStarWithTwoLandmark / nrOfTrial;
-        long averageTimeAStarWithFourLandmark = totalTimeAStarWithFourLandmark / nrOfTrial;
-        System.out.println("aStar with ALT and one landmark Computation and path retrieval took in average ["+averageTimeAStarWithOneLandmark+"] nano seconds");
-        System.out.println("aStar with ALT and two landmark Computation and path retrieval took in average ["+averageTimeAStarWithTwoLandmark+"] nano seconds");
-        System.out.println("aStar with ALT and four landmark Computation and path retrieval took in average ["+averageTimeAStarWithFourLandmark+"] nano seconds");
-        /**
-         * In average with 200 trials:
-         * 1 landmark: 341318 nano secs
-         * 2 landmarks: 568448 nano secs
-         * 4 landmarks: 344786 nano secs
-         */
+        preprocesstimestart=System.nanoTime();
+        AStar_Standard aStarWithFiveLandmark = new AStar_Standard(g, "ALT", 5);
+        preprocesstimeEnd=System.nanoTime();
+        difftime= preprocesstimeEnd-preprocesstimestart;
+        result.add("Preprocessing time for five landmark:"+ difftime);
         
+        preprocesstimestart=System.nanoTime();
+        AStar_Standard aStarWithTenLandmark = new AStar_Standard(g, "ALT", 10);
+        preprocesstimeEnd=System.nanoTime();
+        difftime= preprocesstimeEnd-preprocesstimestart;
+        result.add("Preprocessing time for ten landmark: "+ difftime);
+        
+        preprocesstimestart=System.nanoTime();
+        AStar_Standard aStarWithTwentyLandmark = new AStar_Standard(g, "ALT", 20);
+        preprocesstimeEnd=System.nanoTime();
+        difftime= preprocesstimeEnd-preprocesstimestart;
+        result.add("Preprocessing time for twenty landmark: "+ difftime);
+
+        aStarWithOneLandmark.setAlpha(alpha);
+        aStarWithFiveLandmark.setAlpha(alpha);
+        aStarWithTenLandmark.setAlpha(alpha);
+        aStarWithTwentyLandmark.setAlpha(alpha);
+          long totalTimeAStarWithOneLandmark = 0;
+          long totalTimeAStarWithFiveLandmark = 0;
+          long totalTimeAStarWithTenLandmark = 0;
+          long totalTimeAStarWithTwentyLandmark =0;
+          int nrOfTrial = 200;
+          for (int i = 0; i < nrOfTrial; i++) {
+              int start = (int) Math.random() * g.getNodeNr(); //choose a random start point
+              int target = (int) Math.random() * g.getNodeNr(); //choose a random target point
+              aStarWithOneLandmark.setStart(start);// set the start
+              aStarWithOneLandmark.setTarget(target);//set the target
+              aStarWithFiveLandmark.setStart(start);// set the start
+              aStarWithFiveLandmark.setTarget(target);//set the target
+              aStarWithTenLandmark.setStart(start);// set the start
+              aStarWithTenLandmark.setTarget(target);//set the target
+              aStarWithTwentyLandmark.setStart(start);// set the start
+              aStarWithTwentyLandmark.setTarget(target);//set the target
+  
+              //astar with 1 landmark
+              long sTime = System.nanoTime();
+              aStarWithOneLandmark.compute();
+              aStarWithOneLandmark.getShortestPathInLonLat(target);
+              long eTime = System.nanoTime();
+              long time = eTime - sTime;
+              totalTimeAStarWithOneLandmark += time;
+  
+              //astar with 5 landmark
+              sTime = System.nanoTime();
+              aStarWithFiveLandmark.compute();
+              aStarWithFiveLandmark.getShortestPathInLonLat(target);
+              eTime = System.nanoTime();
+              time = eTime - sTime;
+              totalTimeAStarWithFiveLandmark += time;
+  
+              //astar with 10 landmark
+              sTime = System.nanoTime();
+              aStarWithTenLandmark.compute();
+              aStarWithTenLandmark.getShortestPathInLonLat(target);
+              eTime = System.nanoTime();
+              time = eTime - sTime;
+              totalTimeAStarWithTenLandmark += time;
+          }
+          long averageTimeAStarWithOneLandmark = totalTimeAStarWithOneLandmark / nrOfTrial;
+          long averageTimeAStarWithTwoLandmark = totalTimeAStarWithFiveLandmark / nrOfTrial;
+          long averageTimeAStarWithFourLandmark = totalTimeAStarWithTenLandmark / nrOfTrial;
+          long averageTimeAStarWithTwentyLandmark = totalTimeAStarWithTwentyLandmark / nrOfTrial;
+          String landOne="aStar with ALT and one landmark Computation and path retrieval took in average ["+averageTimeAStarWithOneLandmark+"] nano seconds";
+          String landFive="aStar with ALT and five landmark Computation and path retrieval took in average ["+averageTimeAStarWithTwoLandmark+"] nano seconds";
+          String landTen="aStar with ALT and ten landmark Computation and path retrieval took in average ["+averageTimeAStarWithFourLandmark+"] nano seconds";
+          String landTwenty="aStar with ALT and twenty landmark Computation and path retrieval took in average ["+averageTimeAStarWithTwentyLandmark+"] nano seconds";
+          System.out.println( landOne);
+          System.out.println(landFive);
+          System.out.println(landTen);
+          System.out.println(landTwenty);
+          result.add(landOne);
+          result.add(landFive);
+          result.add(landTen);
+          result.add(landTwenty);
+    }
 
 
 
+    static void comparisonASTARdij(Graph g){
+        AStar_Standard aStar = new AStar_Standard(g, "ALT", 1);
+          /**
+           * compare a* and dijkstra
+           */
+  
+          int start = 123;
+          int target = 5423;
+          double[] alpha = {0.5, 0.5};
+          aStar.setStart(start);
+          aStar.setTarget(target);
+          aStar.setAlpha(alpha);
+          
+          long totalTimeAStar = 0;
+          long totalTimedij = 0;
+          int nrOfTrial = 200;
+          for (int i = 0; i < nrOfTrial; i++) {
+              start = (int) Math.random() * g.getNodeNr(); //choose a random start point
+              target = (int) Math.random() * g.getNodeNr(); //choose a random target point
+              aStar.setStart(start);// set the start
+              aStar.setTarget(target);//set the target
+  
+              //a*
+              long sTime = System.nanoTime();
+              aStar.compute();
+              aStar.getShortestPathInLonLat(target);
+              long eTime = System.nanoTime();
+              long time = eTime - sTime;
+              totalTimeAStar += time;
+  
+              //dijkstra
+              sTime = System.nanoTime();
+              Dijkstra d = new Dijkstra(g, start, alpha);
+              d.getCostOfShortestPathTo(target);
+              eTime = System.nanoTime();
+              time = eTime - sTime;
+              totalTimedij += time;
+          }
+          long averageTimeAStar = totalTimeAStar / nrOfTrial;
+          long averageTimedij = totalTimedij  / nrOfTrial;
+          String altaverage="aStar with ALT Computation and path retrieval took in average ["+averageTimeAStar+"] nano seconds";
+        String dijaverage="Dijkstra Computation and path retrieval took in average ["+averageTimedij+"] nano seconds";
+        System.out.println(altaverage);
+        System.out.println(dijaverage);
+        result.add(altaverage);
+        result.add(dijaverage);
 
     }
 }
