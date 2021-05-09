@@ -6,6 +6,13 @@
     "configurations": [
         {
             "type": "java",
+            "name": "Launch Result",
+            "request": "launch",
+            "mainClass": "com.forschungsprojekt.spring_backend.test.Result",
+            "projectName": "spring_backend"
+        },
+        {
+            "type": "java",
             "name": "Launch ReadConfig",
             "request": "launch",
             "mainClass": "com.forschungsprojekt.spring_backend.ReadConfig",

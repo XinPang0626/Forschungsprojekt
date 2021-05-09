@@ -1,6 +1,5 @@
 package com.forschungsprojekt.spring_backend.test;
 
-import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -63,10 +62,8 @@ public class Test {
             FileWriter myWriter = new FileWriter("./spring_backend/src/main/resources/RESULT.txt");
 
             for(int i=0; i<result.size(); i++ ){
-                myWriter.write(result.get(i));
-
+                myWriter.write(result.get(i)+ "\n");
             }
-            myWriter.write("Files in Java might be tricky, but it is fun enough!");
             myWriter.close();
             System.out.println("Successfully wrote to the file.");
 
