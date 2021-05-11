@@ -18,14 +18,14 @@ public class Test {
          * print the time for precalculation.
          */
 
-        Graph g1 = new Graph("chaudhmz@nekton:/scratch/altprp/bawu_bicycle_3.txt");
-        Graph g2 = new Graph("chaudhmz@nekton:/scratch/altprp/bawu_car_3.txt");
-        Graph g3 = new Graph("chaudhmz@nekton:/scratch/altprp/bw_car_2.txt");
-        Graph g4 = new Graph("chaudhmz@nekton:/scratch/altprp/germany_car_2.txt");
+        Graph g1 = new Graph("/scratch/altprp/bawu_bicycle_3.txt");
+        Graph g2 = new Graph("/scratch/altprp/bawu_car_3.txt");
+        Graph g3 = new Graph("/scratch/altprp/bw_car_2.txt");
+        Graph g4 = new Graph("/scratch/altprp/germany_car_2.txt");
 
-        Graph g5 = new Graph("chaudhmz@nekton:/scratch/altprp/saarland_car_2.txt");
-        Graph g6 = new Graph("chaudhmz@nekton:/scratch/altprp/saarland_car_3.txt");
-        Graph g7 = new Graph("chaudhmz@nekton:/scratch/altprp/saarland_bicycle_3.txt");
+        Graph g5 = new Graph("/scratch/altprp/saarland_car_2.txt");
+        Graph g6 = new Graph("/scratch/altprp/saarland_car_3.txt");
+        Graph g7 = new Graph("/scratch/altprp/saarland_bicycle_3.txt");
 
         result.add("---BAWU BICYCLE 3 GRAPH---");
         comparisonASTARdij(g1);
