@@ -18,12 +18,10 @@ public class Test4 {
          * print the time for precalculation.
          */
 
-        Graph g6 = new Graph("./src/main/resources/bremen.graph");
+       
         Graph g7 = new Graph("/scratch/altprp/saarland_bicycle_3.graph");
 
-        result.add("---BREMEN 2 GRAPH---");
-        Testmethods.comparisonASTARdij(g6, result);
-        Testmethods.trialsAstar(g6, result);
+        
 
         result.add("---SAARLAND BICYCLE 3 GRAPH---");
         Testmethods.comparisonASTARdij(g7, result);
