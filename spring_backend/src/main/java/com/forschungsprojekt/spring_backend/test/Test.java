@@ -3,6 +3,7 @@ package com.forschungsprojekt.spring_backend.test;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import com.forschungsprojekt.spring_backend.routerplaner.AStar_Standard;
@@ -17,43 +18,53 @@ public class Test {
          * initialize the graph using the large map and do precalculation. compute and
          * print the time for precalculation.
          */
+       int size=5;//extra variable which be added to constructor
+        int[] zero = new int[size];
+         Arrays.fill(zero, 0);
+      
+        for(int i=0; i<zero.length; i++){
+          System.out.println("x "+zero[i]);  
+        }
+       
+         
 
-        Graph g1 = new Graph("/scratch/altprp/bawu_bicycle_3.txt");
-        Graph g2 = new Graph("/scratch/altprp/bawu_car_3.txt");
-        Graph g3 = new Graph("/scratch/altprp/bw_car_2.txt");
-        Graph g4 = new Graph("/scratch/altprp/germany_car_2.txt");
+        Graph g1 = new Graph("/scratch/altprp/bawu_bicycle_3.graph");
+        Graph g2 = new Graph("/scratch/altprp/bawu_car_3.graph");
+        Graph g3 = new Graph("/scratch/altprp/bw_car_2.graph");
+        Graph g4 = new Graph("/scratch/altprp/germany_car_2.graph");
 
-        Graph g5 = new Graph("/scratch/altprp/saarland_car_2.txt");
-        Graph g6 = new Graph("/scratch/altprp/saarland_car_3.txt");
-        Graph g7 = new Graph("/scratch/altprp/saarland_bicycle_3.txt");
+        Graph g5 = new Graph("/scratch/altprp/saarland_car_2.graph");
+        Graph g6 = new Graph("/scratch/altprp/saarland_car_3.graph");
+        Graph g7 = new Graph("/scratch/altprp/saarland_bicycle_3.graph");
 
         result.add("---BAWU BICYCLE 3 GRAPH---");
         comparisonASTARdij(g1);
-        trialsAstar(g1);
+        trialsAstar(g1, 3);
 
         result.add("---BAWU CAR 3 GRAPH---");
         comparisonASTARdij(g2);
-        trialsAstar(g2);
+        trialsAstar(g2, 3);
 
         result.add("---BW CAR 2 GRAPH---");
         comparisonASTARdij(g3);
-        trialsAstar(g3);
+        trialsAstar(g3, 2);
 
         result.add("---GERMANY CAR 2 GRAPH---");
         comparisonASTARdij(g4);
-        trialsAstar(g4);
+        trialsAstar(g4, 2);
 
         result.add("---SAARLAND CAR 2 GRAPH---");
         comparisonASTARdij(g5);
-        trialsAstar(g5);
+        trialsAstar(g5, 2);
 
         result.add("---SAARLAND CAR 3 GRAPH---");
         comparisonASTARdij(g6);
-        trialsAstar(g6);
+        trialsAstar(g6, 3);
 
         result.add("---SAARLAND BICYCLE 3 GRAPH---");
         comparisonASTARdij(g7);
-        trialsAstar(g7);
+        trialsAstar(g7, 3);
+      
 
         try {
 
@@ -68,12 +79,15 @@ public class Test {
         } catch (IOException e) {
             System.out.println("An error occurred.");
             e.printStackTrace();
-        }
+        }  
 
     }
 
-    public static void trialsAstar(Graph g) {
-        double[] alpha = { 0.5, 0.5 };
+    public static void trialsAstar(Graph g, int dim) {
+        double[] alpha = new double[g.getNrOFMetrik()];
+         Arrays.fill(alpha, 0.5);
+  
+       
 
         long preprocesstimestart = System.nanoTime();
         AStar_Standard aStarWithOneLandmark = new AStar_Standard(g, "ALT", 1);
@@ -182,7 +196,9 @@ public class Test {
 
         int start = 123;
         int target = 5423;
-        double[] alpha = { 0.5, 0.5 };
+        
+        double[] alpha = new double[g.getNrOFMetrik()];
+         Arrays.fill(alpha, 0.5);
         aStar.setStart(start);
         aStar.setTarget(target);
         aStar.setAlpha(alpha);

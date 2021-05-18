@@ -222,12 +222,15 @@ public class AStar_Standard {
 			for(int node = 0; node < graph.getNodeNr(); node++){
 				ArrayList<double[]> candiList = new ArrayList<double[]>();
 				if(isLandmark(node)){
-					double[] zero = {0.0, 0.0};
+                  double[] zero = new double[graph.getNrOFMetrik()]; // mAKE ARRAY DEPENDING ON METRIK COUNT
+                   Arrays.fill(zero, 0.0);
 					candiList.add(zero);
 					nodeList.add(candiList);
 					landmarkDistance.add(nodeList);
 				}else{
-					double[] infinity = {Double.MAX_VALUE, Double.MAX_VALUE};
+					double[] infinity =new double[graph.getNrOFMetrik()];
+					Arrays.fill(infinity, Double.MAX_VALUE);
+					
 					candiList.add(infinity);
 					nodeList.add(candiList);
 					landmarkDistance.add(nodeList);
