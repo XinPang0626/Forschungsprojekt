@@ -39,31 +39,31 @@ public class Test {
 
         result.add("---BAWU BICYCLE 3 GRAPH---");
         comparisonASTARdij(g1);
-        trialsAstar(g1, 3);
+        trialsAstar(g1);
 
         result.add("---BAWU CAR 3 GRAPH---");
         comparisonASTARdij(g2);
-        trialsAstar(g2, 3);
+        trialsAstar(g2);
 
         result.add("---BW CAR 2 GRAPH---");
         comparisonASTARdij(g3);
-        trialsAstar(g3, 2);
+        trialsAstar(g3);
 
         result.add("---GERMANY CAR 2 GRAPH---");
         comparisonASTARdij(g4);
-        trialsAstar(g4, 2);
+        trialsAstar(g4);
 
         result.add("---SAARLAND CAR 2 GRAPH---");
         comparisonASTARdij(g5);
-        trialsAstar(g5, 2);
+        trialsAstar(g5);
 
         result.add("---SAARLAND CAR 3 GRAPH---");
         comparisonASTARdij(g6);
-        trialsAstar(g6, 3);
+        trialsAstar(g6);
 
         result.add("---SAARLAND BICYCLE 3 GRAPH---");
         comparisonASTARdij(g7);
-        trialsAstar(g7, 3);
+        trialsAstar(g7);
       
 
         try {
@@ -83,7 +83,7 @@ public class Test {
 
     }
 
-    public static void trialsAstar(Graph g, int dim) {
+    public static void trialsAstar(Graph g) {
         double[] alpha = new double[g.getNrOFMetrik()];
          Arrays.fill(alpha, 0.5);
   
