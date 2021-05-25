@@ -23,7 +23,7 @@ public class Brementest {
     public static void printtxt(String name){
         try {
 
-                FileWriter myWriter = new FileWriter("./spring_backend/src/main/resources/"+name);
+                FileWriter myWriter = new FileWriter("./spring_backend/src/main/resources/"+name+".txt");
     
                 for (int i = 0; i < result.size(); i++) {
                     myWriter.write(result.get(i) + "\n");
