@@ -14,6 +14,7 @@ public class Print {
     }
 
     public static void printtxt(String name){
+      System.out.println("x");
       try {
 
               FileWriter myWriter = new FileWriter("./spring_backend/src/main/resources/"+name);
