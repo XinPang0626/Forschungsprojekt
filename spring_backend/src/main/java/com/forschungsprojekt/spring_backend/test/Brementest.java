@@ -11,7 +11,7 @@ import com.forschungsprojekt.spring_backend.routerplaner.Dijkstra;
 import com.forschungsprojekt.spring_backend.routerplaner.Graph;
 
 public class Brementest {
-    public static List<String> result =new ArrayList<>();;
+    public static List<String> result =new ArrayList<>();
     public static void main(String[] args) {
         result.add("BREMEN CAR 2---");
         Graph g5 = new Graph("/scratch/altprp/bremen_car_2.graph");
