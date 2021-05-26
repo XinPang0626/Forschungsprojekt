@@ -183,15 +183,4 @@ public class Quadtree {
 		return graph;
 	}
 
-	// public static void main(String[] args) {
-	// 	Quadtree q = new Quadtree("/Users/xinpang/Desktop/Studium/5. Semester/FP/graph-files/map.txt");
-	// 	int start = q.nextNeighborWithReset(42.1, 53.2);
-	// 	System.out.println("start: "+start);
-	// 	int end = q.nextNeighborWithReset(58.8, 30.2);
-	// 	System.out.println("end: "+end);
-	// 	double[] alpha = {0.5, 0.5};
-	// 	Dijkstra dij = new Dijkstra(q.getGraph(), start, alpha);
-	// 	System.out.println(dij.getShortestPathInLonLat(end));
-		
-	// }
 }
