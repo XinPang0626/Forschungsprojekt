@@ -38,7 +38,7 @@ public class SmallerTest {
 
         try {
 
-            FileWriter myWriter = new FileWriter("./spring_backend/src/main/resources/SMALLRESULT.txt");
+            FileWriter myWriter = new FileWriter("scratch/altprp/results/SMALLRESULT.txt");
 
             for (int i = 0; i < result.size(); i++) {
                 myWriter.write(result.get(i) + "\n");
