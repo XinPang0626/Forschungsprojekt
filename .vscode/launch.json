@@ -23,6 +23,9 @@
             "name": "Launch Result",
             "request": "launch",
             "mainClass": "com.forschungsprojekt.spring_backend.test.Result",
+            "name": "Launch TestWith3Dimension",
+            "request": "launch",
+            "mainClass": "com.forschungsprojekt.spring_backend.test.TestWith3Dimension",
             "projectName": "spring_backend"
         },
         {
