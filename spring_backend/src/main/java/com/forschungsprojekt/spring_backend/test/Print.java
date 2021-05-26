@@ -17,7 +17,7 @@ public class Print {
       System.out.println("x");
       try {
 
-              FileWriter myWriter = new FileWriter("chaudhmz@nekton:/home/project/Forschungsprojekt/spring_backend/src/main/resources/"+name+".txt");
+              FileWriter myWriter = new FileWriter("scratch/altprp/results/"+name+".txt");
   
               for (int i = 0; i < result.size(); i++) {
                   myWriter.write(result.get(i) + "\n");
