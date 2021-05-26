@@ -23,7 +23,7 @@ public class Bremenbicycle3 {
     public static void printtxt(String name){
         try {
 
-                FileWriter myWriter = new FileWriter("./spring_backend/src/main/resources/"+name+".txt");
+                FileWriter myWriter = new FileWriter("/scratch/altprp/results/"+name+".txt");
     
                 for (int i = 0; i < result.size(); i++) {
                     myWriter.write(result.get(i) + "\n");
