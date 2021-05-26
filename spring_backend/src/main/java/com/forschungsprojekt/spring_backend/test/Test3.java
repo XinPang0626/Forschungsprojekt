@@ -25,30 +25,13 @@ public class Test3 {
        
 
         result.add("---BW CAR 2 GRAPH---");
-        Testmethods.comparisonASTARdij(g3, result);
-        Testmethods.trialsAstar(g3, result);
+        Testmethods.trialsAstar(g3, result, "bwcar2_");
 
         result.add("---GERMANY CAR 2 GRAPH---");
-        Testmethods.comparisonASTARdij(g4, result);
-        Testmethods.trialsAstar(g4, result);
+        
+        Testmethods.trialsAstar(g4, result, "Germanycar2_");
 
         
-      
-
-        try {
-
-            FileWriter myWriter = new FileWriter("./spring_backend/src/main/resources/RESULT3.txt");
-
-            for (int i = 0; i < result.size(); i++) {
-                myWriter.write(result.get(i) + "\n");
-            }
-            myWriter.close();
-            System.out.println("Successfully wrote to the file.");
-
-        } catch (IOException e) {
-            System.out.println("An error occurred.");
-            e.printStackTrace();
-        }  
 
     }
     

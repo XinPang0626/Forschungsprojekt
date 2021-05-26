@@ -50,21 +50,21 @@ public class Brementest {
         long preprocesstimeEnd = System.nanoTime();
         long difftime = preprocesstimeEnd - preprocesstimestart;
         result.add("Preprocessing time for one landmark:" + difftime);
-        printtxt("bremenland1");
+        printtxt("bremencar2_1");
 
         preprocesstimestart = System.nanoTime();
         AStar_Standard aStarWithTwoLandmark = new AStar_Standard(g, "ALT", 2);
         preprocesstimeEnd = System.nanoTime();
         difftime = preprocesstimeEnd - preprocesstimestart;
         result.add("Preprocessing time for two landmark:" + difftime);
-        printtxt("bremenland2");
+        printtxt("bremencar2_2");
 
         preprocesstimestart = System.nanoTime();
         AStar_Standard aStarWithFiveLandmark = new AStar_Standard(g, "ALT", 5);
         preprocesstimeEnd = System.nanoTime();
         difftime = preprocesstimeEnd - preprocesstimestart;
         result.add("Preprocessing time for five landmark: " + difftime);
-        printtxt("bremenland3");
+        printtxt("bremencar2_3");
 
        
 
@@ -125,7 +125,7 @@ public class Brementest {
         result.add(landOne);
         result.add(landTwo);
         result.add(landTen);
-        printtxt("bremenland4");
+        printtxt("bremencar2_4");
 
        
 
@@ -174,7 +174,7 @@ public class Brementest {
         System.out.println(dijaverage);
         result.add(altaverage);
         result.add(dijaverage);
-        printtxt("bremenland5");
+        printtxt("bremencar2_5");
 
     }
 

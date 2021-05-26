@@ -24,24 +24,9 @@ public class Test4 {
         
 
         result.add("---SAARLAND BICYCLE 3 GRAPH---");
-        Testmethods.comparisonASTARdij(g7, result);
-        Testmethods.trialsAstar(g7, result);
+       
+        Testmethods.trialsAstar(g7, result, "saarlandbi3_");
       
-
-        try {
-
-            FileWriter myWriter = new FileWriter("./spring_backend/src/main/resources/RESULT4.txt");
-
-            for (int i = 0; i < result.size(); i++) {
-                myWriter.write(result.get(i) + "\n");
-            }
-            myWriter.close();
-            System.out.println("Successfully wrote to the file.");
-
-        } catch (IOException e) {
-            System.out.println("An error occurred.");
-            e.printStackTrace();
-        }  
 
     }
     

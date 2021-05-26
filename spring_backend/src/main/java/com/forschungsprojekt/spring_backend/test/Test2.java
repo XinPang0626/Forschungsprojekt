@@ -18,16 +18,14 @@ public class Test2 {
          * print the time for precalculation.
          */
 
-        Graph g1 = new Graph("/scratch/altprp/bawu_bicycle_3.graph");
+    
         Graph g2 = new Graph("/scratch/altprp/bawu_car_3.graph");
        
 
-        result.add("---BAWU BICYCLE 3 GRAPH---");
-        Testmethods.trialsAstar(g1, result, "bawu_bicycle3_");
-
+       
         result.add("---BAWU CAR 3 GRAPH---");
         
-        Testmethods.trialsAstar(g2, result, "bawu_bicycle3_");
+        Testmethods.trialsAstar(g2, result, "bawu_car3_");
 
     }
     
