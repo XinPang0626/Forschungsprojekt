@@ -23,29 +23,11 @@ public class Test2 {
        
 
         result.add("---BAWU BICYCLE 3 GRAPH---");
-        Testmethods.comparisonASTARdij(g1, result);
-        Testmethods.trialsAstar(g1, result);
+        Testmethods.trialsAstar(g1, result, "bawu_bicycle3_");
 
         result.add("---BAWU CAR 3 GRAPH---");
-        Testmethods.comparisonASTARdij(g2, result);
-        Testmethods.trialsAstar(g2, result);
-
-      
-
-        try {
-
-            FileWriter myWriter = new FileWriter("./spring_backend/src/main/resources/RESULT2.txt");
-
-            for (int i = 0; i < result.size(); i++) {
-                myWriter.write(result.get(i) + "\n");
-            }
-            myWriter.close();
-            System.out.println("Successfully wrote to the file.");
-
-        } catch (IOException e) {
-            System.out.println("An error occurred.");
-            e.printStackTrace();
-        }  
+        
+        Testmethods.trialsAstar(g2, result, "bawu_bicycle3_");
 
     }
     
