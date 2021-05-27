@@ -68,7 +68,7 @@ public class Testmethods {
         
         long totalTimeAStarWithOneLandmark = 0;
         long totalTimeAStarWithTwoLandmark = 0;
-        long totalTimeAStarWithTenLandmark = 0;
+        long totalTimeAStarWithFiveLandmark = 0;
        
         int nrOfTrial = 200;
         for (int i = 0; i < nrOfTrial; i++) {
@@ -90,7 +90,7 @@ public class Testmethods {
             long time = eTime - sTime;
             totalTimeAStarWithOneLandmark += time;
 
-            // astar with 5 landmark
+            // astar with 2 landmark
             sTime = System.nanoTime();
             aStarWithTwoLandmark.compute();
             aStarWithTwoLandmark.getShortestPathInLonLat(target);
@@ -98,34 +98,34 @@ public class Testmethods {
             time = eTime - sTime;
             totalTimeAStarWithTwoLandmark += time;
 
-            // astar with 10 landmark
+            // astar with 5 landmark
             sTime = System.nanoTime();
             aStarWithFiveLandmark.compute();
             aStarWithFiveLandmark.getShortestPathInLonLat(target);
             eTime = System.nanoTime();
             time = eTime - sTime;
-            totalTimeAStarWithTenLandmark += time;
+            totalTimeAStarWithFiveLandmark += time;
 
         
         }
         long averageTimeAStarWithOneLandmark = totalTimeAStarWithOneLandmark / nrOfTrial;
         long averageTimeAStarWithTwoLandmark = totalTimeAStarWithTwoLandmark / nrOfTrial;
-        long averageTimeAStarWithFourLandmark = totalTimeAStarWithTenLandmark / nrOfTrial;
+        long averageTimeAStarWithFiveLandmark = totalTimeAStarWithFiveLandmark / nrOfTrial;
        
         String landOne = "aStar with ALT and one landmark Computation and path retrieval took in average ["
                 + averageTimeAStarWithOneLandmark + "] nano seconds";
-        String landFive = "aStar with ALT and two landmark Computation and path retrieval took in average ["
+        String landTwo = "aStar with ALT and two landmark Computation and path retrieval took in average ["
                 + averageTimeAStarWithTwoLandmark + "] nano seconds";
-        String landTen = "aStar with ALT and five landmark Computation and path retrieval took in average ["
-                + averageTimeAStarWithFourLandmark + "] nano seconds";
+        String landFive = "aStar with ALT and five landmark Computation and path retrieval took in average ["
+                + averageTimeAStarWithFiveLandmark + "] nano seconds";
       
         System.out.println(landOne);
+        System.out.println(landTwo);
         System.out.println(landFive);
-        System.out.println(landTen);
        
         result.add(landOne);
+        result.add(landTwo);
         result.add(landFive);
-        result.add(landTen);
         printtxt(name +"4", result);
 
         
@@ -139,6 +139,9 @@ public class Testmethods {
 
         long totalTimeAStar = 0;
         long totalTimedij = 0;
+        long totalpathdifference=0;
+
+        result.add("PATH DIFFERENCE BETWEEN ASTAR AND DIJ");
         
         for (int i = 0; i < nrOfTrial; i++) {
             start = (int) Math.random() * g.getNodeNr(); // choose a random start point
@@ -149,7 +152,7 @@ public class Testmethods {
             // a*
             long sTime = System.nanoTime();
             aStarWithOneLandmark.compute();
-            aStarWithOneLandmark.getShortestPathInLonLat(target);
+            int [] astarpath= aStarWithOneLandmark.getShortestPathTo(target);
             long eTime = System.nanoTime();
             long time = eTime - sTime;
             totalTimeAStar += time;
@@ -157,19 +160,27 @@ public class Testmethods {
             // dijkstra
             sTime = System.nanoTime();
             Dijkstra d = new Dijkstra(g, start, alpha);
-            d.getCostOfShortestPathTo(target);
+           int[] dijpath= d.getShortestPathTo(target);
             eTime = System.nanoTime();
             time = eTime - sTime;
             totalTimedij += time;
+            int pathdifference= astarpath.length- dijpath.length;
+            totalpathdifference+=pathdifference;
+            result.add("Astarpath length: "+ astarpath.length+" Dijpath length: "+ dijpath.length + "-difference: "+pathdifference);
+            
         }
         long averageTimeAStar = totalTimeAStar / nrOfTrial;
         long averageTimedij = totalTimedij / nrOfTrial;
+        long averagePathdiff= totalpathdifference/ nrOfTrial;
+        String averagepath= "Average difference between astar and Dij";
         String altaverage = "aStar with ALT Computation and path retrieval took in average [" + averageTimeAStar
                 + "] nano seconds";
         String dijaverage = "Dijkstra Computation and path retrieval took in average [" + averageTimedij
                 + "] nano seconds";
         System.out.println(altaverage);
         System.out.println(dijaverage);
+        System.out.println(averagepath);
+        result.add(averagepath);
         result.add(altaverage);
         result.add(dijaverage);
         printtxt(name +"5", result);
