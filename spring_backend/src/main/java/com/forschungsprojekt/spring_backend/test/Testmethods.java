@@ -166,7 +166,7 @@ public class Testmethods {
             totalTimedij += time;
             int pathdifference= astarpath.length- dijpath.length;
             totalpathdifference+=pathdifference;
-            result.add("Astarpath length: "+ astarpath.length+" Dijpath length: "+ dijpath.length + "-difference: "+pathdifference);
+            result.add("Astarpath length: "+ astarpath.length+" Dijpath length: "+ dijpath.length + "-difference: "+pathdifference+ "start; " +start);
             
         }
         long averageTimeAStar = totalTimeAStar / nrOfTrial;
