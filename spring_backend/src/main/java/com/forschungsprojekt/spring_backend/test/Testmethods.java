@@ -73,7 +73,7 @@ public class Testmethods {
        
         int nrOfTrial = 200;
         for (int i = 0; i < nrOfTrial; i++) {
-            int start =  ThreadLocalRandom.current().nextInt(0, g.getNodeNr() + 1); // choose a random start point
+            int start =  0; // choose a random start point
             int target =  ThreadLocalRandom.current().nextInt(0, g.getNodeNr() + 1); // choose a random target point
             aStarWithOneLandmark.setStart(start);// set the start
             aStarWithOneLandmark.setTarget(target);// set the target
@@ -145,7 +145,7 @@ public class Testmethods {
         result.add("PATH DIFFERENCE BETWEEN ASTAR AND DIJ");
         
         for (int i = 0; i < nrOfTrial; i++) {
-            start =  ThreadLocalRandom.current().nextInt(0, g.getNodeNr() + 1); // choose a random start point
+            start =  0; // choose a random start point
             target =  ThreadLocalRandom.current().nextInt(0, g.getNodeNr() + 1); // choose a random target point
             aStarWithOneLandmark.setStart(start);// set the start
             aStarWithOneLandmark.setTarget(target);// set the target
@@ -167,7 +167,7 @@ public class Testmethods {
             totalTimedij += time;
             int pathdifference= astarpath.length- dijpath.length;
             totalpathdifference+=pathdifference;
-            result.add("Astarpath length: "+ astarpath.length+" Dijpath length: "+ dijpath.length + "-difference: "+pathdifference+ "start; " +start);
+            result.add("Astarpath length: "+ astarpath.length+" Dijpath length: "+ dijpath.length + "-difference: "+pathdifference);
             
         }
         long averageTimeAStar = totalTimeAStar / nrOfTrial;
