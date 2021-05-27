@@ -23,6 +23,7 @@ public class AStar_Standard {
 	private ArrayList<Integer> modifiedNode;
 	private boolean targetNodeKLT;
 	private double[] targetToLandmarkKLT;
+	private CHFilter[][] filters;
 	
 	public AStar_Standard(Graph graph, String heuristic, int nrOfLandmark) {
 		this.graph = graph;
@@ -32,11 +33,17 @@ public class AStar_Standard {
 		this.nrOfLandmark = nrOfLandmark;
 		this.nrOfCandidate = new int[nrOfLandmark][graph.getNodeNr()];//initialize with zero's
 		this.heuristic = heuristic;
-
-		// for (int i = 0; i < graph.getNodeNr(); i++) {
-		// 	g[i] = Double.MAX_VALUE;
-		// 	parent[i] = -1; // no parent
-		// }
+		this.filters = new CHFilter[nrOfLandmark][graph.getNodeNr()];
+		for (int i = 0; i < nrOfLandmark; i++) {
+			for (int j = 0; j < graph.getNodeNr(); j++) {
+				filters[i][j] = new CHFilter(graph.getNrOFMetrik());
+			}
+		}
+		modifiedNode = new ArrayList<>();
+		for (int i = 0; i < graph.getNodeNr(); i++) {
+			modifiedNode.add(i);
+		}
+		
 		
 		if(heuristic.equals("ALT")){
 			this.landmark = new int[nrOfLandmark];
@@ -271,20 +278,35 @@ public class AStar_Standard {
 		return updated;
 	}
 
+	public boolean updateWithIndividualFilter(int landmarkNr, int nodeNr, double[] newCost){
+		boolean updated = false;
+		updated = filters[landmarkNr][nodeNr].addVertex(newCost);
+		if(updated == true){
+			ArrayList<double[]> newCandidates = new ArrayList<double[]>(filters[landmarkNr][nodeNr].getFilteredVertices());
+			landmarkDistance.get(landmarkNr).set(nodeNr, newCandidates);
+			nrOfCandidate[landmarkNr][nodeNr] = newCandidates.size();
+		}
+
+		return updated;
+	}
+
 	public void preCalculationOfALT(){
 		landmarkDistance = new ArrayList<ArrayList<ArrayList<double[]>>>();
+
 
 		for(int lm = 0; lm < nrOfLandmark; lm++){
 			ArrayList<ArrayList<double[]>> nodeList = new ArrayList<ArrayList<double[]>>();
 			for(int node = 0; node < graph.getNodeNr(); node++){
 				ArrayList<double[]> candiList = new ArrayList<double[]>();
 				if(isLandmark(node)){
-					double[] zero = {0.0, 0.0};
+					double[] zero = new double[graph.getNrOFMetrik()];
+					Arrays.fill(zero, 0.0);
 					candiList.add(zero);
 					nodeList.add(candiList);
 					landmarkDistance.add(nodeList);
 				}else{
-					double[] infinity = {Double.MAX_VALUE, Double.MAX_VALUE};
+					double[] infinity = new double[graph.getNrOFMetrik()];
+					Arrays.fill(infinity, Double.MAX_VALUE);
 					candiList.add(infinity);
 					nodeList.add(candiList);
 					landmarkDistance.add(nodeList);
@@ -311,11 +333,8 @@ public class AStar_Standard {
 								candidates = landmarkDistance.get(landmarkId).get(edgeEnd);
 								for(double[] cost: candidates){
 									double[] newCost = addTwoVector(cost, costVector);
-									//updateInNextIter[(int)edgeArray[i][0]] = updateCandidate(landmarkId, (int)edgeArray[i][0], newCost);
-									updateInNextIter[edgeBegin] = updateInNextIter[edgeBegin] || updateWithFilter(landmarkId, edgeBegin, newCost);
-									// if(landmarkDistance.get(landmarkId).get((int)edgeArray[i][0]).addVertex(newCost)){
-									// 	updateInNextIter[(int)edgeArray[i][0]] = true;
-									// }
+									//updateInNextIter[edgeBegin] = updateInNextIter[edgeBegin] || updateWithFilter(landmarkId, edgeBegin, newCost);									
+									updateInNextIter[edgeBegin] = updateInNextIter[edgeBegin] || updateWithIndividualFilter(landmarkId, edgeBegin, newCost);
 								}
 							}
 							globalChange = globalChange || updateInNextIter[edgeBegin];
