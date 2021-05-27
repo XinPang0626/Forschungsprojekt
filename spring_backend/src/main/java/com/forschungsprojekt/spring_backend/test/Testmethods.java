@@ -70,12 +70,11 @@ public class Testmethods {
         long totalTimeAStarWithOneLandmark = 0;
         long totalTimeAStarWithTwoLandmark = 0;
         long totalTimeAStarWithFiveLandmark = 0;
-        int half= Math.round(g.getNodeNr()/2);
        
         int nrOfTrial = 200;
         for (int i = 0; i < nrOfTrial; i++) {
-            int start =  0; // choose a random start point
-            int target =  ThreadLocalRandom.current().nextInt(0, half + 1); // choose a random target point
+            int start = (int) ((Math.random() * g.getNodeNr())); // choose a random start point
+            int target =  (int) ((Math.random() * g.getNodeNr())); // choose a random target point
             aStarWithOneLandmark.setStart(start);// set the start
             aStarWithOneLandmark.setTarget(target);// set the target
             aStarWithTwoLandmark.setStart(start);// set the start
@@ -142,13 +141,12 @@ public class Testmethods {
         long totalTimeAStar = 0;
         long totalTimedij = 0;
         long totalpathdifference=0;
-        
 
         result.add("PATH DIFFERENCE BETWEEN ASTAR AND DIJ");
         
         for (int i = 0; i < nrOfTrial; i++) {
-            start =  0; // choose a random start point
-            target =  ThreadLocalRandom.current().nextInt(0, half + 1); // choose a random target point
+            start = (int) ((Math.random() * g.getNodeNr()));
+            target = (int) ((Math.random() * g.getNodeNr())); // choose a random target point
             aStarWithOneLandmark.setStart(start);// set the start
             aStarWithOneLandmark.setTarget(target);// set the target
 
@@ -169,7 +167,7 @@ public class Testmethods {
             totalTimedij += time;
             int pathdifference= astarpath.length- dijpath.length;
             totalpathdifference+=pathdifference;
-            
+          
             
         }
         long averageTimeAStar = totalTimeAStar / nrOfTrial;
