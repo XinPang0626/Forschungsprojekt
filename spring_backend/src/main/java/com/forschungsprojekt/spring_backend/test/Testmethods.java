@@ -4,6 +4,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.ThreadLocalRandom;
 
 import com.forschungsprojekt.spring_backend.routerplaner.AStar_Standard;
 import com.forschungsprojekt.spring_backend.routerplaner.Dijkstra;
@@ -72,8 +73,8 @@ public class Testmethods {
        
         int nrOfTrial = 200;
         for (int i = 0; i < nrOfTrial; i++) {
-            int start = (int) Math.random() * g.getNodeNr(); // choose a random start point
-            int target = (int) Math.random() * g.getNodeNr(); // choose a random target point
+            int start =  ThreadLocalRandom.current().nextInt(0, g.getNodeNr() + 1); // choose a random start point
+            int target =  ThreadLocalRandom.current().nextInt(0, g.getNodeNr() + 1); // choose a random target point
             aStarWithOneLandmark.setStart(start);// set the start
             aStarWithOneLandmark.setTarget(target);// set the target
             aStarWithTwoLandmark.setStart(start);// set the start
@@ -144,8 +145,8 @@ public class Testmethods {
         result.add("PATH DIFFERENCE BETWEEN ASTAR AND DIJ");
         
         for (int i = 0; i < nrOfTrial; i++) {
-            start = (int) Math.random() * g.getNodeNr(); // choose a random start point
-            target = (int) Math.random() * g.getNodeNr(); // choose a random target point
+            start =  ThreadLocalRandom.current().nextInt(0, g.getNodeNr() + 1); // choose a random start point
+            target =  ThreadLocalRandom.current().nextInt(0, g.getNodeNr() + 1); // choose a random target point
             aStarWithOneLandmark.setStart(start);// set the start
             aStarWithOneLandmark.setTarget(target);// set the target
 
@@ -172,7 +173,7 @@ public class Testmethods {
         long averageTimeAStar = totalTimeAStar / nrOfTrial;
         long averageTimedij = totalTimedij / nrOfTrial;
         long averagePathdiff= totalpathdifference/ nrOfTrial;
-        String averagepath= "Average difference between astar and Dij";
+        String averagepath= "Average difference between astar and Dij: "+ averagePathdiff;
         String altaverage = "aStar with ALT Computation and path retrieval took in average [" + averageTimeAStar
                 + "] nano seconds";
         String dijaverage = "Dijkstra Computation and path retrieval took in average [" + averageTimedij
