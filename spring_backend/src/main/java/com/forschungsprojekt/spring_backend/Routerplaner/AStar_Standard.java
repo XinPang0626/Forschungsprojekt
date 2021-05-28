@@ -261,6 +261,7 @@ public class AStar_Standard {
 			updated[landmark[landmarkId]] = true;
 			ArrayList<double[]> candidates = new ArrayList<double[]>();
 			for(int j = 0; j < graph.getNodeNr(); j++){
+                                int max=0;
 				System.out.println("current loop number: " + j);
 				boolean globalChange = false;
 				boolean[] updateInNextIter = new boolean[graph.getNodeNr()];
@@ -273,10 +274,12 @@ public class AStar_Standard {
 							double[] costVector =  Arrays.copyOfRange(graph.getCompressedEdgeArray(), m+1, m + 1 + graph.getNrOFMetrik());
 							if(updated[edgeEnd] == true){
 								candidates = landmarkDistance.get(landmarkId).get(edgeEnd);
-								for(double[] cost: candidates){
+if (candidates.size()>max){max=candidates.size();}							
+	for(double[] cost: candidates){
+       
 									double[] newCost = addTwoVector(cost, costVector);
-									//updateInNextIter[edgeBegin] = updateInNextIter[edgeBegin] || updateWithFilter(landmarkId, edgeBegin, newCost);									
-									updateInNextIter[edgeBegin] = updateInNextIter[edgeBegin] || updateWithIndividualFilter(landmarkId, edgeBegin, newCost);
+							//	updateInNextIter[edgeBegin] = updateInNextIter[edgeBegin] || updateWithFilter(landmarkId, edgeBegin, newCost);									
+									updateInNextIter[edgeBegin] =   updateWithIndividualFilter(landmarkId, edgeBegin, newCost)|| updateInNextIter[edgeBegin];
 								}
 							}
 							globalChange = globalChange || updateInNextIter[edgeBegin];
@@ -287,6 +290,7 @@ public class AStar_Standard {
 					System.out.println("no more global changes");
 					break;
 				}
+                                System.out.println(max);
 				updated = Arrays.copyOf(updateInNextIter, updateInNextIter.length);
 			}
 		}
