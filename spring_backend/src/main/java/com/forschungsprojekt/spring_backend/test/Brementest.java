@@ -22,8 +22,8 @@ public class Brementest {
         double[] alpha = {0.4,0.3,0.3};
         aStar.setAlpha(alpha);
         aStar.compute();
-        //String path = aStar.getShortestPathInLonLat(5);
-        //System.out.println(path);
+        String path = aStar.getShortestPathInLonLat(5);
+        System.out.println(path);
 
     }
 
