@@ -35,8 +35,8 @@ public class Testmethods {
 
 
     public static void trialsAstar(Graph g, List<String> result, String name) {
-        double[] alpha = new double[g.getNrOFMetrik()];
-         Arrays.fill(alpha, 0.5);
+        double[] alpha = {0.5,0.5};
+      
   
        
 
@@ -52,7 +52,7 @@ public class Testmethods {
         AStar_Standard aStarWithTwoLandmark = new AStar_Standard(g, "ALT", 2);
         preprocesstimeEnd = System.nanoTime();
         difftime = preprocesstimeEnd - preprocesstimestart;
-        result.add("Preprocessing time for five landmark:" + difftime);
+        result.add("Preprocessing time for two landmark:" + difftime);
         printtxt(name +"twolandmark", result);
         
 
@@ -60,7 +60,7 @@ public class Testmethods {
         AStar_Standard aStarWithFiveLandmark = new AStar_Standard(g, "ALT", 5);
         preprocesstimeEnd = System.nanoTime();
         difftime = preprocesstimeEnd - preprocesstimestart;
-        result.add("Preprocessing time for ten landmark: " + difftime);
+        result.add("Preprocessing time for five landmark: " + difftime);
         printtxt(name +"1", result);
 
         
