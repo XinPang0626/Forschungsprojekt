@@ -45,14 +45,14 @@ public class Testmethods {
         long preprocesstimeEnd = System.nanoTime();
         long difftime = preprocesstimeEnd - preprocesstimestart;
         result.add("Preprocessing time for one landmark:" + difftime);
+       computepath(aStarWithOneLandmark, 1, result, g);
         printtxt(name +"onelandmark", result);
-       
-
         preprocesstimestart = System.nanoTime();
         AStar_Standard aStarWithTwoLandmark = new AStar_Standard(g, "ALT", 2);
         preprocesstimeEnd = System.nanoTime();
         difftime = preprocesstimeEnd - preprocesstimestart;
         result.add("Preprocessing time for two landmark:" + difftime);
+        computepath(aStarWithTwoLandmark, 2, result, g);
         printtxt(name +"twolandmark", result);
         
 
@@ -61,75 +61,12 @@ public class Testmethods {
         preprocesstimeEnd = System.nanoTime();
         difftime = preprocesstimeEnd - preprocesstimestart;
         result.add("Preprocessing time for five landmark: " + difftime);
-        printtxt(name +"1", result);
+        computepath(aStarWithFiveLandmark, 5, result, g);
+        printtxt(name +"fivelandmark", result);
 
         
 
-        aStarWithOneLandmark.setAlpha(alpha);
-        aStarWithTwoLandmark.setAlpha(alpha);
-        aStarWithFiveLandmark.setAlpha(alpha);
-        
-        long totalTimeAStarWithOneLandmark = 0;
-        long totalTimeAStarWithTwoLandmark = 0;
-        long totalTimeAStarWithFiveLandmark = 0;
-       
-        int nrOfTrial = 200;
-        for (int i = 0; i < nrOfTrial; i++) {
-            int start = (int) ((Math.random() * g.getNodeNr())); // choose a random start point
-            int target =  (int) ((Math.random() * g.getNodeNr())); // choose a random target point
-            aStarWithOneLandmark.setStart(start);// set the start
-            aStarWithOneLandmark.setTarget(target);// set the target
-            aStarWithTwoLandmark.setStart(start);// set the start
-            aStarWithTwoLandmark.setTarget(target);// set the target
-            aStarWithFiveLandmark.setStart(start);// set the start
-            aStarWithFiveLandmark.setTarget(target);// set the target
-           
-
-            // astar with 1 landmark
-            long sTime = System.nanoTime();
-            aStarWithOneLandmark.compute();
-            aStarWithOneLandmark.getShortestPathInLonLat(target);
-            long eTime = System.nanoTime();
-            long time = eTime - sTime;
-            totalTimeAStarWithOneLandmark += time;
-
-            // astar with 2 landmark
-            sTime = System.nanoTime();
-            aStarWithTwoLandmark.compute();
-            aStarWithTwoLandmark.getShortestPathInLonLat(target);
-            eTime = System.nanoTime();
-            time = eTime - sTime;
-            totalTimeAStarWithTwoLandmark += time;
-
-            // astar with 5 landmark
-            sTime = System.nanoTime();
-            aStarWithFiveLandmark.compute();
-            aStarWithFiveLandmark.getShortestPathInLonLat(target);
-            eTime = System.nanoTime();
-            time = eTime - sTime;
-            totalTimeAStarWithFiveLandmark += time;
-
-        
-        }
-        long averageTimeAStarWithOneLandmark = totalTimeAStarWithOneLandmark / nrOfTrial;
-        long averageTimeAStarWithTwoLandmark = totalTimeAStarWithTwoLandmark / nrOfTrial;
-        long averageTimeAStarWithFiveLandmark = totalTimeAStarWithFiveLandmark / nrOfTrial;
-       
-        String landOne = "aStar with ALT and one landmark Computation and path retrieval took in average ["
-                + averageTimeAStarWithOneLandmark + "] nano seconds";
-        String landTwo = "aStar with ALT and two landmark Computation and path retrieval took in average ["
-                + averageTimeAStarWithTwoLandmark + "] nano seconds";
-        String landFive = "aStar with ALT and five landmark Computation and path retrieval took in average ["
-                + averageTimeAStarWithFiveLandmark + "] nano seconds";
       
-        System.out.println(landOne);
-        System.out.println(landTwo);
-        System.out.println(landFive);
-       
-        result.add(landOne);
-        result.add(landTwo);
-        result.add(landFive);
-        printtxt(name +"2", result);
 
         
         int start = 123;
@@ -146,7 +83,7 @@ public class Testmethods {
 
         result.add("PATH DIFFERENCE BETWEEN ASTAR AND DIJ");
         
-        for (int i = 0; i < nrOfTrial; i++) {
+        for (int i = 0; i < 200; i++) {
             start = (int) ((Math.random() * g.getNodeNr()));
             target = (int) ((Math.random() * g.getNodeNr())); // choose a random target point
             aStarWithOneLandmark.setStart(start);// set the start
@@ -172,9 +109,9 @@ public class Testmethods {
           
             
         }
-        long averageTimeAStar = totalTimeAStar / nrOfTrial;
-        long averageTimedij = totalTimedij / nrOfTrial;
-        long averagePathdiff= totalpathdifference/ nrOfTrial;
+        long averageTimeAStar = totalTimeAStar / 200;
+        long averageTimedij = totalTimedij / 200;
+        long averagePathdiff= totalpathdifference/ 200;
         String averagepath= "Average difference between astar and Dij: "+ averagePathdiff;
         String altaverage = "aStar with ALT Computation and path retrieval took in average [" + averageTimeAStar
                 + "] nano seconds";
@@ -189,6 +126,44 @@ public class Testmethods {
         printtxt(name +"3", result);
 
        
+    }
+
+   public static void computepath(AStar_Standard astar, int numberoflandmarks, List<String> result, Graph g){
+        double[] alpha = {0.5,0.5};
+        astar.setAlpha(alpha);
+
+        long totalTimeAStarWithOneLandmark = 0;
+        int nrOfTrial = 200;
+        for (int i = 0; i < nrOfTrial; i++) {
+            int start = (int) ((Math.random() * g.getNodeNr())); // choose a random start point
+            int target =  (int) ((Math.random() * g.getNodeNr())); // choose a random target point
+            astar.setStart(start);// set the start
+            astar.setTarget(target);// set the target
+           
+            // astar with 1 landmark
+            long sTime = System.nanoTime();
+            astar.compute();
+            astar.getShortestPathInLonLat(target);
+            long eTime = System.nanoTime();
+            long time = eTime - sTime;
+            totalTimeAStarWithOneLandmark += time;
+        
+        }
+        long averageTimeAStarWithOneLandmark = totalTimeAStarWithOneLandmark / nrOfTrial;
+        
+       
+        String landOne = "aStar with ALT and "+ numberoflandmarks +" landmark Computation and path retrieval took in average ["
+                + averageTimeAStarWithOneLandmark + "] nano seconds";
+       
+        System.out.println(landOne);
+    
+       
+        result.add(landOne);
+       
+
+
+
+
     }
 
     
