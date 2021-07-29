@@ -15,8 +15,8 @@ public class Testmethods {
         public static void printtxt(String name, List<String> result){
                 System.out.println("x");
                 try {
-          
-                        FileWriter myWriter = new FileWriter("/scratch/altprp/results/"+name+".txt");
+                                           // "/scratch/altprp/results/"+name+".txt"
+                        FileWriter myWriter = new FileWriter("./spring_backend/src/main/resources/"+name+".txt");
             
                         for (int i = 0; i < result.size(); i++) {
                             myWriter.write(result.get(i) + "\n");
@@ -47,6 +47,9 @@ public class Testmethods {
         result.add("Preprocessing time for one landmark:" + difftime);
        computepath(aStarWithOneLandmark, 1, result, g);
         printtxt(name +"onelandmark", result);
+
+        /** 
+        
         preprocesstimestart = System.nanoTime();
         AStar_Standard aStarWithTwoLandmark = new AStar_Standard(g, "ALT", 2);
         preprocesstimeEnd = System.nanoTime();
@@ -63,7 +66,7 @@ public class Testmethods {
         result.add("Preprocessing time for five landmark: " + difftime);
         computepath(aStarWithFiveLandmark, 5, result, g);
         printtxt(name +"fivelandmark", result);
-
+*/
         
 
       
@@ -84,15 +87,18 @@ public class Testmethods {
         result.add("PATH DIFFERENCE BETWEEN ASTAR AND DIJ");
         
         for (int i = 0; i < 200; i++) {
-            start = (int) ((Math.random() * g.getNodeNr()));
-            target = (int) ((Math.random() * g.getNodeNr())); // choose a random target point
+            start = 112402; //(int) ((Math.random() * g.getNodeNr()));
+            target = 108972; //(int) ((Math.random() * g.getNodeNr())); // choose a random target point
+            System.out.println(start);
+            System.out.println(target);
             aStarWithOneLandmark.setStart(start);// set the start
             aStarWithOneLandmark.setTarget(target);// set the target
 
             // a*
             long sTime = System.nanoTime();
+            long nTime= System.nanoTime();
             aStarWithOneLandmark.compute();
-            int [] astarpath= aStarWithOneLandmark.getShortestPathTo(target);
+            //int [] astarpath= aStarWithOneLandmark.getShortestPathTo(target);
             long eTime = System.nanoTime();
             long time = eTime - sTime;
             totalTimeAStar += time;
@@ -100,27 +106,27 @@ public class Testmethods {
             // dijkstra
             sTime = System.nanoTime();
             Dijkstra d = new Dijkstra(g, start, alpha);
-           int[] dijpath= d.getShortestPathTo(target);
+           //int[] dijpath= d.getShortestPathTo(target);
             eTime = System.nanoTime();
             time = eTime - sTime;
             totalTimedij += time;
-            int pathdifference= astarpath.length- dijpath.length;
-            totalpathdifference+=pathdifference;
+           // int pathdifference= astarpath.length- dijpath.length;
+            //totalpathdifference+=pathdifference;
           
             
         }
         long averageTimeAStar = totalTimeAStar / 200;
         long averageTimedij = totalTimedij / 200;
-        long averagePathdiff= totalpathdifference/ 200;
-        String averagepath= "Average difference between astar and Dij: "+ averagePathdiff;
+        //long averagePathdiff= totalpathdifference/ 200;
+        //String averagepath= "Average difference between astar and Dij: "+ averagePathdiff;
         String altaverage = "aStar with ALT Computation and path retrieval took in average [" + averageTimeAStar
                 + "] nano seconds";
         String dijaverage = "Dijkstra Computation and path retrieval took in average [" + averageTimedij
                 + "] nano seconds";
         System.out.println(altaverage);
         System.out.println(dijaverage);
-        System.out.println(averagepath);
-        result.add(averagepath);
+        //System.out.println(averagepath);
+        //result.add(averagepath);
         result.add(altaverage);
         result.add(dijaverage);
         printtxt(name +"3", result);
@@ -133,32 +139,47 @@ public class Testmethods {
         astar.setAlpha(alpha);
 
         long totalTimeAStarWithOneLandmark = 0;
+        long totalwithoutpathretrieval =0;
         int nrOfTrial = 200;
         for (int i = 0; i < nrOfTrial; i++) {
             int start = (int) ((Math.random() * g.getNodeNr())); // choose a random start point
-            int target =  (int) ((Math.random() * g.getNodeNr())); // choose a random target point
+            int target = (int) ((Math.random() * g.getNodeNr())); // choose a random target point
+            System.out.println(start);
+            System.out.println(target);
+           
+           
             astar.setStart(start);// set the start
             astar.setTarget(target);// set the target
            
             // astar with 1 landmark
             long sTime = System.nanoTime();
+            long nTime= System.nanoTime();
             astar.compute();
-            astar.getShortestPathInLonLat(target);
+            long enTime = System.nanoTime();
+            
+           // astar.getShortestPathInLonLat(target);
             long eTime = System.nanoTime();
             long time = eTime - sTime;
+            long wtime= nTime-enTime;
             totalTimeAStarWithOneLandmark += time;
+            totalwithoutpathretrieval +=wtime;
         
         }
         long averageTimeAStarWithOneLandmark = totalTimeAStarWithOneLandmark / nrOfTrial;
+        long averagewithoutpath=totalwithoutpathretrieval/nrOfTrial;
         
        
         String landOne = "aStar with ALT and "+ numberoflandmarks +" landmark Computation and path retrieval took in average ["
                 + averageTimeAStarWithOneLandmark + "] nano seconds";
+        String without= "aStar with ALT and "+ numberoflandmarks +" landmark Computation took in average ["
+        + averagewithoutpath + "] nano seconds";
        
         System.out.println(landOne);
+        System.out.println(without);
     
        
         result.add(landOne);
+        result.add(without);
        
 
 
