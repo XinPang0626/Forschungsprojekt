@@ -15,8 +15,8 @@ public class Testmethods {
         public static void printtxt(String name, List<String> result){
                 System.out.println("x");
                 try {
-                                           // "/scratch/altprp/results/"+name+".txt"
-                        FileWriter myWriter = new FileWriter("./spring_backend/src/main/resources/"+name+".txt");
+                                           // "./spring_backend/src/main/resources/"+name+".txt"
+                        FileWriter myWriter = new FileWriter("/scratch/altprp/results/"+name+".txt");
             
                         for (int i = 0; i < result.size(); i++) {
                             myWriter.write(result.get(i) + "\n");
