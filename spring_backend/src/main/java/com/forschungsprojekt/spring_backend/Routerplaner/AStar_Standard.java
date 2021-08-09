@@ -3,6 +3,8 @@ package com.forschungsprojekt.spring_backend.routerplaner;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+import ch.qos.logback.core.net.SyslogOutputStream;
+
 public class AStar_Standard {
 	private Graph graph;
 	private double f;
@@ -13,7 +15,7 @@ public class AStar_Standard {
 	private int target;
 	private String heuristic;
 	private int[] landmark;
-	private ArrayList<ArrayList<ArrayList<double[]>>> landmarkDistance;
+	private ArrayList<ArrayList<ArrayList<double[]>>> landmarkDistance;//index: landmarkNr, nodeNr, candidateNr
 	private int nrOfLandmark;
 	private int[][] nrOfCandidate;
 	private CHFilter filter;
@@ -21,9 +23,12 @@ public class AStar_Standard {
 	private boolean targetNodeKLT;
 	private double[] targetToLandmarkKLT;
 	private CHFilter[][] filters;
+	private int nrOfVisitedNodes;
+	private boolean notAvailable;
 	
 	public AStar_Standard(Graph graph, String heuristic, int nrOfLandmark) {
 		this.graph = graph;
+		int nrOfVisitedNodes = 0;
 		this.f = 0.0;
 		this.g = new double[graph.getNodeNr()];
 		this.parent = new int[graph.getNodeNr()];
@@ -58,6 +63,14 @@ public class AStar_Standard {
 		}
 	}
 
+	public double getCost(int node){
+		return g[node];
+	}
+
+	public boolean getPathAvailable(){
+		return notAvailable;
+	}
+
 
 	public void setStart(int startId){
 		this.start = startId;
@@ -67,7 +80,17 @@ public class AStar_Standard {
 		this.target = targetId;
 	}
 
+	public void reset(){
+		notAvailable = false;
+		f = 0.0;
+		g = new double[graph.getNodeNr()];
+		modifiedNode = new ArrayList<>();
+		for (int i = 0; i < graph.getNodeNr(); i++) {
+			modifiedNode.add(i);
+		}
+	}
 	public void compute(){
+		int tmpNrOfVisitedNodes = 0;
 		for (int i = 0; i < modifiedNode.size(); i++) {
 			g[modifiedNode.get(i)] = Double.MAX_VALUE;
 			parent[modifiedNode.get(i)] = -1;
@@ -101,6 +124,7 @@ public class AStar_Standard {
 								heap.decreaseKey(kinderNode, f);
 							}else {
 								heap.add(kinderNode, f);
+								tmpNrOfVisitedNodes++;
 							}
 						}
 					}
@@ -131,13 +155,23 @@ public class AStar_Standard {
 								heap.decreaseKey(kinderNode, f);
 							}else {
 								heap.add(kinderNode, f);
+								tmpNrOfVisitedNodes++;
 							}
 						}
 					}
 				}
 			}
-			
 		}
+
+		if(parent[target] == -1){
+			notAvailable = true;
+		}else{
+			nrOfVisitedNodes = tmpNrOfVisitedNodes;
+		}
+	}
+
+	public int getNrOfVisitedNodes(){
+		return nrOfVisitedNodes;
 	}
 	
 	public void setAlpha(double[] alpha){
@@ -161,24 +195,30 @@ public class AStar_Standard {
 		return sum;
 	}
 	
-	public int[] getShortestPathTo(int target) {
+	public int[] getShortestPathTo() {
 		int[] backwardPath = new int[graph.getNodeNr()];
-		for(int i = 0; i < backwardPath.length; i++) {
+		for(int i = 0; i < graph.getNodeNr(); i++) {
 			backwardPath[i] = -1;
 		}
 		backwardPath[0] = target;
 		int tempParent = target;
-		int i;
-		for( i = 1; parent[tempParent] != start; i++) {
-			backwardPath[i] = parent[tempParent];
-			tempParent= parent[tempParent];
+		int i = 1;
+		for(; parent[tempParent] != start; i++) {
+			if(parent[tempParent] != -1){
+				backwardPath[i] = parent[tempParent];
+				tempParent= parent[tempParent];
+			}else{
+				System.out.println("target: " + target);
+				System.out.println("node without parent: "+tempParent);
+			 	break;
+			}
 		}
 		backwardPath[i] = start;
 		return backwardPath;
 	}
 	
-	public String getShortestPathInLonLat(int target){
-		int[] path = getShortestPathTo(target);
+	public String getShortestPathInLonLat(){
+		int[] path = getShortestPathTo();
 		int pathLength = 0;
 		for(int i = 0; i < path.length && path[i] != -1; i++) {
 			pathLength++;
@@ -236,7 +276,7 @@ public class AStar_Standard {
 	public void preCalculationOfALT(){
 		landmarkDistance = new ArrayList<ArrayList<ArrayList<double[]>>>();
 
-
+		//initialize landmarkDistance
 		for(int lm = 0; lm < nrOfLandmark; lm++){
 			ArrayList<ArrayList<double[]>> nodeList = new ArrayList<ArrayList<double[]>>();
 			for(int node = 0; node < graph.getNodeNr(); node++){
@@ -256,6 +296,7 @@ public class AStar_Standard {
 				}
 			}
 		}
+		//update landmarkDistance
 		for(int landmarkId = 0; landmarkId < nrOfLandmark; landmarkId++){
 			boolean[] updated = new boolean[graph.getNodeNr()];
 			updated[landmark[landmarkId]] = true;
@@ -275,8 +316,8 @@ public class AStar_Standard {
 								candidates = landmarkDistance.get(landmarkId).get(edgeEnd);
 								for(double[] cost: candidates){
 									double[] newCost = addTwoVector(cost, costVector);
-									//updateInNextIter[edgeBegin] = updateInNextIter[edgeBegin] || updateWithFilter(landmarkId, edgeBegin, newCost);									
-									updateInNextIter[edgeBegin] = updateInNextIter[edgeBegin] || updateWithIndividualFilter(landmarkId, edgeBegin, newCost);
+									updateInNextIter[edgeBegin] = updateInNextIter[edgeBegin] || updateWithFilter(landmarkId, edgeBegin, newCost);									
+									//updateInNextIter[edgeBegin] = updateInNextIter[edgeBegin] || updateWithIndividualFilter(landmarkId, edgeBegin, newCost);
 								}
 							}
 							globalChange = globalChange || updateInNextIter[edgeBegin];
@@ -397,47 +438,44 @@ public class AStar_Standard {
 	}
 
 	public static void main(String[] args) {
-		Graph g = new Graph("/Users/xinpang/Desktop/Studium/5. Semester/FP/graph-files/bremen.txt");
-		int start = 23489;
-		int end = 11111;
+		Graph g = new Graph("/Users/xinpang/Desktop/Studium/5. Semester/Forschungsprojekt/FP/graph-files/bremen.txt");
+		boolean pathNotFound = true;
+		int start;
+		int end;
 		AStar_Standard aStar = new AStar_Standard(g, "ALT", 1);
-		aStar.setStart(start);
-		aStar.setTarget(end);
 		double[] alpha = {0.5, 0.5};
 		aStar.setAlpha(alpha);
+		long sTime;
+		long eTime;
+		long time;
+		//for(int i = 0; i < 10; i++){//10 trials with random start and target
+			while(pathNotFound){
+				//start = (int) (Math.random() * g.getNodeNr());
+				start = 72434;
+				//end = (int) (Math.random() * g.getNodeNr());
+				end = 96606;
+				aStar.setStart(start);
+				aStar.setTarget(end);
+				
+		
+				sTime = System.currentTimeMillis();
+				aStar.compute();
+				eTime = System.currentTimeMillis();
+				if(aStar.getPathAvailable() == false){
+					time = eTime - sTime;
+					System.out.println("aStar with ALT Computation took ["+time+"] milli seconds");
+					System.out.println(aStar.getShortestPathInLonLat());
+					System.out.println("AStar visited "+aStar.getNrOfVisitedNodes()+" nodes.");
+					break;
+				}
+				aStar.reset();
+			}
+		//}
 
-		//System.out.println(Arrays.deepToString(aStar.landmarkDistance.get(0).get(aStar.landmark[0]+1).toArray()));
+		
+		
 
-		long sTime = System.currentTimeMillis();
-		aStar.compute();
-		long eTime = System.currentTimeMillis();
-		long time = eTime - sTime;
-		System.out.println("aStar with ALT Computation took ["+time+"] milli seconds");
-		System.out.println(aStar.getShortestPathInLonLat(end));
-
-		start = 12312;
-		end = 34235;
-		aStar.setStart(start);
-		aStar.setTarget(end);
-		sTime = System.currentTimeMillis();
-		aStar.compute();
-		eTime = System.currentTimeMillis();
-		time = eTime - sTime;
-		System.out.println("aStar with ALT Computation took ["+time+"] milli seconds");
-		System.out.println(aStar.getShortestPathInLonLat(end));
-
-		start = 4712;
-		end = 22721;
-		aStar.setStart(start);
-		aStar.setTarget(end);
-		sTime = System.currentTimeMillis();
-		aStar.compute();
-		eTime = System.currentTimeMillis();
-		time = eTime - sTime;
-		System.out.println("aStar with ALT Computation took ["+time+"] milli seconds");
-		System.out.println(aStar.getShortestPathInLonLat(end));
-
-		aStar.getMaxCandidatesArray();
+		//aStar.getMaxCandidatesArray();
 		
 		
 	}

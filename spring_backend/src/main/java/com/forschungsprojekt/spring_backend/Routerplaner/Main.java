@@ -6,6 +6,7 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.lang.annotation.Target;
 import java.util.Scanner;
 
 public class Main {
@@ -47,20 +48,22 @@ public class Main {
 					int source = scanner.nextInt();
 					System.out.println("target: ");
 					int target = scanner.nextInt();
-					Dijkstra dijk = new Dijkstra(graph, source, alpha);
+					Dijkstra dijk = new Dijkstra(graph, source, alpha, target);
 					System.out.println("shortest path between " + source + " and " + target + ": "
 							+ dijk.getCostOfShortestPathTo(target));
 							System.out.println("do you want the path as a String?(y/n)");
 					String wantPath = scanner.next();
 					if(wantPath.equals("y")){
-						String stringPath = dijk.getShortestPathInLonLat(target);
+						String stringPath = dijk.getShortestPathInLonLat();
 						System.out.println(stringPath);
 					}
 
 				} else if (function.equals("2")) {
 					System.out.println("start:\t");
 					int start = scanner.nextInt();
-					Dijkstra dijk = new Dijkstra(graph, start, alpha);
+					System.out.println("target: ");
+					int target = scanner.nextInt();
+					Dijkstra dijk = new Dijkstra(graph, start, alpha, target);
 					while (true) {
 						System.out.println("Do you want to query? y/n  ");
 						String answer = scanner.next();
@@ -68,13 +71,13 @@ public class Main {
 							break;
 						} else if (answer.equals("y")) {
 							System.out.println("target: ");
-							int target = scanner.nextInt();
+							target = scanner.nextInt();
 							System.out.println("the cost of the shortest path between " + start + " and " + target
 									+ ": " + dijk.getCostOfShortestPathTo(target));
 							System.out.println("do you want the path as a String?(y/n)");
 							String wantPath = scanner.next();
 							if(wantPath.equals("y")){
-								String stringPath = dijk.getShortestPathInLonLat(target);
+								String stringPath = dijk.getShortestPathInLonLat();
 								System.out.println(stringPath);
 							}
 						}
@@ -102,7 +105,7 @@ public class Main {
 							int target = Integer.parseInt(split[1]);
 
 							if (acutalStart != start) {
-								dijk = new Dijkstra(graph, start, alpha);
+								dijk = new Dijkstra(graph, start, alpha, target);
 							}
 							printWriter.println(dijk.getCostOfShortestPathTo(target));// prints calculation in file
 							System.out.println(dijk.getCostOfShortestPathTo(target));
