@@ -92,8 +92,8 @@ public class MapController {
 
         String[] alphaStringArray = alpha.split(" ");
         double[] doubleAlpha = Arrays.stream(alphaStringArray).mapToDouble(Double::parseDouble).toArray();
-        Dijkstra dij = new Dijkstra(graph, start, doubleAlpha);
-        cordinates = dij.getShortestPathInLonLat(end);
+        Dijkstra dij = new Dijkstra(graph, start, doubleAlpha,end);
+        cordinates = dij.getShortestPathInLonLat();
         System.out.println(cordinates);
         return cordinates;
     }
@@ -115,14 +115,14 @@ public class MapController {
             aStar_Standard.setTarget(end);
             aStar_Standard.setAlpha(doubleAlpha);
             aStar_Standard.compute();
-            cordinates = aStar_Standard.getShortestPathInLonLat(end);
+            cordinates = aStar_Standard.getShortestPathInLonLat();
 
         }else if(type.equals("ALT")){
             aStar_Alt.setStart(start);
             aStar_Alt.setTarget(end);
             aStar_Alt.setAlpha(doubleAlpha);
             aStar_Alt.compute();
-            cordinates = aStar_Alt.getShortestPathInLonLat(end);
+            cordinates = aStar_Alt.getShortestPathInLonLat();
 
         }
       
@@ -157,14 +157,14 @@ public class MapController {
             aStar_Standard.setTarget(endPoint);
             aStar_Standard.setAlpha(doubleAlpha);
             aStar_Standard.compute();
-            cordinates = aStar_Standard.getShortestPathInLonLat(endPoint);
+            cordinates = aStar_Standard.getShortestPathInLonLat();
 
         }else if(type.equals("ALT")){
             aStar_Alt.setStart(startPoint);
             aStar_Alt.setTarget(endPoint);
             aStar_Alt.setAlpha(doubleAlpha);
             aStar_Alt.compute();
-            cordinates = aStar_Alt.getShortestPathInLonLat(endPoint);
+            cordinates = aStar_Alt.getShortestPathInLonLat();
 
         }
         
@@ -186,8 +186,8 @@ public class MapController {
         double[] doubleAlpha = Arrays.stream(alphaStringArray).mapToDouble(Double::parseDouble).toArray();
         
 
-        Dijkstra dij = new Dijkstra(quadtree.getGraph(), startPoint, doubleAlpha);
-        cordinates = dij.getShortestPathInLonLat(endPoint);
+        Dijkstra dij = new Dijkstra(quadtree.getGraph(), startPoint, doubleAlpha, endPoint);
+        cordinates = dij.getShortestPathInLonLat();
 
         return cordinates;
     }

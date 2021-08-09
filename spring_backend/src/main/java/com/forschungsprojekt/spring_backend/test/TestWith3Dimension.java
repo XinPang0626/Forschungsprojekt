@@ -14,7 +14,7 @@ public class TestWith3Dimension {
         double[] alpha = {0.33,0.33,0.33};
         aStar.setAlpha(alpha);
         aStar.compute();
-        String path = aStar.getShortestPathInLonLat(5342);
+        String path = aStar.getShortestPathInLonLat();
         System.out.println(path);
     }
 }
