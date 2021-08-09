@@ -177,17 +177,20 @@ public class Testsuit {
                 atime = eTime - sTime;
 
                 // astar with 2 landmark
+                aStarWithTwoLandmark.setStart(start);// set the start
+                aStarWithTwoLandmark.setTarget(end);// set the target
                 sTime = System.nanoTime();
                 aStarWithTwoLandmark.compute();
-                aStarWithTwoLandmark.getShortestPathInLonLat();
+               
                 eTime = System.nanoTime();
                 a2time = eTime - sTime;
            
 
                 // astar with 4 landmark
+                aStarWithFourLandmark.setStart(start);// set the start
+                aStarWithFourLandmark.setTarget(end);// set the target    
                 sTime = System.nanoTime();
                 aStarWithFourLandmark.compute();
-                aStarWithFourLandmark.getShortestPathInLonLat();
                 eTime = System.nanoTime();
                 
                 a3time = eTime - sTime;
@@ -195,28 +198,11 @@ public class Testsuit {
                 if (aStar.getPathAvailable() == false) {
                     totalTimeAStarWithTwoLandmark += a2time;
                     totalTimeAStarWithFourLandmark+= a3time;
-                    totalTimeAStar += atime;
+                    totalTimeAStarWithOneLandmark += atime;
                     break;
                 }
                 aStar.reset();
             }
-
-            start = (int) Math.random() * g.getNodeNr(); // choose a random start point
-            end = (int) Math.random() * g.getNodeNr(); // choose a random target point
-            aStar.setStart(start);// set the start
-            aStar.setTarget(end);// set the target
-            aStarWithTwoLandmark.setStart(start);// set the start
-            aStarWithTwoLandmark.setTarget(end);// set the target
-            aStarWithFourLandmark.setStart(start);// set the start
-            aStarWithFourLandmark.setTarget(end);// set the target
-
-            // astar with 1 landmark
-            sTime = System.nanoTime();
-            aStar.compute();
-            aStar.getShortestPathInLonLat();
-            eTime = System.nanoTime();
-            time = eTime - sTime;
-            totalTimeAStarWithOneLandmark += time;
 
         }
         long averageTimeAStarWithOneLandmark = totalTimeAStarWithOneLandmark / nrOfTrial;
