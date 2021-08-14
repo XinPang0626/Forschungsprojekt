@@ -53,19 +53,25 @@ public class Testsuit {
         int totalNrOfVisitedNodeAStar = 0;
         int totalNrOfVisitedNodeDij = 0;
         int samePath = 0;
-        int sameCost = 0;
-
-        boolean pathNotFound = true;
-        int start = 0;
-        int end = 0;
-        AStar_Standard aStar = new AStar_Standard(g, "ALT", 1);
-        double[] alpha = { 0.5, 0.5 };
-        aStar.setAlpha(alpha);
+        int sameCost = 0;   
         long sTime;
         long eTime;
         long time;
         long dtime = 0;
         long atime = 0;
+
+        boolean pathNotFound = true;
+        int start = 0;
+        int end = 0;
+
+        sTime = System.nanoTime();
+        AStar_Standard aStar = new AStar_Standard(g, "ALT", 1);
+        eTime = System.nanoTime();
+         time=eTime-sTime;
+         result.add("Pre calc for 1 landmark: "+ time);
+        double[] alpha = { 0.5, 0.5 };
+        aStar.setAlpha(alpha);
+     
         int nrOfVisitedNodeAStar = 0;
         int nrOfVisitedNodeDij = 0;
         for (int i = 0; i < nrOfTrial; i++) {
@@ -154,8 +160,21 @@ public class Testsuit {
          * aStar with 16 landmark takes nano secs while dij takes nano secs.
          */
 
+        
+        sTime = System.nanoTime();
         AStar_Standard aStarWithTwoLandmark = new AStar_Standard(g, "ALT", 2);
+        
+        eTime = System.nanoTime();
+        time= eTime-sTime;
+        result.add("Pre calc for 2 landmark: "+ time);
+
+        
+        sTime = System.nanoTime();
         AStar_Standard aStarWithFourLandmark = new AStar_Standard(g, "ALT", 4);
+        
+        eTime = System.nanoTime();
+        time= eTime-sTime;
+        result.add("Pre calc for 4 landmark: "+ time);
         aStarWithTwoLandmark.setAlpha(alpha);
         aStarWithFourLandmark.setAlpha(alpha);
         long totalTimeAStarWithOneLandmark = 0;
