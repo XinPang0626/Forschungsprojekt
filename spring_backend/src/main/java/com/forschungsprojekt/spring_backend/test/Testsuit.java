@@ -107,6 +107,9 @@ public class Testsuit {
 
             // compare cost and path:
             if (aStar.getCost(end) == d.getCost(end)) {
+                totalTimeAStar += atime;
+                totalTimedij += dtime;
+
                 sameCost++;
             }
             if (aStar.getShortestPathInLonLat().equals(d.getShortestPathInLonLat())) {
@@ -162,7 +165,7 @@ public class Testsuit {
 
         
         sTime = System.nanoTime();
-        AStar_Standard aStarWithTwoLandmark = new AStar_Standard(g, "ALT", 2);
+        AStar_Standard aStarWithTwoLandmark = new AStar_Standard(g, "ALT", 3);
         
         eTime = System.nanoTime();
         time= eTime-sTime;
@@ -170,11 +173,11 @@ public class Testsuit {
 
         
         sTime = System.nanoTime();
-        AStar_Standard aStarWithFourLandmark = new AStar_Standard(g, "ALT", 4);
+        AStar_Standard aStarWithFourLandmark = new AStar_Standard(g, "ALT", 7);
         
         eTime = System.nanoTime();
         time= eTime-sTime;
-        result.add("Pre calc for 4 landmark: "+ time);
+        result.add("Pre calc for 7 landmark: "+ time);
         aStarWithTwoLandmark.setAlpha(alpha);
         aStarWithFourLandmark.setAlpha(alpha);
         long totalTimeAStarWithOneLandmark = 0;
@@ -205,7 +208,7 @@ public class Testsuit {
                 a2time = eTime - sTime;
            
 
-                // astar with 4 landmark
+                // astar with 7 landmark
                 aStarWithFourLandmark.setStart(start);// set the start
                 aStarWithFourLandmark.setTarget(end);// set the target    
                 sTime = System.nanoTime();
