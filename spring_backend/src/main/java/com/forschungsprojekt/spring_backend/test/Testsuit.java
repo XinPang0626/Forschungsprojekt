@@ -107,12 +107,13 @@ public class Testsuit {
 
             // compare cost and path:
             if (aStar.getCost(end) == d.getCost(end)) {
-                totalTimeAStar += atime;
-                totalTimedij += dtime;
+              
 
                 sameCost++;
             }
             if (aStar.getShortestPathInLonLat().equals(d.getShortestPathInLonLat())) {
+                totalTimeAStar += atime;
+                totalTimedij += dtime;
                 samePath++;
 
             } else {
