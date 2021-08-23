@@ -53,7 +53,7 @@ public class Testsuit {
         int totalNrOfVisitedNodeAStar = 0;
         int totalNrOfVisitedNodeDij = 0;
         int samePath = 0;
-        int sameCost = 0;   
+        int sameCost = 0;
         long sTime;
         long eTime;
         long time;
@@ -67,11 +67,46 @@ public class Testsuit {
         sTime = System.nanoTime();
         AStar_Standard aStar = new AStar_Standard(g, "ALT", 1);
         eTime = System.nanoTime();
-         time=eTime-sTime;
-         result.add("Pre calc for 1 landmark: "+ time);
+        time = eTime - sTime;
+        result.add("Pre calc for 1 landmark: " + time);
+
+        sTime = System.nanoTime();
+        AStar_Standard aStarWithTwoLandmark = new AStar_Standard(g, "ALT", 2);
+
+        eTime = System.nanoTime();
+        time = eTime - sTime;
+        result.add("Pre calc for 2 landmark: " + time);
+
+
+
+        sTime = System.nanoTime();
+        AStar_Standard aStarWithFourLandmark = new AStar_Standard(g, "ALT", 4);
+
+        eTime = System.nanoTime();
+        time = eTime - sTime;
+        result.add("Pre calc for 4 landmark: " + time);
+
+        sTime = System.nanoTime();
+        AStar_Standard aStarWithEightLandmark = new AStar_Standard(g, "ALT", 8);
+
+        eTime = System.nanoTime();
+        time = eTime - sTime;
+        result.add("Pre calc for 8 landmark: " + time);
+
         double[] alpha = { 0.5, 0.5 };
+
         aStar.setAlpha(alpha);
-     
+        aStarWithTwoLandmark.setAlpha(alpha);
+        aStarWithFourLandmark.setAlpha(alpha);
+        aStarWithEightLandmark.setAlpha(alpha);
+
+        long totalTimeAStarWithTwoLandmark = 0;
+        long totalTimeAStarWithFourLandmark = 0;
+        long totalTimeAStarWithEightLandmark = 0;
+        long a2time = 0;
+        long a4time = 0;
+        long a8time = 0;
+
         int nrOfVisitedNodeAStar = 0;
         int nrOfVisitedNodeDij = 0;
         for (int i = 0; i < nrOfTrial; i++) {
@@ -80,14 +115,44 @@ public class Testsuit {
             while (pathNotFound) {
                 start = (int) (Math.random() * g.getNodeNr());// choose start and target randomly
                 end = (int) (Math.random() * g.getNodeNr());
+
+                //landmark 1
                 aStar.setStart(start);
                 aStar.setTarget(end);
                 sTime = System.nanoTime();
                 aStar.compute();
                 eTime = System.nanoTime();
+                atime = eTime - sTime;
+
+
+                 // astar with 2 landmark
+                 aStarWithTwoLandmark.setStart(start);// set the start
+                 aStarWithTwoLandmark.setTarget(end);// set the target
+                 sTime = System.nanoTime();
+                 aStarWithTwoLandmark.compute();
+ 
+                 eTime = System.nanoTime();
+                 a2time = eTime - sTime;
+
+                // astar with 4 landmark
+                aStarWithFourLandmark.setStart(start);// set the start
+                aStarWithFourLandmark.setTarget(end);// set the target
+                sTime = System.nanoTime();
+                aStarWithFourLandmark.compute();
+
+                eTime = System.nanoTime();
+                a4time = eTime - sTime;
+
+                // astar with 8 landmark
+                aStarWithEightLandmark.setStart(start);// set the start
+                aStarWithEightLandmark.setTarget(end);// set the target
+                sTime = System.nanoTime();
+                aStarWithEightLandmark.compute();
+                eTime = System.nanoTime();
+
+                a8time = eTime - sTime;
+
                 if (aStar.getPathAvailable() == false) {
-                    atime = eTime - sTime;
-                    totalTimeAStar += atime;
 
                     nrOfVisitedNodeAStar += aStar.getNrOfVisitedNodes();
                     break;
@@ -107,11 +172,14 @@ public class Testsuit {
 
             // compare cost and path:
             if (aStar.getCost(end) == d.getCost(end)) {
-              
 
                 sameCost++;
             }
             if (aStar.getShortestPathInLonLat().equals(d.getShortestPathInLonLat())) {
+                totalTimeAStar += atime;
+                totalTimeAStarWithTwoLandmark+= a2time;
+                totalTimeAStarWithFourLandmark += a4time;
+                totalTimeAStarWithEightLandmark += a8time;
                 totalTimeAStar += atime;
                 totalTimedij += dtime;
                 samePath++;
@@ -123,23 +191,50 @@ public class Testsuit {
             }
             aStar.reset();
         }
-        long averageTimeAStar = totalTimeAStar / samePath;
+        
         long averageTimedij = totalTimedij / samePath;
         double averageNrOfVisitedNodesAStar = totalNrOfVisitedNodeAStar / samePath;
         double averageNrOfVisitedNodesDij = totalNrOfVisitedNodeDij / samePath;
-        System.out.println("aStar with ALT Computation took in average [" + averageTimeAStar + "] nano seconds");
-        // System.out.println("aStar with ALT visited in average [" +
-        // averageNrOfVisitedNodesAStar +"] nodes");
-        System.out.println("Dijkstra Computation took in average [" + averageTimedij + "] nano seconds");
-        // System.out.println("Dijkstra visited in average [" +
-        // averageNrOfVisitedNodesDij +"] nodes");
+
+        long averageTimeAStar = totalTimeAStar / samePath;
+        long averageTimeAStarWithTwoLandmark = totalTimeAStarWithTwoLandmark / samePath;
+        long averageTimeAStarWithFourLandmark= totalTimeAStarWithFourLandmark / samePath;
+        long averageTimeAStarWithEightLandmark = totalTimeAStarWithEightLandmark / samePath;
+
+
+        String astartext="aStar with ALT and one landmark Computation took in average ["
+        + averageTimeAStar + "] nano seconds";
+        String astartext2="aStar with ALT and two landmark Computation  took in average ["
+        + averageTimeAStarWithTwoLandmark + "] nano seconds";
+        String astartext4="aStar with ALT and four landmark Computation took in average ["
+        + averageTimeAStarWithFourLandmark + "] nano seconds";
+        String astartext8="aStar with ALT and four landmark Computation took in average ["
+        + averageTimeAStarWithEightLandmark + "] nano seconds";
+
+        String dijtext="Dijkstra Computation took in average [" + averageTimedij + "] nano seconds";
+    
+        System.out.println(dijtext);
+        System.out.println(astartext);
+        System.out.println(astartext2);
+        System.out.println(astartext4);
+        System.out.println(astartext8);
+        
+
+
+        result.add(dijtext);
+        result.add(astartext);
+        result.add(astartext2);
+        result.add(astartext4);
+        result.add(astartext8);
+
+       
+        
         System.out.println("The path is same in " + samePath + "/" + nrOfTrial);
         System.out.println("The cost is same in " + sameCost + "/" + nrOfTrial);
-        result.add("aStar with ALT Computation took in average [" + averageTimeAStar + "] nano seconds");
-        result.add("Dijkstra Computation took in average [" + averageTimedij + "] nano seconds");
+       
         result.add("The path is same in " + samePath + "/" + nrOfTrial);
         result.add("The cost is same in " + sameCost + "/" + nrOfTrial);
-        printtxt("Bremenpart1", result);
+
         /**
          * Stuttgart with 2 metrics: In average and 200 trials:
          * 
@@ -164,85 +259,6 @@ public class Testsuit {
          * aStar with 16 landmark takes nano secs while dij takes nano secs.
          */
 
-        
-        sTime = System.nanoTime();
-        AStar_Standard aStarWithTwoLandmark = new AStar_Standard(g, "ALT", 3);
-        
-        eTime = System.nanoTime();
-        time= eTime-sTime;
-        result.add("Pre calc for 2 landmark: "+ time);
-
-        
-        sTime = System.nanoTime();
-        AStar_Standard aStarWithFourLandmark = new AStar_Standard(g, "ALT", 7);
-        
-        eTime = System.nanoTime();
-        time= eTime-sTime;
-        result.add("Pre calc for 7 landmark: "+ time);
-        aStarWithTwoLandmark.setAlpha(alpha);
-        aStarWithFourLandmark.setAlpha(alpha);
-        long totalTimeAStarWithOneLandmark = 0;
-        long totalTimeAStarWithTwoLandmark = 0;
-        long totalTimeAStarWithFourLandmark = 0;
-        long a2time;
-        long a3time;
-        nrOfTrial = 200;
-        for (int i = 0; i < nrOfTrial; i++) {
-
-            while (pathNotFound) {
-                start = (int) (Math.random() * g.getNodeNr());// choose start and target randomly
-                end = (int) (Math.random() * g.getNodeNr());
-                aStar.setStart(start);
-                aStar.setTarget(end);
-                sTime = System.nanoTime();
-                aStar.compute();
-                eTime = System.nanoTime();
-                atime = eTime - sTime;
-
-                // astar with 2 landmark
-                aStarWithTwoLandmark.setStart(start);// set the start
-                aStarWithTwoLandmark.setTarget(end);// set the target
-                sTime = System.nanoTime();
-                aStarWithTwoLandmark.compute();
-               
-                eTime = System.nanoTime();
-                a2time = eTime - sTime;
-           
-
-                // astar with 7 landmark
-                aStarWithFourLandmark.setStart(start);// set the start
-                aStarWithFourLandmark.setTarget(end);// set the target    
-                sTime = System.nanoTime();
-                aStarWithFourLandmark.compute();
-                eTime = System.nanoTime();
-                
-                a3time = eTime - sTime;
-            
-                if (aStar.getPathAvailable() == false) {
-                    totalTimeAStarWithTwoLandmark += a2time;
-                    totalTimeAStarWithFourLandmark+= a3time;
-                    totalTimeAStarWithOneLandmark += atime;
-                    break;
-                }
-                aStar.reset();
-            }
-
-        }
-        long averageTimeAStarWithOneLandmark = totalTimeAStarWithOneLandmark / nrOfTrial;
-        long averageTimeAStarWithTwoLandmark = totalTimeAStarWithTwoLandmark / nrOfTrial;
-        long averageTimeAStarWithFourLandmark = totalTimeAStarWithFourLandmark / nrOfTrial;
-        System.out.println("aStar with ALT and one landmark Computation and path retrieval took in average ["
-                + averageTimeAStarWithOneLandmark + "] nano seconds");
-        System.out.println("aStar with ALT and two landmark Computation and path retrieval took in average ["
-                + averageTimeAStarWithTwoLandmark + "] nano seconds");
-        System.out.println("aStar with ALT and four landmark Computation and path retrieval took in average ["
-                + averageTimeAStarWithFourLandmark + "] nano seconds");
-        result.add("aStar with ALT and one landmark Computation and path retrieval took in average ["
-                + averageTimeAStarWithOneLandmark + "] nano seconds");
-        result.add("aStar with ALT and two landmark Computation and path retrieval took in average ["
-                + averageTimeAStarWithTwoLandmark + "] nano seconds");
-        result.add("aStar with ALT and four landmark Computation and path retrieval took in average ["
-                + averageTimeAStarWithFourLandmark + "] nano seconds");
         printtxt("Bremenfull", result);
         /**
          * Bremen with 2 metrics: In average with 200 trials: 1 landmark: 341318 nano
