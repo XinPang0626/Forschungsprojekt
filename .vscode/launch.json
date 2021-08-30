@@ -6,6 +6,13 @@
     "configurations": [
         {
             "type": "java",
+            "name": "Launch Testsuit",
+            "request": "launch",
+            "mainClass": "com.forschungsprojekt.spring_backend.test.Testsuit",
+            "projectName": "spring_backend"
+        },
+        {
+            "type": "java",
             "name": "Launch Test",
             "request": "launch",
             "mainClass": "com.forschungsprojekt.spring_backend.test.Test",
