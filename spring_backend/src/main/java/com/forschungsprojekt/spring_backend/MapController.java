@@ -92,7 +92,11 @@ public class MapController {
 
         String[] alphaStringArray = alpha.split(" ");
         double[] doubleAlpha = Arrays.stream(alphaStringArray).mapToDouble(Double::parseDouble).toArray();
+        long sTime = System.nanoTime();
         Dijkstra dij = new Dijkstra(graph, start, doubleAlpha,end);
+        long  eTime = System.nanoTime();
+        System.out.println("Dij time is: "+ (eTime-sTime));
+
         cordinates = dij.getShortestPathInLonLat();
         System.out.println(cordinates);
         return cordinates;
@@ -110,19 +114,26 @@ public class MapController {
      @RequestParam(name = "type") String type) {
         String[] alphaStringArray = alpha.split(" ");
         double[] doubleAlpha = Arrays.stream(alphaStringArray).mapToDouble(Double::parseDouble).toArray();
+        
         if(type.equals("Standard")){
             aStar_Standard.setStart(start);
             aStar_Standard.setTarget(end);
             aStar_Standard.setAlpha(doubleAlpha);
+            long sTime = System.nanoTime();
             aStar_Standard.compute();
+           long  eTime = System.nanoTime();
             cordinates = aStar_Standard.getShortestPathInLonLat();
+            System.out.println("A* STANDARD time is: "+ (eTime-sTime));
 
         }else if(type.equals("ALT")){
             aStar_Alt.setStart(start);
             aStar_Alt.setTarget(end);
             aStar_Alt.setAlpha(doubleAlpha);
+            long sTime = System.nanoTime();
             aStar_Alt.compute();
+            long  eTime = System.nanoTime();
             cordinates = aStar_Alt.getShortestPathInLonLat();
+            System.out.println("A* ALT time is: "+ (eTime-sTime));
 
         }
       
@@ -156,14 +167,22 @@ public class MapController {
             aStar_Standard.setStart(startPoint);
             aStar_Standard.setTarget(endPoint);
             aStar_Standard.setAlpha(doubleAlpha);
+            long sTime = System.nanoTime();
             aStar_Standard.compute();
+            long  eTime = System.nanoTime();
+            System.out.println("A* STANDARD time is: "+ (eTime-sTime));
+        
             cordinates = aStar_Standard.getShortestPathInLonLat();
 
         }else if(type.equals("ALT")){
             aStar_Alt.setStart(startPoint);
             aStar_Alt.setTarget(endPoint);
             aStar_Alt.setAlpha(doubleAlpha);
+            long sTime = System.nanoTime();
             aStar_Alt.compute();
+            long  eTime = System.nanoTime();
+            System.out.println("A* ALT time is: "+ (eTime-sTime));
+
             cordinates = aStar_Alt.getShortestPathInLonLat();
 
         }
@@ -185,8 +204,10 @@ public class MapController {
         String[] alphaStringArray = alpha.split(" ");
         double[] doubleAlpha = Arrays.stream(alphaStringArray).mapToDouble(Double::parseDouble).toArray();
         
-
+        long sTime = System.nanoTime();
         Dijkstra dij = new Dijkstra(quadtree.getGraph(), startPoint, doubleAlpha, endPoint);
+        long  eTime = System.nanoTime();
+        System.out.println("Dij time is: "+ (eTime-sTime));
         cordinates = dij.getShortestPathInLonLat();
 
         return cordinates;

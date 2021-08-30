@@ -1,2 +1,2 @@
-nroflandmark=1
+nroflandmark=3
 graphfilepath=./spring_backend/src/main/resources/bremen.graph
