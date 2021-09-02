@@ -203,7 +203,7 @@ public class Testsuit {
                 + averageTimeAStarWithTwoLandmark + "] nano seconds";
         String astartext4 = "aStar with ALT and four landmark Computation took in average ["
                 + averageTimeAStarWithFourLandmark + "] nano seconds";
-        String astartext8 = "aStar with ALT and four landmark Computation took in average ["
+        String astartext8 = "aStar with ALT and eight landmark Computation took in average ["
                 + averageTimeAStarWithEightLandmark + "] nano seconds";
 
         String dijtext = "Dijkstra Computation took in average [" + averageTimedij + "] nano seconds";
